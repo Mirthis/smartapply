@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type NextPage } from "next";
-import ApplicantCard from "~/components/ApplicantCard";
-import CurrentJobCard from "~/components/CurrentJobCard";
 import Spinner from "~/components/ui/Spinner";
 import { api } from "~/utils/api";
 import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useAppStore } from "~/store/store";
+import Title from "~/components/Title";
+import { ApplicationDetails } from "~/components/ApplicationDetails";
 
 const CoverLetterPage: NextPage = () => {
   const { setCoverLetter, addCoverLetter, coverLetters } = useAppStore(
@@ -21,14 +21,14 @@ const CoverLetterPage: NextPage = () => {
   const [displayedLetter, setDisplayedLetter] = useState(currentCoverLetter);
 
   const { mutate: createCoverLetter, isLoading: createLoading } =
-    api.ai.createLetterFake.useMutation({
+    api.coverLetters.createLetterFake.useMutation({
       onSuccess: (data) => {
         setCoverLetter(data);
       },
     });
 
   const { mutate: refineCoverLetter, isLoading: refineLoading } =
-    api.ai.refineLetterFake.useMutation({
+    api.coverLetters.refineLetterFake.useMutation({
       onSuccess: (data) => {
         addCoverLetter(data);
       },
@@ -63,13 +63,9 @@ const CoverLetterPage: NextPage = () => {
 
   return (
     <>
-      <h1 className="mb-4 text-5xl">Generate Cover Letter</h1>
-      <h1 className="mb-2 mt-4 text-3xl">Application Details</h1>
+      <Title title="Cover Letter" />
+      <ApplicationDetails />
 
-      <div className="gao-y-4 flex flex-col gap-x-4 lg:flex-row">
-        <CurrentJobCard />
-        <ApplicantCard />
-      </div>
       {!createLoading && !coverLetters && (
         <button className="brn-primary btn" onClick={generate}>
           Generate Cover Letter

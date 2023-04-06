@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { type ApplicantData, type JobData } from "~/types/types";
+import {
+  type ApplicantData,
+  type JobData,
+  type InterviewMessage,
+  type InterviewType,
+} from "~/types/types";
 
 interface CoverLetter {
   id: number;
@@ -12,14 +17,24 @@ type CoverLettersData = {
   lastId: number;
 };
 
+type InterviewData = {
+  type: InterviewType;
+  messages: InterviewMessage[];
+  lastId: number;
+};
+
 type AppStore = {
   applicant?: ApplicantData;
   job?: JobData;
   coverLetters?: CoverLettersData;
+  interview?: InterviewData;
+
   setApplicant: (applicant: ApplicantData) => void;
   setJob: (job: JobData) => void;
   setCoverLetter: (coverLetter: string) => void;
   addCoverLetter: (coverLetter: string) => void;
+  initInterview: (type: InterviewType) => void;
+  addInterviewMessage: (message: InterviewMessage) => void;
   reset(): void;
 };
 
@@ -39,6 +54,8 @@ const initialState = {
     resume:
       "I am a software engineer with 5 years of experience in the field. I have worked on a variety of projects, including the next generation of Google's search engine.",
   },
+  coverletters: undefined,
+  interview: undefined,
 };
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -60,6 +77,33 @@ export const useAppStore = create<AppStore>((set, get) => ({
       },
     });
   },
+
+  initInterview: (type) => {
+    set({
+      interview: {
+        messages: [],
+        type,
+        lastId: 0,
+      },
+    });
+  },
+  addInterviewMessage(message) {
+    const interview = get().interview;
+    if (!interview) return;
+    const nextId = (interview?.lastId ?? 0) + 1;
+
+    const messages = interview?.messages ?? [];
+    const newMessage = {
+      ...message,
+      id: nextId,
+    };
+    set({
+      interview: {
+        ...interview,
+        messages: [...messages, newMessage],
+      },
+    });
+  },
   addCoverLetter: (coverLetter) => {
     const coverLetters = get().coverLetters;
     const nextId = (coverLetters?.lastId ?? 0) + 1;
@@ -75,6 +119,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
       },
     });
   },
-  reset: () =>
-    set({ applicant: undefined, job: undefined, coverLetters: undefined }),
+
+  reset: () => set({ ...initialState }),
 }));

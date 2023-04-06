@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type NextPage } from "next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormStep, useFormStore } from "~/store/formStore";
 import { useAppStore } from "~/store/store";
 import { type JobData } from "~/types/types";
 import { jobSchema } from "~/types/schemas";
 
-const JobForm: NextPage = () => {
+const JobForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const {
     register,
     handleSubmit,
@@ -19,11 +17,12 @@ const JobForm: NextPage = () => {
 
   const job = useAppStore((state) => state.job);
   const setJob = useAppStore((state) => state.setJob);
-  const setFormStep = useFormStore((state) => state.setStep);
 
   const onSubmit = (data: JobData) => {
     setJob(data);
-    setFormStep(FormStep.Applicant);
+    if (onSuccess) {
+      onSuccess();
+    }
   };
 
   return (
@@ -63,6 +62,7 @@ const JobForm: NextPage = () => {
           placeholder="Company Description"
           {...register("companyDetails")}
           defaultValue={job?.companyDetails ?? ""}
+          rows={4}
         />
         {errors.companyDetails && (
           <p className="text-error">{errors.companyDetails.message}</p>

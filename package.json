@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.13",
     "@heroicons/react": "^2.0.17",
     "@hookform/resolvers": "^3.0.0",
     "@prisma/client": "^4.11.0",

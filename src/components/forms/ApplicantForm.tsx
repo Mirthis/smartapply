@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type NextPage } from "next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FormStep, useFormStore } from "~/store/formStore";
 import { useAppStore } from "~/store/store";
 import { applicantSchema } from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
 
-const ApplicantForm: NextPage = () => {
+const ApplicantForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const {
     register,
     handleSubmit,
@@ -22,11 +20,10 @@ const ApplicantForm: NextPage = () => {
     state.applicant,
     state.setApplicant,
   ]);
-  const setFormStep = useFormStore((state) => state.setStep);
 
   const onSubmit = (data: ApplicantData) => {
     setApplicant(data);
-    setFormStep(FormStep.Complete);
+    onSuccess();
   };
 
   return (

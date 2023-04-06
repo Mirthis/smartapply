@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "~/server/api/trpc";
-import { aiRouter } from "./routers/ai";
+import { coverLettersRouter } from "./routers/coverLetters";
+import { interviewRouter } from "./routers/interview";
 
 /**
  * This is the primary router for your server.
@@ -7,7 +8,8 @@ import { aiRouter } from "./routers/ai";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  ai: aiRouter,
+  coverLetters: coverLettersRouter,
+  interview: interviewRouter,
 });
 
 // export type definition of API

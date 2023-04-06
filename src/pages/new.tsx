@@ -3,24 +3,32 @@ import { type NextPage } from "next";
 
 import ApplicantForm from "~/components/forms/ApplicantForm";
 import JobForm from "~/components/forms/JobForm";
-import { FormStep, useFormStore } from "~/store/formStore";
+import { FormStep } from "~/store/formStore";
 import {
   DocumentTextIcon,
   ChatBubbleLeftRightIcon,
   ClipboardDocumentCheckIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { useState } from "react";
 
 const NewApplication: NextPage = () => {
-  const formStep = useFormStore((state) => state.step);
-  console.log(formStep);
+  const [step, setStep] = useState<FormStep>(FormStep.Job);
+
+  const nextStep = () => {
+    if (step === FormStep.Job) {
+      setStep(FormStep.Applicant);
+    } else if (step === FormStep.Applicant) {
+      setStep(FormStep.Complete);
+    }
+  };
 
   return (
     <>
       <div className="text-center">
         <ul className="steps steps-horizontal mx-auto">
           <li className={"step-primary step"}>Job Details</li>
-          {formStep !== FormStep.Job ? (
+          {step !== FormStep.Job ? (
             <li className={"step-primary step"}>Applicant Details</li>
           ) : (
             <li className={"step"}>Applicant Details</li>
@@ -28,7 +36,7 @@ const NewApplication: NextPage = () => {
 
           <li
             className={`${
-              formStep === FormStep.Complete ? "step-primary" : ""
+              step === FormStep.Complete ? "step-primary" : ""
             } step`}
           >
             Tool selection
@@ -38,10 +46,10 @@ const NewApplication: NextPage = () => {
       <div className="flex flex-col gap-y-4">
         {/* {formStep !== FormStep.Job && <CurrentJobCard />}
         {formStep === FormStep.Complete && <ApplicantCard />} */}
-        {formStep === FormStep.Job && <JobForm />}
-        {formStep === FormStep.Applicant && <ApplicantForm />}
+        {step === FormStep.Job && <JobForm onSuccess={nextStep} />}
+        {step === FormStep.Applicant && <ApplicantForm onSuccess={nextStep} />}
         {/* Option Cards  */}
-        {formStep === FormStep.Complete && (
+        {step === FormStep.Complete && (
           <div className="flex flex-col justify-center gap-x-4 gap-y-4 lg:flex-row">
             {/* Card - Create Cover letter  */}
             <Link href="/coverletter">

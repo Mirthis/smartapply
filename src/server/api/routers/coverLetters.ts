@@ -118,7 +118,7 @@ const createAssistantMessage = (
   };
 };
 
-export const aiRouter = createTRPCRouter({
+export const coverLettersRouter = createTRPCRouter({
   createLetter: publicProcedure
     .input(
       z.object({
@@ -218,6 +218,47 @@ export const aiRouter = createTRPCRouter({
       }
     }),
 
+  createLetterFake: publicProcedure
+    .input(
+      z.object({
+        job: jobSchema,
+        applicant: applicantSchema,
+      })
+    )
+    .mutation(async ({ input }) => {
+      console.log({ input });
+      const messages = [
+        getCoverLetterSystemMessage(),
+        getCoverLetterUserMessage(input.job, input.applicant),
+      ];
+      console.log({ messages });
+
+      await delay(1500);
+
+      const response =
+        "Dear Hiring Manager,\n" +
+        "\n" +
+        "I am writing to express my interest in the Software Engineer position at Google. As an experienced Software Engineer, I am excited about the opportunity to build cool stuff with cool people in a cool environment.\n" +
+        "\n" +
+        "I am very impressed by Google's reputation as a big tech company with a lot of perks. I am confident that the company's culture of innovation and dedication to excellence will provide me with the perfect platform to enhance my skills and contribute to the success of the team.\n" +
+        "\n" +
+        "As a Software Engineer with several years of experience, I have worked on various projects where I have applied my expertise in developing and implementing software. My vast experience in designing and testing software gives me the confidence to approach any software development project with ease.\n" +
+        "\n" +
+        "I have a thorough understanding of multiple programming languages and I have worked with various database management systems. I am also skilled in identifying system bugs and flaws and coming up with innovative solutions for them. Additionally, I can effortlessly adapt to new technologies and software development techniques.\n" +
+        "\n" +
+        "In my previous role as a Software Engineer, I was responsible for leading a team of developers to design and develop software applications that improved user experience while enhancing functionality. The success of this project was largely due to my ability to work diligently with my team members while staying focused on the end goal.\n" +
+        "\n" +
+        "I am confident that my skills in software development, leadership, and collaboration make me a perfect fit for the Software Engineer position at Google. I look forward to contributing my skills to your team and learning from the best in the industry.\n" +
+        "\n" +
+        "Thank you for considering my application. I look forward to hearing from you.\n" +
+        "\n" +
+        "Best regards,\n" +
+        "\n" +
+        "John Doe";
+
+      return response;
+    }),
+
   refineLetterFake: publicProcedure
     .input(
       z.object({
@@ -259,46 +300,5 @@ export const aiRouter = createTRPCRouter({
 
       console.log({ responseText });
       return responseText;
-    }),
-
-  createLetterFake: publicProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-      })
-    )
-    .mutation(async ({ input }) => {
-      console.log({ input });
-      const messages = [
-        getCoverLetterSystemMessage(),
-        getCoverLetterUserMessage(input.job, input.applicant),
-      ];
-      console.log({ messages });
-
-      await delay(1500);
-
-      const response =
-        "Dear Hiring Manager,\n" +
-        "\n" +
-        "I am writing to express my interest in the Software Engineer position at Google. As an experienced Software Engineer, I am excited about the opportunity to build cool stuff with cool people in a cool environment.\n" +
-        "\n" +
-        "I am very impressed by Google's reputation as a big tech company with a lot of perks. I am confident that the company's culture of innovation and dedication to excellence will provide me with the perfect platform to enhance my skills and contribute to the success of the team.\n" +
-        "\n" +
-        "As a Software Engineer with several years of experience, I have worked on various projects where I have applied my expertise in developing and implementing software. My vast experience in designing and testing software gives me the confidence to approach any software development project with ease.\n" +
-        "\n" +
-        "I have a thorough understanding of multiple programming languages and I have worked with various database management systems. I am also skilled in identifying system bugs and flaws and coming up with innovative solutions for them. Additionally, I can effortlessly adapt to new technologies and software development techniques.\n" +
-        "\n" +
-        "In my previous role as a Software Engineer, I was responsible for leading a team of developers to design and develop software applications that improved user experience while enhancing functionality. The success of this project was largely due to my ability to work diligently with my team members while staying focused on the end goal.\n" +
-        "\n" +
-        "I am confident that my skills in software development, leadership, and collaboration make me a perfect fit for the Software Engineer position at Google. I look forward to contributing my skills to your team and learning from the best in the industry.\n" +
-        "\n" +
-        "Thank you for considering my application. I look forward to hearing from you.\n" +
-        "\n" +
-        "Best regards,\n" +
-        "\n" +
-        "John Doe";
-
-      return response;
     }),
 });
