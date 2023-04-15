@@ -4,22 +4,24 @@ import Spinner from "~/components/ui/Spinner";
 import { api } from "~/utils/api";
 import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "~/store/store";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
+import { type CoverLetter } from "~/types/types";
 
 const CoverLetterPage: NextPage = () => {
   const { setCoverLetter, addCoverLetter, coverLetters } = useAppStore(
     (state) => state
   );
+  console.log({ coverLetters });
   const currentCoverLetter = coverLetters?.currentCoverLetter;
-
+  console.log({ currentCoverLetter });
   const { job, applicant } = useAppStore((state) => state);
 
   const [refineText, setRefineText] = useState("");
-  const [displayedLetter, setDisplayedLetter] = useState(currentCoverLetter);
-
+  const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
+  console.log({ displayedLetter });
   const { mutate: createCoverLetter, isLoading: createLoading } =
     api.coverLetters.createLetterFake.useMutation({
       onSuccess: (data) => {
@@ -33,6 +35,10 @@ const CoverLetterPage: NextPage = () => {
         addCoverLetter(data);
       },
     });
+
+  useEffect(() => {
+    setDisplayedLetter(currentCoverLetter);
+  }, [currentCoverLetter]);
 
   const generate = () => {
     if (job && applicant) {
@@ -58,8 +64,6 @@ const CoverLetterPage: NextPage = () => {
   const handleLettersTabChange = (index: number) => {
     setDisplayedLetter(coverLetters?.coverLetters.find((c) => c.id === index));
   };
-
-  console.log({ coverLetters });
 
   return (
     <>
@@ -97,6 +101,7 @@ const CoverLetterPage: NextPage = () => {
       )}
       {!createLoading && displayedLetter && (
         <div>
+          sss
           <div className="relative rounded-md bg-neutral p-2">
             {formatApiMessage(displayedLetter.text).map((p, i) => (
               <p key={i} className="mb-2">

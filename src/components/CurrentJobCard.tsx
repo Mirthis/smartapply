@@ -1,6 +1,6 @@
 import { BriefcaseIcon } from "@heroicons/react/24/outline";
 import { useAppStore } from "~/store/store";
-import { EditJobModal } from "./EditJobModal";
+import { EditJobModal } from "./modals/EditJobModal";
 import { useState } from "react";
 
 const CurrentJobCard = () => {

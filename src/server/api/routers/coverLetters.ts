@@ -11,6 +11,7 @@ import { env } from "~/env.mjs";
 import { TRPCError } from "@trpc/server";
 import { type ApplicantData, type JobData } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
+import { getJobDetailsPrompt } from "~/utils/prompt";
 
 const configuration: Configuration = new Configuration({
   apiKey: env.OPENAI_API_KEY,
@@ -20,8 +21,12 @@ const openai = new OpenAIApi(configuration);
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-const getCoverLetterSystemMessage = (): ChatCompletionRequestMessage => {
-  const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details provided
+const getCoverLetterSystemMessage = (
+  job: JobData,
+  applicant: ApplicantData
+): ChatCompletionRequestMessage => {
+  const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details provided.
+  ${getJobDetailsPrompt(job, applicant)}
   The cover letter should be written in a professional tone and should be free of grammatical errors.
   The cover letter should be be relevant for the specific job title and description.
   The cover letter should contains details specific to the applicant (when provided).
@@ -35,44 +40,9 @@ const getCoverLetterSystemMessage = (): ChatCompletionRequestMessage => {
   };
 };
 
-const getCoverLetterUserMessage = (
-  job: JobData,
-  applicant: ApplicantData
-): ChatCompletionRequestMessage => {
-  const content = `I need a cover letter based on the following job and applicant details:
-  Job title: ${job.jobTitle}
-  Job description: ${job.jobDescription}
-  ${
-    job.companyName && job.companyName !== ""
-      ? `Company hiring (name): ${job.companyName}`
-      : ""
-  }
-  ${
-    job.companyDetails && job.companyDetails !== ""
-      ? `Company hiring (details): ${job.companyDetails}`
-      : ""
-  }
-  ${
-    applicant.firstName && applicant.firstName !== ""
-      ? `Applicant (first name): ${applicant.firstName}`
-      : ""
-  }
-  ${
-    applicant.lastName && applicant.lastName !== ""
-      ? `Applicant (last name): ${applicant.lastName}`
-      : ""
-  }
-  ${
-    applicant.title && applicant.title !== ""
-      ? `Applicant (title): ${applicant.title}`
-      : ""
-  }
-  ${
-    applicant.resume && applicant.resume !== ""
-      ? `Applicant (resume): ${applicant.resume}`
-      : ""
-  }
-`;
+const getCoverLetterUserMessage = (): ChatCompletionRequestMessage => {
+  const content = `Create the initial cover letter based on the job details and applicant details provided.`;
+
   return {
     role: ChatCompletionRequestMessageRoleEnum.User,
     content,
@@ -129,8 +99,8 @@ export const coverLettersRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       console.log({ input });
       const messages = [
-        getCoverLetterSystemMessage(),
-        getCoverLetterUserMessage(input.job, input.applicant),
+        getCoverLetterSystemMessage(input.job, input.applicant),
+        getCoverLetterUserMessage(),
       ];
 
       console.log({ messages });
@@ -173,8 +143,8 @@ export const coverLettersRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       console.log({ input });
       const messages = [
-        getCoverLetterSystemMessage(),
-        getCoverLetterUserMessage(input.job, input.applicant),
+        getCoverLetterSystemMessage(input.job, input.applicant),
+        getCoverLetterUserMessage(),
         createAssistantMessage(input.coverLetter),
       ];
       if (input.refineOption) {
@@ -228,8 +198,8 @@ export const coverLettersRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       console.log({ input });
       const messages = [
-        getCoverLetterSystemMessage(),
-        getCoverLetterUserMessage(input.job, input.applicant),
+        getCoverLetterSystemMessage(input.job, input.applicant),
+        getCoverLetterUserMessage(),
       ];
       console.log({ messages });
 
@@ -272,8 +242,8 @@ export const coverLettersRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       console.log({ input });
       const messages = [
-        getCoverLetterSystemMessage(),
-        getCoverLetterUserMessage(input.job, input.applicant),
+        getCoverLetterSystemMessage(input.job, input.applicant),
+        getCoverLetterUserMessage(),
         createAssistantMessage(input.coverLetter),
       ];
       let responseText = "";

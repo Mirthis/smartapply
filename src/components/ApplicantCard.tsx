@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { useAppStore } from "~/store/store";
-import { EditApplicantbModal } from "./EditApplicationModal";
+import { EditApplicantbModal } from "./modals/EditApplicationModal";
 
 const ApplicantCard = () => {
   const applicant = useAppStore((state) => state.applicant);

@@ -14,3 +14,20 @@ export enum InterviewType {
 export type InterviewMessage = ChatCompletionRequestMessage & {
   id: number;
 };
+
+export interface CoverLetter {
+  id: number;
+  text: string;
+}
+
+export type CoverLettersData = {
+  coverLetters: CoverLetter[];
+  currentCoverLetter: CoverLetter;
+  lastId: number;
+};
+
+export type InterviewData = {
+  type: InterviewType;
+  messages: InterviewMessage[];
+  lastId: number;
+};

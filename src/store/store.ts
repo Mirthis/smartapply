@@ -1,27 +1,12 @@
+import { type ChatCompletionRequestMessage } from "openai";
 import { create } from "zustand";
 import {
   type ApplicantData,
   type JobData,
-  type InterviewMessage,
   type InterviewType,
+  type CoverLettersData,
+  type InterviewData,
 } from "~/types/types";
-
-interface CoverLetter {
-  id: number;
-  text: string;
-}
-
-type CoverLettersData = {
-  coverLetters: CoverLetter[];
-  currentCoverLetter: CoverLetter;
-  lastId: number;
-};
-
-type InterviewData = {
-  type: InterviewType;
-  messages: InterviewMessage[];
-  lastId: number;
-};
 
 type AppStore = {
   applicant?: ApplicantData;
@@ -34,25 +19,29 @@ type AppStore = {
   setCoverLetter: (coverLetter: string) => void;
   addCoverLetter: (coverLetter: string) => void;
   initInterview: (type: InterviewType) => void;
-  addInterviewMessage: (message: InterviewMessage) => void;
+  addInterviewMessage: (message: ChatCompletionRequestMessage) => void;
+  resetInterview: () => void;
   reset(): void;
 };
 
 const initialState = {
   job: {
-    jobTitle: "Software Engineer",
-    jobDescription:
-      "Develo state of the art web applications, including the next generation of Google's search engine",
-    companyName: "Google",
+    jobTitle: "Frontend Engineer",
+    jobDescription: `Contributing to Frontend development at Robin AI as part of one of our product squads
+      Collaborating with engineers, designers and other teams across the business to create innovative new features and improve workflows
+      Writing high quality, well-tested code that solves challenging problems
+      Sharing your knowledge and experience with the frontend chapter to help define technical standards and approaches for frontend development at RobinAI
+      Participate in the entire development process (design, development and deployment)`,
+    companyName: "RobinAI",
     companyDetails:
-      "Google is a major technology company that specializes in Internet-related services and products. These include online advertising technologies, search, cloud computing, software, and hardware.",
+      "To be one of Europe's most diverse software companies, renowned for experimentation and world-class talent.",
   },
   applicant: {
     firstName: "John",
     lastName: "Doe",
-    title: "Software Engineer",
-    resume:
-      "I am a software engineer with 5 years of experience in the field. I have worked on a variety of projects, including the next generation of Google's search engine.",
+    title: "Front-end Engineer",
+    resume: `Front-end engineer with 3 years of experience building responsive web and mobile application using React and React Native.
+      In depth knmowledge of Javascript, Typescript, Tailwind CSS, React  and NextJs`,
   },
   coverletters: undefined,
   interview: undefined,
@@ -60,8 +49,9 @@ const initialState = {
 
 export const useAppStore = create<AppStore>((set, get) => ({
   ...initialState,
-  setApplicant: (applicant) => set({ applicant }),
-  setJob: (job) => set({ job }),
+  setApplicant: (applicant) =>
+    set({ applicant, interview: undefined, coverLetters: undefined }),
+  setJob: (job) => set({ job, interview: undefined, coverLetters: undefined }),
   setCoverLetter: (coverLetter) => {
     const nextId = 1;
 
@@ -87,6 +77,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       },
     });
   },
+
   addInterviewMessage(message) {
     const interview = get().interview;
     if (!interview) return;
@@ -101,9 +92,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
       interview: {
         ...interview,
         messages: [...messages, newMessage],
+        lastId: nextId,
       },
     });
   },
+
+  resetInterview: () => set({ interview: undefined }),
+
   addCoverLetter: (coverLetter) => {
     const coverLetters = get().coverLetters;
     const nextId = (coverLetters?.lastId ?? 0) + 1;

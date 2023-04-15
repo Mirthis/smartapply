@@ -1,5 +1,5 @@
-import ApplicantForm from "./forms/ApplicantForm";
-import Modal from "./ui/Modal";
+import ApplicantForm from "../forms/ApplicantForm";
+import Modal from "./Modal";
 
 export const EditApplicantbModal = ({
   isOpen,

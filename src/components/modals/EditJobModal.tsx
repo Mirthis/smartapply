@@ -1,5 +1,5 @@
-import JobForm from "./forms/JobForm";
-import Modal from "./ui/Modal";
+import JobForm from "../forms/JobForm";
+import Modal from "./Modal";
 
 export const EditJobModal = ({
   isOpen,
