@@ -39,10 +39,11 @@ const NewApplication: NextPage = () => {
               step === FormStep.Complete ? "step-primary" : ""
             } step`}
           >
-            Tool selection
+            Service
           </li>
         </ul>
       </div>
+      <div className="mb-4" />
       <div className="flex flex-col gap-y-4">
         {/* {formStep !== FormStep.Job && <CurrentJobCard />}
         {formStep === FormStep.Complete && <ApplicantCard />} */}
@@ -50,29 +51,31 @@ const NewApplication: NextPage = () => {
         {step === FormStep.Applicant && <ApplicantForm onSuccess={nextStep} />}
         {/* Option Cards  */}
         {step === FormStep.Complete && (
-          <div className="flex flex-col justify-center gap-x-4 gap-y-4 lg:flex-row">
+          <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
             {/* Card - Create Cover letter  */}
             <Link href="/coverletter">
-              <div className="card w-full bg-neutral text-neutral-content hover:bg-neutral-focus lg:w-96">
+              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
                   <DocumentTextIcon className="h-16 w-16" />
                   <h2 className="card-title">Create Cover Letter</h2>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam
+                    Instantly get a professionally written cover letter based on
+                    the job details and applicant details provide. You can
+                    further refine the generated cover letter.
                   </p>
                 </div>
               </div>
             </Link>
             {/* Card - Job Interview  */}
             <Link href="/new">
-              <div className="card w-full bg-neutral text-neutral-content hover:bg-neutral-focus lg:w-96">
+              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
                   <ChatBubbleLeftRightIcon className="h-16 w-16" />
                   <h2 className="card-title">Start Job Interview</h2>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam
+                    Simulate a job interview by having a realistic conversation
+                    with the chat bot. You can choose between generic HR, tech
+                    focused or leadership interview.
                   </p>
                 </div>
               </div>
@@ -80,13 +83,14 @@ const NewApplication: NextPage = () => {
 
             {/* Card - Test  */}
             <Link href="/new">
-              <div className="card w-full bg-neutral text-neutral-content hover:bg-neutral-focus lg:w-96">
+              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
                   <ClipboardDocumentCheckIcon className="h-16 w-16" />
                   <h2 className="card-title">Test Your Knowledge</h2>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam
+                    Test your knowledge with multiple choice questions relevant
+                    to the job and role. Explanation are provided for each
+                    answer.
                   </p>
                 </div>
               </div>

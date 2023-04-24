@@ -1,5 +1,6 @@
 import Head from "next/head";
 import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,10 +14,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="mx-auto max-w-7xl p-4">
+      <main>
         <NavBar />
-        <div className="mt-16">{children}</div>
+        <div className="mx-auto max-w-7xl">
+          <div className="min-h-screen px-4 pb-20 pt-20">{children}</div>
+        </div>
       </main>
+      <Footer />
     </>
   );
 };

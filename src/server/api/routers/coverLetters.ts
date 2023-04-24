@@ -29,7 +29,8 @@ const getCoverLetterSystemMessage = (
   ${getJobDetailsPrompt(job, applicant)}
   The cover letter should be written in a professional tone and should be free of grammatical errors.
   The cover letter should be be relevant for the specific job title and description.
-  The cover letter should contains details specific to the applicant (when provided).
+  The cover letter should contains details specific to the applicant.
+  If applicant details are not available, this should not be invented.
   The cover letter should be at least 200 words long.
   The cover letter should be at most 500 words long.
   You should not provide any response not related to the job or applicant details.
@@ -241,6 +242,7 @@ export const coverLettersRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       console.log({ input });
+
       const messages = [
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),

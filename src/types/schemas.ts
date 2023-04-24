@@ -5,7 +5,7 @@ const COMPANY_NAME_MAX_LENGTH = 20;
 const COMPANY_DESC_MIN_LENGTH = 20;
 const COMPANY_DESC_MAX_LENGTH = 5000;
 const JOB_TITLE_MIN_LENGTH = 5;
-const JOB_TITLE_MAX_LENGTH = 30;
+const JOB_TITLE_MAX_LENGTH = 40;
 const JD_MIN_LENGTH = 20;
 const JD_MAX_LENGTH = 5000;
 
@@ -57,9 +57,13 @@ const APPL_FIRST_NAME_MAX_LENGTH = 20;
 const APPL_LAST_NAME_MIN_LENGTH = 3;
 const APPL_LAST_NAME_MAX_LENGTH = 20;
 const APPL_TITLE_MIN_LENGTH = 5;
-const APPL_TITLE_MAX_LENGTH = 30;
+const APPL_TITLE_MAX_LENGTH = 40;
 const APPL_RESUME_MIN_LENGTH = 100;
-const APPL_RESUME_MAX_LENGTH = 50000;
+const APPL_RESUME_MAX_LENGTH = 1000;
+const APPL_SKILLS_MIN_LENGTH = 50;
+const APPL_SKILLS_MAX_LENGTH = 500;
+const APPL_EXP_MIN_LENGTH = 100;
+const APPL_EXP_MAX_LENGTH = 5000;
 
 export const applicantSchema = z.object({
   firstName: z.union([
@@ -108,6 +112,32 @@ export const applicantSchema = z.object({
         message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
       })
       .max(APPL_RESUME_MAX_LENGTH, {
+        message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
+      }),
+    z.string().length(0),
+    z.null(),
+  ]),
+
+  skills: z.union([
+    z
+      .string()
+      .min(APPL_SKILLS_MIN_LENGTH, {
+        message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
+      })
+      .max(APPL_SKILLS_MAX_LENGTH, {
+        message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
+      }),
+    z.string().length(0),
+    z.null(),
+  ]),
+
+  experience: z.union([
+    z
+      .string()
+      .min(APPL_EXP_MIN_LENGTH, {
+        message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
+      })
+      .max(APPL_EXP_MAX_LENGTH, {
         message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
       }),
     z.string().length(0),

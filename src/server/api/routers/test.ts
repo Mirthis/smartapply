@@ -9,7 +9,7 @@ import {
 } from "openai";
 import { env } from "~/env.mjs";
 import { TRPCError } from "@trpc/server";
-import { InterviewType, type ApplicantData, type JobData } from "~/types/types";
+import { type JobData, type TestQuestion } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
 
@@ -21,12 +21,27 @@ const openai = new OpenAIApi(configuration);
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-const getSystemMessage = (job: JobData, applicant: ApplicantData) => {
-  const content = `You are going to create multiple choice questions for the applicant to answer.
-  ${getJobDetailsPrompt(job, applicant)}
+const getSystemMessage = (job: JobData) => {
+  const content = `Your focus is to determine if the applicant is a good fit for the job.
+  You will ask multiple choice questions to the applicant, related to skills and responsibilities required by the job.
+  The questions must not test if the applicant knows the required skills, but if the applicant has the require skills
+  You will focus on technical skills and hard skills required by the job.
+  You must not ask the same queston twice.
+  ${getJobDetailsPrompt(job)}
   Each question should have 4 possible answers.
   You will create 1 question at at time.
-  Questions and answers will be returned in json format so that theye can be parsed in jvascript using JSON.parse.
+  You will only provide questions in JSON with the following format:
+  {
+    "question": "What is the answer to this question?",
+    "answers": [
+      "Answer 1",
+      "Answer 2",
+      "Answer 3",
+      "Answer 4"
+    ],
+    "correctAnswer": 0
+  }
+  You will not send any other text with the question only the JSON.
   `;
 
   return {
@@ -35,14 +50,24 @@ const getSystemMessage = (job: JobData, applicant: ApplicantData) => {
   };
 };
 
-const getQuestionPrompt = (): ChatCompletionRequestMessage => {
+const getExplanationPrompt = (answer: string): ChatCompletionRequestMessage => {
+  const content = `I think the correct answer is ${answer}.
+  Tell me if this is correct or not and provide a detailed explanation for the correct answer.`;
+
   return {
     role: ChatCompletionRequestMessageRoleEnum.User,
-    content: "I'm ready for the next question.",
+    content,
   };
 };
 
-export const interviewRouter = createTRPCRouter({
+const getQuestionPrompt = (): ChatCompletionRequestMessage => {
+  return {
+    role: ChatCompletionRequestMessageRoleEnum.User,
+    content: `Next question (JSON only)`,
+  };
+};
+
+export const testRouter = createTRPCRouter({
   getQuestion: publicProcedure
     .input(
       z.object({
@@ -52,9 +77,61 @@ export const interviewRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       console.log({ input });
+      const messages = [getSystemMessage(input.job), getQuestionPrompt()];
+
+      console.log({ messages });
+
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages,
+      });
+      // console.log({ response });
+      const finishReason = response.data.choices[0]?.finish_reason;
+      // TODO: handle this exception and other finish reasons
+      if (finishReason === "lenght") {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Cover letter generation failed due to excessive length",
+        });
+      }
+
+      const responseText = response.data.choices[0]?.message?.content;
+      console.log({ responseText });
+      if (responseText) {
+        const message: ChatCompletionRequestMessage = {
+          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+          content: responseText,
+        };
+
+        return message;
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "OpenAI API returned no response",
+        });
+      }
+    }),
+
+  getAnswerExplanation: publicProcedure
+    .input(
+      z.object({
+        job: jobSchema,
+        applicant: applicantSchema,
+        messages: array(
+          z.object({
+            role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
+            content: z.string(),
+          })
+        ),
+        answer: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      console.log({ input });
       const messages = [
-        getSystemMessage(input.job, input.applicant),
-        getQuestionPrompt(),
+        getSystemMessage(input.job),
+        ...input.messages,
+        getExplanationPrompt(input.answer),
       ];
 
       console.log({ messages });
@@ -90,33 +167,66 @@ export const interviewRouter = createTRPCRouter({
       }
     }),
 
-  sendMessageFake: publicProcedure
+  getQuestionFake: publicProcedure
     .input(
       z.object({
         job: jobSchema,
         applicant: applicantSchema,
-        interviewType: z.nativeEnum(InterviewType),
-        interviewMessages: array(
+      })
+    )
+    .mutation(async ({ input }) => {
+      await delay(3000);
+      console.log({ input });
+      const messages = [getSystemMessage(input.job), getQuestionPrompt()];
+
+      console.log({ messages });
+
+      const responseText: TestQuestion = {
+        id: 0,
+        question: "What is React?",
+        answers: [
+          "A back-end framework",
+          "A database technology",
+          "A JavaScript library",
+          "A front-end programming language",
+        ],
+        correctAnswer: 2,
+      };
+      console.log({ responseText });
+      const message: ChatCompletionRequestMessage = {
+        role: ChatCompletionRequestMessageRoleEnum.Assistant,
+        content: JSON.stringify(responseText),
+      };
+      return message;
+    }),
+
+  getAnswerExplanationFake: publicProcedure
+    .input(
+      z.object({
+        job: jobSchema,
+        applicant: applicantSchema,
+        messages: array(
           z.object({
             role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
             content: z.string(),
           })
         ),
+        answer: z.string(),
       })
     )
     .mutation(async ({ input }) => {
       await delay(1000);
+
       console.log({ input });
       const messages = [
-        getSystemMessage(input.job, input.applicant),
-        getQuestionPrompt(),
-        ...input.interviewMessages,
+        getSystemMessage(input.job),
+        ...input.messages,
+        getExplanationPrompt(input.answer),
       ];
 
       console.log({ messages });
 
-      const responseText =
-        "This is a fake response\n\nThis is a second line\n*END*";
+      const responseText = "yeeaahhh\n\nFuck yeah";
       console.log({ responseText });
       if (responseText) {
         const message: ChatCompletionRequestMessage = {

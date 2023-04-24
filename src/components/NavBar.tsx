@@ -21,10 +21,18 @@ const navBarLinks: NavBarLinkData[] = [
   },
 ];
 
-const navBarProtectedLinks: NavBarLinkData[] = [
+const navBarActionLinks: NavBarLinkData[] = [
   {
-    label: "History",
-    url: "/history",
+    label: "Cover Letter",
+    url: "/coverletter",
+  },
+  {
+    label: "Interview",
+    url: "/interview",
+  },
+  {
+    label: "Test",
+    url: "/test",
   },
 ];
 
@@ -41,14 +49,14 @@ const Navbar = () => {
       setNavBg("bg-transparent");
       setLinkColor("text-base-content");
     } else {
-      setNavBg("bg-base-100");
-      setLinkColor("text-base-content");
+      setNavBg("bg-neutral");
+      setLinkColor("text-neutral-content");
     }
   };
 
   useEffect(() => {
     const handleShadow = () => {
-      if (window.scrollY >= 90) {
+      if (window.scrollY >= 64) {
         setShadow(true);
         setTransparentNavBar(false);
       } else {
@@ -57,6 +65,10 @@ const Navbar = () => {
       }
     };
     window.addEventListener("scroll", handleShadow);
+
+    return () => {
+      window.removeEventListener("scroll", handleShadow);
+    };
   }, [router]);
 
   const showNavBar = () => {
@@ -70,11 +82,11 @@ const Navbar = () => {
   return (
     <div
       className={`${
-        shadow ? "shadow-sm shadow-base-content" : ""
-      }  ${navBg} fixed z-[100] h-16 w-full`}
+        shadow ? "shadow-sm shadow-base-300" : ""
+      }  ${navBg} fixed z-[100]  h-16 w-full `}
     >
       {/* Desktop version */}
-      <div className="mx-auto flex h-full items-center justify-between px-2 2xl:px-4">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-2 2xl:px-4">
         <div className="flex w-full flex-row items-center justify-between">
           {/* Burger icon, show on small displays */}
           <div onClick={showNavBar} className="flex-1 md:hidden">
@@ -90,6 +102,13 @@ const Navbar = () => {
             </Link>
             <ul className={`hidden flex-1 flex-grow  md:flex ${linkColor}`}>
               {navBarLinks.map((l) => (
+                <Link key={`desktop-menu-${l.label}`} href={l.url}>
+                  <li className="${linkColor} ml-10 border-secondary text-sm uppercase hover:border-b">
+                    {l.label}
+                  </li>
+                </Link>
+              ))}
+              {navBarActionLinks.map((l) => (
                 <Link key={`desktop-menu-${l.label}`} href={l.url}>
                   <li className="${linkColor} ml-10 border-secondary text-sm uppercase hover:border-b">
                     {l.label}
@@ -147,13 +166,20 @@ const Navbar = () => {
                   </li>
                 </Link>
               ))}
-              {navBarProtectedLinks.map((l) => (
+              {navBarActionLinks.map((l) => (
                 <Link key={`mobile-menu-${l.label}`} href={l.url}>
                   <li onClick={hideNavBar} className="py-4 text-sm">
                     {l.label}
                   </li>
                 </Link>
               ))}
+              {/* {navBarProtectedLinks.map((l) => (
+                <Link key={`mobile-menu-${l.label}`} href={l.url}>
+                  <li onClick={hideNavBar} className="py-4 text-sm">
+                    {l.label}
+                  </li>
+                </Link>
+              ))} */}
             </ul>
           </div>
         </div>

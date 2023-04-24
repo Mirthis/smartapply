@@ -18,6 +18,7 @@ export type InterviewMessage = ChatCompletionRequestMessage & {
 export interface CoverLetter {
   id: number;
   text: string;
+  label: string;
 }
 
 export type CoverLettersData = {
@@ -30,4 +31,20 @@ export type InterviewData = {
   type: InterviewType;
   messages: InterviewMessage[];
   lastId: number;
+};
+
+export type TestQuestion = {
+  id: number;
+  question: string;
+  answers: string[];
+  correctAnswer: number;
+  providedAnswer?: number;
+  explanation?: string;
+};
+
+export type TestData = {
+  questions: TestQuestion[];
+  lastId: number;
+  currentQuestion: TestQuestion;
+  messages: ChatCompletionRequestMessage[];
 };

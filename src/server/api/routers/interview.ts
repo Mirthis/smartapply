@@ -178,8 +178,7 @@ export const interviewRouter = createTRPCRouter({
 
       console.log({ messages });
 
-      const responseText =
-        "This is a fake response\n\nThis is a second line\n*END*";
+      const responseText = "This is a fake response\n\nThis is a second line\n";
       console.log({ responseText });
       if (responseText) {
         const message: ChatCompletionRequestMessage = {

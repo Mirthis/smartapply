@@ -11,7 +11,7 @@ const ApplicantCard = () => {
     <>
       <EditApplicantbModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <div className="card w-full border border-l-4 border-secondary bg-base-100">
-        <div className="card-body flex flex-row justify-between p-2">
+        <div className="card-body flex flex-row items-center justify-between p-2">
           <div className="flex flex-row items-center gap-x-2">
             <UserIcon className="h-8 w-8" />
             <h2 className="card-title">

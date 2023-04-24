@@ -9,38 +9,54 @@ import { useAppStore } from "~/store/store";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
 import { type CoverLetter } from "~/types/types";
+import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
 
 const CoverLetterPage: NextPage = () => {
-  const { setCoverLetter, addCoverLetter, coverLetters } = useAppStore(
-    (state) => state
-  );
-  console.log({ coverLetters });
-  const currentCoverLetter = coverLetters?.currentCoverLetter;
-  console.log({ currentCoverLetter });
-  const { job, applicant } = useAppStore((state) => state);
-
   const [refineText, setRefineText] = useState("");
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
-  console.log({ displayedLetter });
-  const { mutate: createCoverLetter, isLoading: createLoading } =
-    api.coverLetters.createLetterFake.useMutation({
-      onSuccess: (data) => {
-        setCoverLetter(data);
-      },
-    });
+  const [isOpenResetModal, setIsOpenResetModal] = useState(false);
+  const {
+    setCoverLetter,
+    addCoverLetter,
+    coverLetters,
+    job,
+    applicant,
+    resetCoverLetters,
+  } = useAppStore((state) => state);
 
-  const { mutate: refineCoverLetter, isLoading: refineLoading } =
-    api.coverLetters.refineLetterFake.useMutation({
-      onSuccess: (data) => {
-        addCoverLetter(data);
-      },
-    });
+  const currentCoverLetter = coverLetters?.currentCoverLetter;
+
+  const {
+    mutate: createCoverLetter,
+    isLoading: createLoading,
+    isError: createError,
+  } = api.coverLetters.createLetterFake.useMutation({
+    onSuccess: (data) => {
+      setCoverLetter(data);
+    },
+  });
+
+  const {
+    mutate: refineCoverLetter,
+    isLoading: refineLoading,
+    isError: refineError,
+  } = api.coverLetters.refineLetterFake.useMutation({
+    onSuccess: (data, { refineOption }) => {
+      const label = {
+        freeinput: "Refine",
+        shorten: "Shorten",
+        extend: "Extend",
+      }[refineOption];
+      addCoverLetter(data, label);
+    },
+  });
 
   useEffect(() => {
     setDisplayedLetter(currentCoverLetter);
   }, [currentCoverLetter]);
 
   const generate = () => {
+    resetCoverLetters();
     if (job && applicant) {
       createCoverLetter({
         job,
@@ -65,43 +81,85 @@ const CoverLetterPage: NextPage = () => {
     setDisplayedLetter(coverLetters?.coverLetters.find((c) => c.id === index));
   };
 
+  const handleReset = () => {
+    setIsOpenResetModal(true);
+  };
+
   return (
     <>
-      <Title title="Cover Letter" />
+      <ResetCoverLetters
+        isOpen={isOpenResetModal}
+        onClose={() => setIsOpenResetModal(false)}
+        onConfirm={generate}
+      />
+      <Title title="Create Cover Letter" />
       <ApplicationDetails />
+      <div className="mb-4" />
 
-      {!createLoading && !coverLetters && (
-        <button className="brn-primary btn" onClick={generate}>
-          Generate Cover Letter
-        </button>
+      {createError && (
+        <div className="mb-4 font-bold text-error">
+          Ooop, something went wrong. Try again.
+        </div>
       )}
-      {(createLoading || coverLetters) && (
+
+      {!coverLetters && (
+        <div className="text-center">
+          <button
+            className="btn-primary btn w-full sm:w-96"
+            onClick={generate}
+            disabled={createLoading}
+          >
+            {createLoading ? (
+              <div className="flex items-center gap-x-2">
+                <Spinner className="mb-2 h-10 w-10" />
+                <p>Generating cover letter...</p>
+              </div>
+            ) : (
+              <p>Generate Cover Letter</p>
+            )}
+          </button>
+        </div>
+      )}
+
+      {coverLetters && (
         <div className="flex-start flex items-baseline gap-x-4">
-          <h1 className="mb-2 mt-4 text-3xl">Your Cover Letter</h1>
+          <Title title="Your cover letter" type="section" />
           {(coverLetters?.coverLetters.length ?? 0) > 1 && (
-            <div className="tabs tab-sm ">
-              {coverLetters?.coverLetters.map((c) => (
-                <a
-                  className="tab tab-bordered"
-                  key={c.id}
-                  onClick={() => handleLettersTabChange(c.id)}
-                >
-                  v {c.id}
-                </a>
-              ))}
-            </div>
+            <>
+              <div className="tabs tab-sm hidden lg:block">
+                Versions:
+                {coverLetters?.coverLetters.map((c) => (
+                  <a
+                    className={`${
+                      displayedLetter?.id === c.id ? "tab-active" : ""
+                    } tab-bordered tab`}
+                    key={c.id}
+                    onClick={() => handleLettersTabChange(c.id)}
+                  >
+                    v{c.id} - {c.label}
+                  </a>
+                ))}
+              </div>
+              <select className="select-bordered select select-sm block lg:hidden">
+                {coverLetters?.coverLetters.map((c) => (
+                  <option
+                    {...(displayedLetter?.id === c.id
+                      ? { selected: true }
+                      : {})}
+                    key={c.id}
+                    onSelect={() => handleLettersTabChange(c.id)}
+                  >
+                    v{c.id} - {c.label}
+                  </option>
+                ))}
+              </select>
+            </>
           )}
         </div>
       )}
-      {createLoading && (
-        <div className="flex flex-col items-center">
-          <Spinner className="mb-2 h-10 w-10" />
-          <p>Generating cover letter...</p>
-        </div>
-      )}
+
       {!createLoading && displayedLetter && (
         <div>
-          sss
           <div className="relative rounded-md bg-neutral p-2">
             {formatApiMessage(displayedLetter.text).map((p, i) => (
               <p key={i} className="mb-2">
@@ -123,8 +181,8 @@ const CoverLetterPage: NextPage = () => {
               </div>
             </button>
           </div>
-          <div className="mt-4 flex flex-col gap-x-4 gap-y-4 lg:flex-row">
-            <div className="flex w-full gap-x-2">
+          <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 lg:flex-row">
+            <div className="flex w-full items-center justify-center gap-x-2">
               <input
                 type="text"
                 className="input-bordered input w-full"
@@ -140,6 +198,7 @@ const CoverLetterPage: NextPage = () => {
                 onClick={() => refine("freeinput")}
                 disabled={
                   refineLoading ||
+                  createLoading ||
                   refineText.length < 5 ||
                   !currentCoverLetter ||
                   refineText.length > 100
@@ -148,24 +207,41 @@ const CoverLetterPage: NextPage = () => {
                 Refine
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-x-2">
+            <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:w-fit">
               <button
                 className="btn-secondary btn"
                 onClick={() => refine("shorten")}
+                disabled={refineLoading || createLoading || !currentCoverLetter}
               >
                 Shorten
               </button>
               <button
                 className="btn-secondary btn"
                 onClick={() => refine("extend")}
+                disabled={refineLoading || createLoading || !currentCoverLetter}
               >
                 Extend
               </button>
-              <button className="btn-secondary btn" onClick={generate}>
-                Regenerate
+
+              <button
+                className="btn-secondary btn"
+                onClick={handleReset}
+                disabled={refineLoading || createLoading || !currentCoverLetter}
+              >
+                Reset
               </button>
             </div>
+            <Spinner
+              className={`${
+                refineLoading || createLoading ? "visible" : "invisible"
+              } h-16 w-16`}
+            />
           </div>
+          {refineError && (
+            <div className="text-right font-bold text-error">
+              Ooop, something went wrong. Try again.
+            </div>
+          )}
         </div>
       )}
     </>

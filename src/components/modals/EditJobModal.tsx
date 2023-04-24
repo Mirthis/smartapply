@@ -10,7 +10,7 @@ export const EditJobModal = ({
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Job Details">
-      <JobForm onSuccess={onClose} />
+      <JobForm onSuccess={onClose} confirm={true} />
     </Modal>
   );
 };

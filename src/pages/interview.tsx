@@ -1,5 +1,9 @@
 import { type NextPage } from "next";
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import {
+  UserIcon,
+  CodeBracketIcon,
+  BriefcaseIcon,
+} from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
@@ -105,40 +109,42 @@ const InterviewPage: NextPage = () => {
       <ApplicationDetails />
       {!interviewType && (
         <>
-          <h1 className="mb-2 mt-4 text-3xl">Select Interview Type</h1>
-          <div className="md:columns-3">
+          <Title title="Interview" type="section" />
+          <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
             <button onClick={() => changeInterviewType(InterviewType.hr)}>
-              <div className="card w-full bg-neutral text-neutral-content hover:bg-neutral-focus lg:w-96">
+              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
-                  <ChatBubbleLeftRightIcon className="h-16 w-16" />
+                  <UserIcon className="h-16 w-16" />
                   <h2 className="card-title">HR Interview</h2>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam
+                    Simulate an HR interview focuing on soft skills and
+                    high-level assessment of the applicant.
                   </p>
                 </div>
               </div>
             </button>
+
             <button onClick={() => changeInterviewType(InterviewType.tech)}>
-              <div className="card w-full bg-neutral text-neutral-content hover:bg-neutral-focus lg:w-96">
+              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
-                  <ChatBubbleLeftRightIcon className="h-16 w-16" />
+                  <CodeBracketIcon className="h-16 w-16" />
                   <h2 className="card-title">Technical Interview</h2>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam
+                    Simulate a technical interview focuing on the
+                    applicant&apos;s technical skills.
                   </p>
                 </div>
               </div>
             </button>
+
             <button onClick={() => changeInterviewType(InterviewType.lead)}>
-              <div className="card w-full bg-neutral text-neutral-content hover:bg-neutral-focus lg:w-96">
+              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
-                  <ChatBubbleLeftRightIcon className="h-16 w-16" />
-                  <h2 className="card-title">Leadership interview</h2>
+                  <BriefcaseIcon className="h-16 w-16" />
+                  <h2 className="card-title">Leadership intervie</h2>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam
+                    Simulate a leadership interview focuing on the
+                    applicant&apos;s leadership skills.
                   </p>
                 </div>
               </div>
@@ -185,7 +191,7 @@ const InterviewPage: NextPage = () => {
       )}
       {/* Chat Input */}
       {interviewOpen && (
-        <div className="flex items-end justify-start gap-x-2">
+        <div className="mt-4 flex items-end justify-start gap-x-2">
           <textarea
             value={chatText}
             onChange={(e) => setChatText(e.target.value)}
@@ -194,6 +200,7 @@ const InterviewPage: NextPage = () => {
           ></textarea>
           <button
             className="btn-primary btn"
+            type="submit"
             onClick={() => send()}
             disabled={chatText.length === 0 || isLoading}
           >
@@ -201,7 +208,7 @@ const InterviewPage: NextPage = () => {
           </button>
         </div>
       )}
-      {!interviewOpen && (
+      {!interviewOpen && interviewType && (
         <div className="mt-4 text-center">
           <p className="mb-2">The interview is over.</p>
           <button className="btn-primary btn" onClick={resetInterview}>

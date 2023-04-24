@@ -4,8 +4,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppStore } from "~/store/store";
 import { type JobData } from "~/types/types";
 import { jobSchema } from "~/types/schemas";
+import { ResetContent } from "../modals/ResetContent";
+import { useState } from "react";
 
-const JobForm = ({ onSuccess }: { onSuccess?: () => void }) => {
+const JobForm = ({
+  onSuccess,
+  confirm,
+}: {
+  onSuccess?: () => void;
+  confirm?: boolean;
+}) => {
+  const { job, setJob, resetGenerated } = useAppStore((state) => state);
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -13,65 +24,78 @@ const JobForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   } = useForm<JobData>({
     resolver: zodResolver(jobSchema),
     mode: "onTouched",
+    defaultValues: {
+      jobTitle: job?.jobTitle ?? "",
+      jobDescription: job?.jobDescription ?? "",
+      companyName: job?.companyName ?? "",
+      companyDetails: job?.companyDetails ?? "",
+    },
   });
-
-  const job = useAppStore((state) => state.job);
-  const setJob = useAppStore((state) => state.setJob);
 
   const onSubmit = (data: JobData) => {
     setJob(data);
     if (onSuccess) {
       onSuccess();
     }
+    resetGenerated();
+  };
+
+  const confirmSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsOpen(true);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-y-4">
-        <input
-          type="text"
-          className="input-bordered input"
-          placeholder="Job Title"
-          defaultValue={job?.jobTitle ?? ""}
-          {...register("jobTitle")}
-        />
-        {errors.jobTitle && (
-          <p className="text-error">{errors.jobTitle.message}</p>
-        )}
-        <textarea
-          className="textarea-bordered textarea"
-          placeholder="Job Description"
-          defaultValue={job?.jobDescription ?? ""}
-          {...register("jobDescription")}
-        />
-        {errors.jobDescription && (
-          <p className="text-error">{errors.jobDescription.message}</p>
-        )}
-        <input
-          type="text"
-          className="input-bordered input"
-          placeholder="Hiring Company"
-          {...register("companyName")}
-          defaultValue={job?.companyName ?? ""}
-        />
-        {errors.companyName && (
-          <p className="text-error">{errors.companyName.message}</p>
-        )}
-        <textarea
-          className="textarea-bordered textarea"
-          placeholder="Company Description"
-          {...register("companyDetails")}
-          defaultValue={job?.companyDetails ?? ""}
-          rows={4}
-        />
-        {errors.companyDetails && (
-          <p className="text-error">{errors.companyDetails.message}</p>
-        )}
-        <button disabled={!isValid} type="submit" className="btn-primary btn">
-          Submit
-        </button>
-      </div>
-    </form>
+    <>
+      <ResetContent
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleSubmit(onSubmit)}
+      />
+      <form onSubmit={confirm ? confirmSubmit : handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-y-4">
+          <input
+            type="text"
+            className="input-bordered input"
+            placeholder="Job Title"
+            {...register("jobTitle")}
+          />
+          {errors.jobTitle && (
+            <p className="text-error">{errors.jobTitle.message}</p>
+          )}
+          <textarea
+            className="textarea-bordered textarea"
+            placeholder="Job Description"
+            {...register("jobDescription")}
+            rows={5}
+          />
+          {errors.jobDescription && (
+            <p className="text-error">{errors.jobDescription.message}</p>
+          )}
+          <input
+            type="text"
+            className="input-bordered input"
+            placeholder="Hiring Company"
+            {...register("companyName")}
+          />
+          {errors.companyName && (
+            <p className="text-error">{errors.companyName.message}</p>
+          )}
+          <textarea
+            className="textarea-bordered textarea"
+            placeholder="Company Description"
+            {...register("companyDetails")}
+            rows={5}
+          />
+          {errors.companyDetails && (
+            <p className="text-error">{errors.companyDetails.message}</p>
+          )}
+          <button disabled={!isValid} type="submit" className="btn-primary btn">
+            Submit
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 

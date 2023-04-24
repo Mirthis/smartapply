@@ -7,7 +7,7 @@ export const ApplicationDetails = () => {
   return (
     <>
       <Title title="Application Details" type="section" />
-      <div className="gao-y-4 flex flex-col gap-x-4 lg:flex-row">
+      <div className="gao-y-4 flex flex-col gap-x-4 gap-y-2 lg:flex-row">
         <CurrentJobCard />
         <ApplicantCard />
       </div>

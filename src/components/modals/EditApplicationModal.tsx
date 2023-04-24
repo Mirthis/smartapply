@@ -10,7 +10,7 @@ export const EditApplicantbModal = ({
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Job Details">
-      <ApplicantForm onSuccess={onClose} />
+      <ApplicantForm onSuccess={onClose} confirm={true} />
     </Modal>
   );
 };
