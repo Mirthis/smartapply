@@ -10,10 +10,12 @@ import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
 import { type CoverLetter } from "~/types/types";
 import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
+import { useRecaptcha } from "~/utils/hooks";
 
 const CoverLetterPage: NextPage = () => {
   const [refineText, setRefineText] = useState("");
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
+
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
   const {
     setCoverLetter,
@@ -51,19 +53,29 @@ const CoverLetterPage: NextPage = () => {
     },
   });
 
+  const { handleReCaptchaVerify, captchaToken, captchaError } = useRecaptcha();
+
   useEffect(() => {
     setDisplayedLetter(currentCoverLetter);
   }, [currentCoverLetter]);
 
-  const generate = () => {
+  const generate = async () => {
     resetCoverLetters();
     if (job && applicant) {
-      createCoverLetter({
-        job,
-        applicant,
-      });
+      console.log("Generate cover letter");
+      const token = await handleReCaptchaVerify();
+      console.log({ captchaToken });
+      if (token) {
+        createCoverLetter({
+          job,
+          applicant,
+          captchaToken: token,
+        });
+      }
     }
   };
+
+  console.log({ captchaError });
 
   const refine = (mode: "freeinput" | "shorten" | "extend") => {
     if (job && applicant && coverLetters) {
@@ -242,6 +254,11 @@ const CoverLetterPage: NextPage = () => {
               Ooop, something went wrong. Try again.
             </div>
           )}
+        </div>
+      )}
+      {captchaError && (
+        <div className="mt-4 text-center font-semibold text-error">
+          Ooop, something went wrong with the Captcha verification. Try again.
         </div>
       )}
     </>

@@ -8,6 +8,7 @@ const server = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   OPENAI_API_KEY: z.string().min(1),
+  RECAPTCHA_SECRET_KEY: z.string().min(1),
 });
 
 /**
@@ -16,6 +17,7 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
 });
 
 /**
@@ -28,6 +30,8 @@ const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

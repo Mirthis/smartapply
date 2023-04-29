@@ -89,6 +89,40 @@ const createAssistantMessage = (
   };
 };
 
+type JSONResponse = {
+  success: boolean;
+  challenge_ts: string;
+  hostname: string;
+  score: number;
+  action: string;
+  "error-codes": string[];
+};
+
+const validateRecaptcha = async (token: string) => {
+  const captchaResponse = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+      },
+      body: `secret=${env.RECAPTCHA_SECRET_KEY}&response=${token}`,
+    }
+  );
+  const captchaResponseData = (await captchaResponse.json()) as JSONResponse;
+
+  console.log({ captchaResponseData });
+  const isHuman = captchaResponseData?.success;
+
+  if (!isHuman) {
+    throw new TRPCError({
+      message: "Captcha validation failed",
+      code: "BAD_REQUEST",
+    });
+  }
+};
+
 export const coverLettersRouter = createTRPCRouter({
   createLetter: publicProcedure
     .input(
@@ -194,10 +228,12 @@ export const coverLettersRouter = createTRPCRouter({
       z.object({
         job: jobSchema,
         applicant: applicantSchema,
+        captchaToken: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
+      await validateRecaptcha(input.captchaToken);
+      // console.log({ input });
       const messages = [
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),
