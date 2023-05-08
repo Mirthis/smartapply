@@ -3,7 +3,7 @@ export const MAX_COVER_LETTERS = 5;
 
 export const featureCardsData = [
   {
-    title: "Personalized Cover Letters in Seconds",
+    title: "Make Your Application Stand out: Personalized Cover Letters",
     description:
       "Say goodbye to writer&apos;s block and generic cover letters with our instant cover letter generation feature. Simply input your job application details and let our AI-powered tool create a personalized cover letter for you in seconds. But that&apos;s not all. You can also refine the letter by providing free text feedback to the AI to ensure that your cover letter is tailored to your specific qualifications and experiences. With this feature, you can save time and energy while still submitting a high-quality cover letter.",
     imgName: "feature-cover-letter.jpg",

@@ -52,80 +52,65 @@ export const jobSchema = z.object({
   ]),
 });
 
-const APPL_FIRST_NAME_MIN_LENGTH = 3;
+const APPL_FIRST_NAME_MIN_LENGTH = 2;
 const APPL_FIRST_NAME_MAX_LENGTH = 20;
-const APPL_LAST_NAME_MIN_LENGTH = 3;
+const APPL_LAST_NAME_MIN_LENGTH = 2;
 const APPL_LAST_NAME_MAX_LENGTH = 20;
 const APPL_TITLE_MIN_LENGTH = 5;
 const APPL_TITLE_MAX_LENGTH = 40;
 const APPL_RESUME_MIN_LENGTH = 100;
 const APPL_RESUME_MAX_LENGTH = 1000;
-const APPL_SKILLS_MIN_LENGTH = 50;
+const APPL_SKILLS_MIN_LENGTH = 10;
 const APPL_SKILLS_MAX_LENGTH = 500;
-const APPL_EXP_MIN_LENGTH = 100;
-const APPL_EXP_MAX_LENGTH = 5000;
+const APPL_EXP_MIN_LENGTH = 50;
+const APPL_EXP_MAX_LENGTH = 2500;
 
 export const applicantSchema = z.object({
-  firstName: z.union([
-    z
-      .string()
-      .min(APPL_FIRST_NAME_MIN_LENGTH, {
-        message: `First name be at least ${APPL_FIRST_NAME_MIN_LENGTH} characters`,
-      })
-      .max(APPL_FIRST_NAME_MAX_LENGTH, {
-        message: `First name can be maximum ${APPL_FIRST_NAME_MAX_LENGTH} characters`,
-      }),
-    z.string().length(0),
-    z.null(),
-  ]),
+  id: z.string().nullish(),
+  firstName: z
+    .string()
+    .min(APPL_FIRST_NAME_MIN_LENGTH, {
+      message: `First name must be at least ${APPL_FIRST_NAME_MIN_LENGTH} characters`,
+    })
+    .max(APPL_FIRST_NAME_MAX_LENGTH, {
+      message: `First name can be maximum ${APPL_FIRST_NAME_MAX_LENGTH} characters`,
+    }),
 
-  lastName: z.union([
-    z
-      .string()
-      .min(APPL_LAST_NAME_MIN_LENGTH, {
-        message: `Last name must be at least ${APPL_LAST_NAME_MIN_LENGTH} characters`,
-      })
-      .max(APPL_LAST_NAME_MAX_LENGTH, {
-        message: `Last name can be maximum ${APPL_LAST_NAME_MAX_LENGTH} characters`,
-      }),
-    z.string().length(0),
-    z.null(),
-  ]),
+  lastName: z
+    .string()
+    .min(APPL_LAST_NAME_MIN_LENGTH, {
+      message: `Last name must be at least ${APPL_LAST_NAME_MIN_LENGTH} characters`,
+    })
+    .max(APPL_LAST_NAME_MAX_LENGTH, {
+      message: `Last name can be maximum ${APPL_LAST_NAME_MAX_LENGTH} characters`,
+    }),
 
-  title: z.union([
-    z
-      .string()
-      .min(APPL_TITLE_MIN_LENGTH, {
-        message: `Title must be at least ${APPL_TITLE_MIN_LENGTH} characters`,
-      })
-      .max(APPL_TITLE_MAX_LENGTH, {
-        message: `Title can be maximum ${APPL_TITLE_MAX_LENGTH} characters`,
-      }),
-    z.string().length(0),
-    z.null(),
-  ]),
+  jobTitle: z
+    .string()
+    .min(APPL_TITLE_MIN_LENGTH, {
+      message: `Title must be at least ${APPL_TITLE_MIN_LENGTH} characters`,
+    })
+    .max(APPL_TITLE_MAX_LENGTH, {
+      message: `Title can be maximum ${APPL_TITLE_MAX_LENGTH} characters`,
+    }),
 
-  resume: z.union([
-    z
-      .string()
-      .min(APPL_RESUME_MIN_LENGTH, {
-        message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
-      })
-      .max(APPL_RESUME_MAX_LENGTH, {
-        message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
-      }),
-    z.string().length(0),
-    z.null(),
-  ]),
+  resume: z
+    .string()
+    .min(APPL_RESUME_MIN_LENGTH, {
+      message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
+    })
+    .max(APPL_RESUME_MAX_LENGTH, {
+      message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
+    }),
 
   skills: z.union([
     z
       .string()
       .min(APPL_SKILLS_MIN_LENGTH, {
-        message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
+        message: `Skills must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
       })
       .max(APPL_SKILLS_MAX_LENGTH, {
-        message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
+        message: `Skills can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
       }),
     z.string().length(0),
     z.null(),
@@ -135,12 +120,19 @@ export const applicantSchema = z.object({
     z
       .string()
       .min(APPL_EXP_MIN_LENGTH, {
-        message: `Resume must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
+        message: `Experience must be at least ${APPL_RESUME_MIN_LENGTH} characters`,
       })
       .max(APPL_EXP_MAX_LENGTH, {
-        message: `Resume can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
+        message: `Experience can be maximum ${APPL_RESUME_MAX_LENGTH} characters`,
       }),
     z.string().length(0),
     z.null(),
   ]),
+});
+
+export const contactFormSchema = z.object({
+  name: z.string().min(3).max(20),
+  email: z.string().email(),
+  subject: z.string().min(5).max(50),
+  message: z.string().min(10).max(500),
 });

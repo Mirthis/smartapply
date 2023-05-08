@@ -26,5 +26,10 @@ export const useRecaptcha = () => {
     // setCaptchToken(token);
   }, [executeRecaptcha]);
 
-  return { captchaToken, captchaError, handleReCaptchaVerify };
+  return {
+    captchaReady: executeRecaptcha,
+    captchaToken,
+    captchaError,
+    handleReCaptchaVerify,
+  };
 };

@@ -68,7 +68,7 @@ const initialState = {
   applicant: {
     firstName: "John",
     lastName: "Doe",
-    title: "Data and Analytics Delivery Manager",
+    jobTitle: "Data and Analytics Delivery Manager",
     resume: `Data and analytics expert and leader with more than 15 years of experience driving the delivery of complex transformation projects across business intelligence (BI), big data, cloud, and analytics. Thoroughly assesses enterprise needs and provides solutions in alignment with organisational structures, policies, procedures, and mission. Blends deep technical knowledge with business acumen to strategically drive efforts of cross-functional teams focused on surpassing objectives while optimising data and reporting functions. Poised to harness skills gained in a dynamic career delivering data and analytics solutions.`,
     skills: `Project and Programme Management, Solution Architecture, Technical Architecture, Data Management,
     Business Transformations, Reporting, Agile, Scrum / SAFe, Stakeholder Relations, Delivery Management,

@@ -23,7 +23,7 @@ export const getJobDetailsPrompt = (
 
     prompt += `Applicant details are as follows:
     ${applicantName ? `Name: ${applicantName}` : ""}
-    ${applicant.title ? `Title: ${applicant.title}` : ""}
+    ${applicant.jobTitle ? `Title: ${applicant.jobTitle}` : ""}
     ${applicant.resume ? `Summary resume:  ${applicant.resume}` : ""}
     ${applicant.skills ? `Skills: ${applicant.skills}` : ""}
     ${applicant.experience ? `Experience: ${applicant.experience}` : ""}`;

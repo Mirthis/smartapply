@@ -1,8 +1,14 @@
 import classNames from "classnames";
 
-const Spinner = ({ className }: { className?: string }) => {
+const Spinner = ({
+  className,
+  text,
+}: {
+  className?: string;
+  text?: string;
+}) => {
   return (
-    <div role="status" className="flex">
+    <div role="status" className="flex gap-y-2">
       <svg
         aria-hidden="true"
         className={classNames(
@@ -22,6 +28,7 @@ const Spinner = ({ className }: { className?: string }) => {
           fill="currentFill"
         />
       </svg>
+      {text && <p className="text-secondary">{text}</p>}
     </div>
   );
 };

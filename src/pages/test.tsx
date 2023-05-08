@@ -7,7 +7,8 @@ import { useAppStore } from "~/store/store";
 import { type TestQuestion } from "~/types/types";
 import { MAX_TEST_QUESTIONS } from "~/utils/constants";
 import { formatApiMessage } from "~/utils/formatter";
-import Spinner from "~/components/ui/Spinner";
+import Spinner from "~/components/utils/Spinner";
+import Head from "next/head";
 
 const InterviewPage: NextPage = () => {
   const {
@@ -20,12 +21,12 @@ const InterviewPage: NextPage = () => {
     addTestExplanation,
     resetTest,
   } = useAppStore((state) => state);
-  console.log({ test });
   const currentQuestion = test?.currentQuestion;
   const messages = test?.messages ?? [];
   const questions = test?.questions ?? [];
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
+  // TODO: add captcha check
   const { mutate: newQuestion, isLoading: isLoadingQuestion } =
     api.test.getQuestion.useMutation({
       onSuccess: (data) => {
@@ -76,6 +77,14 @@ const InterviewPage: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>SmartApply - Knowledge Test</title>
+        <meta
+          property="og:title"
+          content="SmartApply - Knowledge Test"
+          key="title"
+        />
+      </Head>
       <Title title="Test your knowledge" />
       <ApplicationDetails />
       <div className="mb-4" />

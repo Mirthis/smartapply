@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type NextPage } from "next";
-import Spinner from "~/components/ui/Spinner";
+import Spinner from "~/components/utils/Spinner";
 import { api } from "~/utils/api";
 import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
@@ -11,6 +11,7 @@ import { ApplicationDetails } from "~/components/ApplicationDetails";
 import { type CoverLetter } from "~/types/types";
 import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
 import { useRecaptcha } from "~/utils/hooks";
+import Head from "next/head";
 
 const CoverLetterPage: NextPage = () => {
   const [refineText, setRefineText] = useState("");
@@ -28,11 +29,14 @@ const CoverLetterPage: NextPage = () => {
 
   const currentCoverLetter = coverLetters?.currentCoverLetter;
 
+  //TODO: test recaptcha works (currently always passing)
+  const { handleReCaptchaVerify, captchaError } = useRecaptcha();
+
   const {
     mutate: createCoverLetter,
     isLoading: createLoading,
     isError: createError,
-  } = api.coverLetters.createLetterFake.useMutation({
+  } = api.coverLetters.createLetter.useMutation({
     onSuccess: (data) => {
       setCoverLetter(data);
     },
@@ -42,7 +46,7 @@ const CoverLetterPage: NextPage = () => {
     mutate: refineCoverLetter,
     isLoading: refineLoading,
     isError: refineError,
-  } = api.coverLetters.refineLetterFake.useMutation({
+  } = api.coverLetters.refineLetter.useMutation({
     onSuccess: (data, { refineOption }) => {
       const label = {
         freeinput: "Refine",
@@ -53,18 +57,10 @@ const CoverLetterPage: NextPage = () => {
     },
   });
 
-  const { handleReCaptchaVerify, captchaToken, captchaError } = useRecaptcha();
-
-  useEffect(() => {
-    setDisplayedLetter(currentCoverLetter);
-  }, [currentCoverLetter]);
-
   const generate = async () => {
     resetCoverLetters();
     if (job && applicant) {
-      console.log("Generate cover letter");
       const token = await handleReCaptchaVerify();
-      console.log({ captchaToken });
       if (token) {
         createCoverLetter({
           job,
@@ -75,7 +71,20 @@ const CoverLetterPage: NextPage = () => {
     }
   };
 
-  console.log({ captchaError });
+  useEffect(() => {
+    setDisplayedLetter(currentCoverLetter);
+  }, [currentCoverLetter]);
+
+  // useEffect(() => {
+  //   console.log(firstLoad.current);
+  //   if (firstLoad.current && captchaReady) {
+  //     firstLoad.current = false;
+  //     generate()
+  //       .then(() => console.log("Generated"))
+  //       .catch(() => console.log("Error"));
+  //     return;
+  //   }
+  // }, [captchaReady]);
 
   const refine = (mode: "freeinput" | "shorten" | "extend") => {
     if (job && applicant && coverLetters) {
@@ -97,8 +106,18 @@ const CoverLetterPage: NextPage = () => {
     setIsOpenResetModal(true);
   };
 
+  // TODO: Add animation when cover letter result is available
+  // TODO: Add automatic generation on first load
   return (
     <>
+      <Head>
+        <title>SmartApply - Cover Letter Generator</title>
+        <meta
+          property="og:title"
+          content="SmartApply - Cover Letter Generator"
+          key="title"
+        />
+      </Head>
       <ResetCoverLetters
         isOpen={isOpenResetModal}
         onClose={() => setIsOpenResetModal(false)}
@@ -172,7 +191,7 @@ const CoverLetterPage: NextPage = () => {
 
       {!createLoading && displayedLetter && (
         <div>
-          <div className="relative rounded-md bg-neutral p-2">
+          <div className="relative rounded-md bg-base-200 p-2">
             {formatApiMessage(displayedLetter.text).map((p, i) => (
               <p key={i} className="mb-2">
                 {p}
@@ -198,7 +217,7 @@ const CoverLetterPage: NextPage = () => {
               <input
                 type="text"
                 className="input-bordered input w-full"
-                placeholder="Add more details about me"
+                placeholder="Specify wich change you need (i.e.: include more details from my profile)"
                 minLength={5}
                 maxLength={100}
                 value={refineText}

@@ -3,7 +3,7 @@ import { type NextPage } from "next";
 
 import ApplicantForm from "~/components/forms/ApplicantForm";
 import JobForm from "~/components/forms/JobForm";
-import { FormStep } from "~/store/formStore";
+import { FormStep } from "~/types/types";
 import {
   DocumentTextIcon,
   ChatBubbleLeftRightIcon,
@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useState } from "react";
+import Head from "next/head";
 
 const NewApplication: NextPage = () => {
   const [step, setStep] = useState<FormStep>(FormStep.Job);
@@ -25,15 +26,28 @@ const NewApplication: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>SmartApply - New Job Application</title>
+        <meta
+          property="og:title"
+          content="SmartApply - New Job Application"
+          key="title"
+        />
+      </Head>
       <div className="text-center">
-        <ul className="steps steps-horizontal mx-auto">
-          <li className={"step-primary step"}>Job Details</li>
-          {step !== FormStep.Job ? (
-            <li className={"step-primary step"}>Applicant Details</li>
-          ) : (
-            <li className={"step"}>Applicant Details</li>
-          )}
-
+        <ul className="steps steps-horizontal mx-auto w-full sm:w-96">
+          <li className={"step-primary step"}>
+            <button onClick={() => setStep(FormStep.Job)}>Job</button>
+          </li>
+          <li className={`${step !== FormStep.Job ? "step-primary" : ""} step`}>
+            {step !== FormStep.Job ? (
+              <button onClick={() => setStep(FormStep.Applicant)}>
+                <span>Applicant</span>
+              </button>
+            ) : (
+              <span>Applicant</span>
+            )}
+          </li>
           <li
             className={`${
               step === FormStep.Complete ? "step-primary" : ""
@@ -48,49 +62,51 @@ const NewApplication: NextPage = () => {
         {/* {formStep !== FormStep.Job && <CurrentJobCard />}
         {formStep === FormStep.Complete && <ApplicantCard />} */}
         {step === FormStep.Job && <JobForm onSuccess={nextStep} />}
-        {step === FormStep.Applicant && <ApplicantForm onSuccess={nextStep} />}
+        {step === FormStep.Applicant && (
+          <ApplicantForm onSuccess={nextStep} type="application" />
+        )}
         {/* Option Cards  */}
         {step === FormStep.Complete && (
           <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
             {/* Card - Create Cover letter  */}
             <Link href="/coverletter">
-              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
+              <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
                   <DocumentTextIcon className="h-16 w-16" />
-                  <h2 className="card-title">Create Cover Letter</h2>
+                  <h2 className="card-title">Personalized Cover Letter</h2>
                   <p>
                     Instantly get a professionally written cover letter based on
-                    the job details and applicant details provide. You can
-                    further refine the generated cover letter.
+                    the job and applicant details provided. You can further
+                    refine the generated cover letter after it is created.
                   </p>
                 </div>
               </div>
             </Link>
             {/* Card - Job Interview  */}
-            <Link href="/new">
-              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
+            <Link href="/interview">
+              <div className="card h-full w-full bg-base-300  hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
                   <ChatBubbleLeftRightIcon className="h-16 w-16" />
-                  <h2 className="card-title">Start Job Interview</h2>
+                  <h2 className="card-title">Interview Simulation</h2>
                   <p>
-                    Simulate a job interview by having a realistic conversation
-                    with the chat bot. You can choose between generic HR, tech
-                    focused or leadership interview.
+                    Choose the type of interview you want to take part in (HR,
+                    tech or leadership) and have a relatistic conversation with
+                    our chat bot.
                   </p>
                 </div>
               </div>
             </Link>
 
             {/* Card - Test  */}
-            <Link href="/new">
-              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
+            <Link href="/test">
+              <div className="card h-full w-full bg-base-300  hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
                   <ClipboardDocumentCheckIcon className="h-16 w-16" />
-                  <h2 className="card-title">Test Your Knowledge</h2>
+                  <h2 className="card-title">Multiple Choice Questions</h2>
                   <p>
                     Test your knowledge with multiple choice questions relevant
-                    to the job and role. Explanation are provided for each
-                    answer.
+                    to the job and role. Get immediate feedback and explanations
+                    for each answer.
                   </p>
                 </div>
               </div>

@@ -2,16 +2,37 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Profile {
+  id          String     @id @default(cuid())
+  userId      String
+  applicantId String?
+  applicant   Applicant? @relation(fields: [applicantId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicantId])
+  @@unique([userId])
+}
+
+model Applicant {
+  id         String   @id @default(cuid())
+  userId     String
+  firstName  String
+  lastName   String
+  jobTitle   String
+  resume     String
+  skills     String?
+  experience String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Profile    Profile?
 }

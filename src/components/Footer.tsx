@@ -1,9 +1,29 @@
+import Link from "next/link";
+
+const footerLinks = [
+  {
+    title: "Home",
+    url: "/",
+  },
+  {
+    title: "About",
+    url: "/about",
+  },
+  {
+    title: "Contact",
+    url: "/contact",
+  },
+];
+
 const Footer = () => {
   return (
     <footer className="footer footer-center rounded bg-secondary p-10 text-secondary-content">
-      <div className="grid grid-flow-col gap-4">
-        <a className="link-hover link">About us</a>
-        <a className="link-hover link">Contact</a>
+      <div className="grid grid-flow-col gap-x-6">
+        {footerLinks.map((link) => (
+          <Link href={link.url} className="link-hover link" key={link.url}>
+            {link.title}
+          </Link>
+        ))}
       </div>
       {/* <div>
         <div className="grid grid-flow-col gap-4">
@@ -43,7 +63,7 @@ const Footer = () => {
         </div>
       </div> */}
       <div>
-        <p>Copyright © 2023 - All right reserved by ACME Industries Ltd</p>
+        <p>Copyright © 2023 - All right reserved by SmartApply.app</p>
       </div>
     </footer>
   );

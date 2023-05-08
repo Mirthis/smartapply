@@ -9,6 +9,13 @@ const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   OPENAI_API_KEY: z.string().min(1),
   RECAPTCHA_SECRET_KEY: z.string().min(1),
+  CLERK_SECRET_KEY: z.string().min(1),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.string().min(1),
+  SMTP_USERNAME: z.string().min(1),
+  SMTP_PASSWORD: z.string().min(1),
+  EMAIL_RECIPIENT: z.string().min(1),
+  SKIP_AI: z.string().min(1).optional(),
 });
 
 /**
@@ -18,6 +25,7 @@ const server = z.object({
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
 });
 
 /**
@@ -31,7 +39,16 @@ const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
+  SMTP_USERNAME: process.env.SMTP_USERNAME,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+  EMAIL_RECIPIENT: process.env.EMAIL_RECIPIENT,
+  SKIP_AI: process.env.SKIP_AI,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

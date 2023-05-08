@@ -6,7 +6,7 @@ const Title = ({
   className,
 }: {
   title: string;
-  type?: "page" | "section";
+  type?: "page" | "section" | "subsection";
   className?: string;
 }) => {
   return (
@@ -30,6 +30,16 @@ const Title = ({
         >
           {title}
         </h2>
+      )}
+      {type === "subsection" && (
+        <h3
+          className={classNames(
+            "mb-2 mt-2 text-lg text-secondary sm:text-xl",
+            className
+          )}
+        >
+          {title}
+        </h3>
       )}
     </>
   );

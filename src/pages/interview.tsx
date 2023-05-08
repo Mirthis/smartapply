@@ -17,6 +17,7 @@ import {
 import OpacityTransition from "~/components/utils/OpacityTransition";
 import MessageBubble from "~/components/MessageBubble";
 import LoadingText from "~/components/utils/LoadingText";
+import Head from "next/head";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -44,15 +45,13 @@ const InterviewPage: NextPage = () => {
   const messages = interview?.messages ?? [];
   const interviewType = interview?.type;
 
-  console.log({ interview });
-
+  // TODO: add captcha check
   const {
     mutate: sendMessage,
     isLoading,
     isError,
-  } = api.interview.sendMessageFake.useMutation({
+  } = api.interview.sendMessage.useMutation({
     onSuccess: (data) => {
-      console.log(data);
       if (data.content.endsWith("*END*")) {
         setInterviewOpen(false);
         data.content = data.content.replace("*END*", "");
@@ -105,6 +104,14 @@ const InterviewPage: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>SmartApply - Interview Simulation</title>
+        <meta
+          property="og:title"
+          content="SmartApply - Interview Simulation"
+          key="title"
+        />
+      </Head>
       <Title title="Interview" />
       <ApplicationDetails />
       {!interviewType && (
@@ -112,7 +119,7 @@ const InterviewPage: NextPage = () => {
           <Title title="Interview" type="section" />
           <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
             <button onClick={() => changeInterviewType(InterviewType.hr)}>
-              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
+              <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
                   <UserIcon className="h-16 w-16" />
                   <h2 className="card-title">HR Interview</h2>
@@ -125,7 +132,7 @@ const InterviewPage: NextPage = () => {
             </button>
 
             <button onClick={() => changeInterviewType(InterviewType.tech)}>
-              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
+              <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
                   <CodeBracketIcon className="h-16 w-16" />
                   <h2 className="card-title">Technical Interview</h2>
@@ -138,7 +145,7 @@ const InterviewPage: NextPage = () => {
             </button>
 
             <button onClick={() => changeInterviewType(InterviewType.lead)}>
-              <div className="card h-full w-full bg-neutral text-neutral-content hover:bg-base-300 lg:w-96">
+              <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
                   <BriefcaseIcon className="h-16 w-16" />
                   <h2 className="card-title">Leadership intervie</h2>

@@ -12,6 +12,7 @@ import { TRPCError } from "@trpc/server";
 import { type JobData, type TestQuestion } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
+import { getFakeAiResponse } from "~/utils/misc";
 
 const configuration: Configuration = new Configuration({
   apiKey: env.OPENAI_API_KEY,
@@ -76,16 +77,33 @@ export const testRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
-      const messages = [getSystemMessage(input.job), getQuestionPrompt()];
+      if (env.SKIP_AI) {
+        await delay(1000);
+        const responseText: TestQuestion = {
+          id: 0,
+          question: "What is React?",
+          answers: [
+            "A back-end framework",
+            "A database technology",
+            "A JavaScript library",
+            "A front-end programming language",
+          ],
+          correctAnswer: 2,
+        };
+        const message: ChatCompletionRequestMessage = {
+          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+          content: JSON.stringify(responseText),
+        };
+        return message;
+      }
 
-      console.log({ messages });
+      const messages = [getSystemMessage(input.job), getQuestionPrompt()];
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
-      // console.log({ response });
+      // ({ response });
       const finishReason = response.data.choices[0]?.finish_reason;
       // TODO: handle this exception and other finish reasons
       if (finishReason === "lenght") {
@@ -96,7 +114,6 @@ export const testRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      console.log({ responseText });
       if (responseText) {
         const message: ChatCompletionRequestMessage = {
           role: ChatCompletionRequestMessageRoleEnum.Assistant,
@@ -127,20 +144,25 @@ export const testRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
+      if (env.SKIP_AI) {
+        await delay(1000);
+        const message: ChatCompletionRequestMessage = {
+          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+          content: "Correct answer.",
+        };
+        return message;
+      }
+
       const messages = [
         getSystemMessage(input.job),
         ...input.messages,
         getExplanationPrompt(input.answer),
       ];
 
-      console.log({ messages });
-
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
-      // console.log({ response });
       const finishReason = response.data.choices[0]?.finish_reason;
       // TODO: handle this exception and other finish reasons
       if (finishReason === "lenght") {
@@ -151,83 +173,6 @@ export const testRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      console.log({ responseText });
-      if (responseText) {
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
-          content: responseText,
-        };
-
-        return message;
-      } else {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "OpenAI API returned no response",
-        });
-      }
-    }),
-
-  getQuestionFake: publicProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-      })
-    )
-    .mutation(async ({ input }) => {
-      await delay(3000);
-      console.log({ input });
-      const messages = [getSystemMessage(input.job), getQuestionPrompt()];
-
-      console.log({ messages });
-
-      const responseText: TestQuestion = {
-        id: 0,
-        question: "What is React?",
-        answers: [
-          "A back-end framework",
-          "A database technology",
-          "A JavaScript library",
-          "A front-end programming language",
-        ],
-        correctAnswer: 2,
-      };
-      console.log({ responseText });
-      const message: ChatCompletionRequestMessage = {
-        role: ChatCompletionRequestMessageRoleEnum.Assistant,
-        content: JSON.stringify(responseText),
-      };
-      return message;
-    }),
-
-  getAnswerExplanationFake: publicProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-        messages: array(
-          z.object({
-            role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
-            content: z.string(),
-          })
-        ),
-        answer: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      await delay(1000);
-
-      console.log({ input });
-      const messages = [
-        getSystemMessage(input.job),
-        ...input.messages,
-        getExplanationPrompt(input.answer),
-      ];
-
-      console.log({ messages });
-
-      const responseText = "yeeaahhh\n\nFuck yeah";
-      console.log({ responseText });
       if (responseText) {
         const message: ChatCompletionRequestMessage = {
           role: ChatCompletionRequestMessageRoleEnum.Assistant,

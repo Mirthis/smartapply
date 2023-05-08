@@ -6,6 +6,7 @@ import { type JobData } from "~/types/types";
 import { jobSchema } from "~/types/schemas";
 import { ResetContent } from "../modals/ResetContent";
 import { useState } from "react";
+import Spinner from "../utils/Spinner";
 
 const JobForm = ({
   onSuccess,
@@ -20,7 +21,7 @@ const JobForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<JobData>({
     resolver: zodResolver(jobSchema),
     mode: "onTouched",
@@ -90,8 +91,18 @@ const JobForm = ({
           {errors.companyDetails && (
             <p className="text-error">{errors.companyDetails.message}</p>
           )}
-          <button disabled={!isValid} type="submit" className="btn-primary btn">
-            Submit
+          <button
+            disabled={!isValid || isSubmitting}
+            type="submit"
+            className="btn-primary btn"
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner text="Saving..." />
+              </>
+            ) : (
+              <span>Save Job Data</span>
+            )}
           </button>
         </div>
       </form>

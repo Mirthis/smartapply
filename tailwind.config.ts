@@ -8,21 +8,19 @@ export default {
   plugins: [require("daisyui")],
   daisyui: {
     themes: [
-      "business",
-      // {
-      //   mytheme: {
-      //     primary: "#dc2626",
-      //     secondary: "#D85251",
-      //     accent: "#fb923c",
-      //     neutral: "#fee2e2",
+      // "business",
+      {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        smartapply: {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-var-requires
+          ...require("daisyui/src/colors/themes")["[data-theme=corporate]"],
+          "--rounded-box": "0.5rem", // border radius rounded-box utility class, used in card and other large boxes
 
-      //     "base-100": "#f3f4f6",
-      //     info: "#42ADBB",
-      //     success: "#499380",
-      //     warning: "#E97F14",
-      //     error: "#DF1A2F",
-      //   },
-      // },
+          "--rounded-btn": "0.5rem", // border radius rounded-btn utility class, used in buttons and similar element
+          // secondary: "#93c5fd",
+          secondary: "#60a5fa",
+        },
+      },
     ],
   },
 } satisfies Config;

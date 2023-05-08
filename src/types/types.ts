@@ -1,9 +1,14 @@
 import { type z } from "zod";
-import { type applicantSchema, type jobSchema } from "./schemas";
+import {
+  type contactFormSchema,
+  type applicantSchema,
+  type jobSchema,
+} from "./schemas";
 import { type ChatCompletionRequestMessage } from "openai";
 
 export type JobData = z.infer<typeof jobSchema>;
 export type ApplicantData = z.infer<typeof applicantSchema>;
+export type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export enum InterviewType {
   tech = "Technology",
@@ -48,3 +53,9 @@ export type TestData = {
   currentQuestion: TestQuestion;
   messages: ChatCompletionRequestMessage[];
 };
+
+export enum FormStep {
+  Job = "job",
+  Applicant = "applicant",
+  Complete = "complete",
+}

@@ -105,7 +105,16 @@ export const interviewRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
+      if (env.SKIP_AI) {
+        await delay(1000);
+        const message: ChatCompletionRequestMessage = {
+          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+          content: "I'm sorry, I'm not feeling well today",
+        };
+
+        return message;
+      }
+
       const messages = [
         getInterviewSystemMessage(
           input.interviewType,
@@ -116,13 +125,10 @@ export const interviewRouter = createTRPCRouter({
         ...input.interviewMessages,
       ];
 
-      console.log({ messages });
-
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
-      // console.log({ response });
       const finishReason = response.data.choices[0]?.finish_reason;
       // TODO: handle this exception and other finish reasons
       if (finishReason === "lenght") {
@@ -133,53 +139,6 @@ export const interviewRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      console.log({ responseText });
-      if (responseText) {
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
-          content: responseText,
-        };
-
-        return message;
-      } else {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "OpenAI API returned no response",
-        });
-      }
-    }),
-
-  sendMessageFake: publicProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-        interviewType: z.nativeEnum(InterviewType),
-        interviewMessages: array(
-          z.object({
-            role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
-            content: z.string(),
-          })
-        ),
-      })
-    )
-    .mutation(async ({ input }) => {
-      await delay(1000);
-      console.log({ input });
-      const messages = [
-        getInterviewSystemMessage(
-          input.interviewType,
-          input.job,
-          input.applicant
-        ),
-        getFirstInterviewMessage(),
-        ...input.interviewMessages,
-      ];
-
-      console.log({ messages });
-
-      const responseText = "This is a fake response\n\nThis is a second line\n";
-      console.log({ responseText });
       if (responseText) {
         const message: ChatCompletionRequestMessage = {
           role: ChatCompletionRequestMessageRoleEnum.Assistant,

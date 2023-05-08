@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
   Configuration,
@@ -12,14 +16,13 @@ import { TRPCError } from "@trpc/server";
 import { type ApplicantData, type JobData } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
+import { addDelay, getFakeAiResponse, validateRecaptcha } from "~/utils/misc";
 
 const configuration: Configuration = new Configuration({
   apiKey: env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getCoverLetterSystemMessage = (
   job: JobData,
@@ -89,62 +92,31 @@ const createAssistantMessage = (
   };
 };
 
-type JSONResponse = {
-  success: boolean;
-  challenge_ts: string;
-  hostname: string;
-  score: number;
-  action: string;
-  "error-codes": string[];
-};
-
-const validateRecaptcha = async (token: string) => {
-  const captchaResponse = await fetch(
-    `https://www.google.com/recaptcha/api/siteverify`,
-    {
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-      },
-      body: `secret=${env.RECAPTCHA_SECRET_KEY}&response=${token}`,
-    }
-  );
-  const captchaResponseData = (await captchaResponse.json()) as JSONResponse;
-
-  console.log({ captchaResponseData });
-  const isHuman = captchaResponseData?.success;
-
-  if (!isHuman) {
-    throw new TRPCError({
-      message: "Captcha validation failed",
-      code: "BAD_REQUEST",
-    });
-  }
-};
-
 export const coverLettersRouter = createTRPCRouter({
   createLetter: publicProcedure
     .input(
       z.object({
         job: jobSchema,
         applicant: applicantSchema,
+        captchaToken: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
+      if (env.SKIP_AI) {
+        return await getFakeAiResponse("test cover letter");
+      }
+
+      await validateRecaptcha(input.captchaToken);
+
       const messages = [
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),
       ];
 
-      console.log({ messages });
-
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
-      console.log({ response });
       const finishReason = response.data.choices[0]?.finish_reason;
       if (finishReason === "lenght") {
         throw new TRPCError({
@@ -154,7 +126,7 @@ export const coverLettersRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      console.log({ responseText });
+      ({ responseText });
       if (responseText) {
         return responseText;
       } else {
@@ -176,33 +148,41 @@ export const coverLettersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
+      if (env.SKIP_AI) {
+        switch (input.refineOption) {
+          case "shorten":
+            return await getFakeAiResponse("Shortened letter");
+          case "extend":
+            return await getFakeAiResponse("Extended letter");
+          case "freeinput":
+            return await getFakeAiResponse("Refined letter");
+        }
+      }
+
       const messages = [
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),
         createAssistantMessage(input.coverLetter),
       ];
-      if (input.refineOption) {
-        switch (input.refineOption) {
-          case "shorten":
-            messages.push(getShortenMessage());
-            break;
-          case "extend":
-            messages.push(getExtendMessage());
-            break;
-          case "freeinput":
-            messages.push(getRfineMessage(input.refineFreeInput || ""));
-            break;
-        }
+      switch (input.refineOption) {
+        case "shorten":
+          messages.push(getShortenMessage());
+          break;
+        case "extend":
+          messages.push(getExtendMessage());
+          break;
+        case "freeinput":
+          messages.push(getRfineMessage(input.refineFreeInput || ""));
+          break;
       }
 
-      console.log({ messages });
+      ({ messages });
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
-      console.log({ response });
+      ({ response });
       const finishReason = response.data.choices[0]?.finish_reason;
       if (finishReason === "lenght") {
         throw new TRPCError({
@@ -212,7 +192,6 @@ export const coverLettersRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      console.log({ responseText });
       if (responseText) {
         return responseText;
       } else {
@@ -221,92 +200,5 @@ export const coverLettersRouter = createTRPCRouter({
           message: "OpenAI API returned no response",
         });
       }
-    }),
-
-  createLetterFake: publicProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-        captchaToken: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      await validateRecaptcha(input.captchaToken);
-      // console.log({ input });
-      const messages = [
-        getCoverLetterSystemMessage(input.job, input.applicant),
-        getCoverLetterUserMessage(),
-      ];
-      console.log({ messages });
-
-      await delay(1500);
-
-      const response =
-        "Dear Hiring Manager,\n" +
-        "\n" +
-        "I am writing to express my interest in the Software Engineer position at Google. As an experienced Software Engineer, I am excited about the opportunity to build cool stuff with cool people in a cool environment.\n" +
-        "\n" +
-        "I am very impressed by Google's reputation as a big tech company with a lot of perks. I am confident that the company's culture of innovation and dedication to excellence will provide me with the perfect platform to enhance my skills and contribute to the success of the team.\n" +
-        "\n" +
-        "As a Software Engineer with several years of experience, I have worked on various projects where I have applied my expertise in developing and implementing software. My vast experience in designing and testing software gives me the confidence to approach any software development project with ease.\n" +
-        "\n" +
-        "I have a thorough understanding of multiple programming languages and I have worked with various database management systems. I am also skilled in identifying system bugs and flaws and coming up with innovative solutions for them. Additionally, I can effortlessly adapt to new technologies and software development techniques.\n" +
-        "\n" +
-        "In my previous role as a Software Engineer, I was responsible for leading a team of developers to design and develop software applications that improved user experience while enhancing functionality. The success of this project was largely due to my ability to work diligently with my team members while staying focused on the end goal.\n" +
-        "\n" +
-        "I am confident that my skills in software development, leadership, and collaboration make me a perfect fit for the Software Engineer position at Google. I look forward to contributing my skills to your team and learning from the best in the industry.\n" +
-        "\n" +
-        "Thank you for considering my application. I look forward to hearing from you.\n" +
-        "\n" +
-        "Best regards,\n" +
-        "\n" +
-        "John Doe";
-
-      return response;
-    }),
-
-  refineLetterFake: publicProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-        coverLetter: z.string(),
-        refineOption: z.enum(["shorten", "extend", "freeinput"]),
-        refineFreeInput: z.string().optional(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      console.log({ input });
-
-      const messages = [
-        getCoverLetterSystemMessage(input.job, input.applicant),
-        getCoverLetterUserMessage(),
-        createAssistantMessage(input.coverLetter),
-      ];
-      let responseText = "";
-      if (input.refineOption) {
-        switch (input.refineOption) {
-          case "shorten":
-            messages.push(getShortenMessage());
-            responseText = "This is a shortened cover letter";
-            break;
-          case "extend":
-            messages.push(getExtendMessage());
-            responseText = "This is an extended cover letter";
-            break;
-          case "freeinput":
-            messages.push(getRfineMessage(input.refineFreeInput || ""));
-            responseText = "This is a refined cover letter";
-            break;
-        }
-      }
-
-      console.log({ messages });
-
-      await delay(1500);
-
-      console.log({ responseText });
-      return responseText;
     }),
 });

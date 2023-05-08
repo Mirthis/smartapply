@@ -6,7 +6,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Head>
-        <title>Smart Apply</title>
+        <title>SmartApply</title>
+        <meta property="og:title" content="SmartApply" key="title" />
         <meta
           name="description"
           content="AI power tools to make your job application succesfull"
