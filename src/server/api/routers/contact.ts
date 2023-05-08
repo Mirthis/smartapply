@@ -11,8 +11,6 @@ export const contactRouter = createTRPCRouter({
   sendMail: publicProcedure
     .input(contactFormSchema.extend({ captchaToken: z.string() }))
     .mutation(async ({ input }) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      // const nodemailer = require("nodemailer");
       await validateRecaptcha(input.captchaToken);
 
       const transporter = nodemailer.createTransport({
@@ -47,7 +45,7 @@ export const contactRouter = createTRPCRouter({
       try {
         await transporter.sendMail(emailData);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         throw new TRPCError({
           message: "Mail delivery failed",
           code: "BAD_REQUEST",
@@ -59,7 +57,6 @@ export const contactRouter = createTRPCRouter({
   sendMailFake: publicProcedure
     .input(contactFormSchema.extend({ captchaToken: z.string() }))
     .mutation(async ({ input }) => {
-      console.log({ input });
       await validateRecaptcha(input.captchaToken);
 
       await addDelay(2000);

@@ -12,7 +12,6 @@ import { TRPCError } from "@trpc/server";
 import { type JobData, type TestQuestion } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
-import { getFakeAiResponse } from "~/utils/misc";
 
 const configuration: Configuration = new Configuration({
   apiKey: env.OPENAI_API_KEY,

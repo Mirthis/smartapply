@@ -34,7 +34,7 @@ export default function UserWidget() {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-neutral-content rounded-md bg-neutral  ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-base-content rounded-md bg-base-300  ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="px-1 py-1 ">
                 <Menu.Item>
                   {({ active }) => (
@@ -43,7 +43,7 @@ export default function UserWidget() {
                         className={`${
                           active
                             ? "bg-primary text-primary-content"
-                            : "text-neutral-content"
+                            : "text-base-content"
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
                         Profile
@@ -58,7 +58,7 @@ export default function UserWidget() {
                         className={`${
                           active
                             ? "bg-primary text-primary-content"
-                            : "text-neutral-content"
+                            : "text-base-content"
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
                         Manage Accounts
@@ -75,7 +75,7 @@ export default function UserWidget() {
                       className={`${
                         active
                           ? "bg-primary text-primary-content"
-                          : "text-neutral-content"
+                          : "text-base-content"
                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     >
                       Sing Out

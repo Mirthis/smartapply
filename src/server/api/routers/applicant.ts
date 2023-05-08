@@ -13,7 +13,6 @@ export const applicantRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log({ input });
       // if appliocant.id is null, create new applicant in db, otherwise update existing applicant
       // return applicant
       const applicant = input.applicant;
@@ -101,7 +100,6 @@ export const applicantRouter = createTRPCRouter({
   getForLoggedUser: protectedProcedure.query(async ({ ctx }) => {
     // return applicant with id
     const userId = ctx.auth.userId;
-    console.log({ userId });
     const applicant = await ctx.prisma.applicant.findFirst({
       where: {
         userId: userId,

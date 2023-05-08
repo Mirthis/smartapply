@@ -75,17 +75,6 @@ const CoverLetterPage: NextPage = () => {
     setDisplayedLetter(currentCoverLetter);
   }, [currentCoverLetter]);
 
-  // useEffect(() => {
-  //   console.log(firstLoad.current);
-  //   if (firstLoad.current && captchaReady) {
-  //     firstLoad.current = false;
-  //     generate()
-  //       .then(() => console.log("Generated"))
-  //       .catch(() => console.log("Error"));
-  //     return;
-  //   }
-  // }, [captchaReady]);
-
   const refine = (mode: "freeinput" | "shorten" | "extend") => {
     if (job && applicant && coverLetters) {
       refineCoverLetter({

@@ -3,6 +3,7 @@ import {
   type ChatCompletionRequestMessage,
 } from "openai";
 import { create } from "zustand";
+import { env } from "~/env.mjs";
 import {
   type ApplicantData,
   type JobData,
@@ -13,6 +14,14 @@ import {
   type TestQuestion,
 } from "~/types/types";
 import { MAX_COVER_LETTERS } from "~/utils/constants";
+
+type AppStoreInitialState = {
+  applicant?: ApplicantData;
+  job?: JobData;
+  coverLetters?: CoverLettersData;
+  interview?: InterviewData;
+  test?: TestData;
+};
 
 type AppStore = {
   applicant?: ApplicantData;
@@ -38,8 +47,16 @@ type AppStore = {
   reset: () => void;
 };
 
-const initialState = {
-  job: {
+const initialState: AppStoreInitialState = {
+  job: undefined,
+  applicant: undefined,
+  coverLetters: undefined,
+  interview: undefined,
+  test: undefined,
+};
+
+if (env.SKIP_AI) {
+  initialState.job = {
     jobTitle: "Senior Manager, Data Engineering",
     jobDescription: `Expedia Group's Stream Engineering team builds the streaming platform for the whole of Expedia. The Stream Platform ingests billions of messages everyday and is quickly becoming one of the largest streaming platforms in the world. The platform supports multiple brands and internal teams and powers many of the business critical processes, data products and AI and ML workflows.
 
@@ -64,8 +81,8 @@ const initialState = {
     You have presented new technology choice to technical and non-technical observers)`,
     companyName: "Expedia Group",
     companyDetails: `Expedia Group (NASDAQ: EXPE) powers travel for everyone, everywhere through our global platform. Driven by the core belief that travel is a force for good, we help people experience the world in new ways and build lasting connections. We provide industry-leading technology solutions to fuel partner growth and success, while facilitating memorable experiences for travelers. Expedia Group's family of brands includes: Brand Expedia®, Hotels.com®, Expedia® Partner Solutions, Vrbo®, trivago®, Orbitz®, Travelocity®, Hotwire®, Wotif®, ebookers®, CheapTickets®, Expedia Group™ Media Solutions, Expedia Local Expert®, CarRentals.com™, and Expedia Cruises`,
-  },
-  applicant: {
+  };
+  initialState.applicant = {
     firstName: "John",
     lastName: "Doe",
     jobTitle: "Data and Analytics Delivery Manager",
@@ -77,10 +94,8 @@ const initialState = {
     Orchestrate data and analytics solution delivery to major international clients across a wide range of industries.
     Play a leading role in diverse information management projects, encompassing migrations and integration of legacy systems as well as delivery of new strategic analytics solutions.
     Coordinate efforts of multicultural teams working onshore / offshore to ensure timely and quality implementation of complex transformation programmes.`,
-  },
-  coverletters: undefined,
-  interview: undefined,
-};
+  };
+}
 
 export const useAppStore = create<AppStore>((set, get) => ({
   ...initialState,

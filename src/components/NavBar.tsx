@@ -138,11 +138,9 @@ const Navbar = () => {
         className={nav ? "fixed left-0 top-0 h-screen w-full bg-black/70" : ""}
       >
         <div
-          className={
-            nav
-              ? "fixed left-0 top-0 h-screen w-[75%] bg-neutral p-4 duration-200 ease-in sm:w-[60%] md:w-[45%]"
-              : "fixed left-[-100%] top-0 p-10 duration-200 ease-in"
-          }
+          className={`fixed top-0 h-screen w-[75%] bg-base-300 p-4 duration-1000 ease-in sm:w-[60%] md:w-[45%] ${
+            nav ? "left-0 " : "left-[-100%]"
+          }`}
         >
           <div>
             <div className="flex w-full  items-center justify-between">
@@ -151,7 +149,7 @@ const Navbar = () => {
 
               <button
                 onClick={hideNavBar}
-                className="  btn-primary btn-circle btn"
+                className="  btn-accent btn-circle btn"
               >
                 <XMarkIcon className="h-4 w-4 font-bold" />
               </button>

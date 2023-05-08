@@ -29,8 +29,6 @@ const ApplicantForm = ({
   const { isLoaded, userId } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log({ isLoaded, userId, type });
-
   // if profile force update profile flag
   const [updateProfile, setUpdateProfile] = useState<boolean>(
     type === "profile"
