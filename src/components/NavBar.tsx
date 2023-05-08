@@ -52,10 +52,10 @@ const Navbar = () => {
   const setTransparentNavBar = (transparent: boolean) => {
     if (transparent) {
       setNavBg("bg-transparent");
-      setLinkColor("text-base-content");
+      setLinkColor("text-primary");
     } else {
-      setNavBg("bg-base-200");
-      setLinkColor("text-base-content");
+      setNavBg("bg-base-100");
+      setLinkColor("text-primary");
     }
   };
 
@@ -87,7 +87,7 @@ const Navbar = () => {
   return (
     <div
       className={`${
-        shadow ? "shadow-sm shadow-base-300" : ""
+        shadow ? "shadow-sm shadow-secondary" : ""
       }  ${navBg} fixed z-30  h-16 w-full `}
     >
       {/* Desktop version */}
@@ -138,7 +138,7 @@ const Navbar = () => {
         className={nav ? "fixed left-0 top-0 h-screen w-full bg-black/70" : ""}
       >
         <div
-          className={`fixed top-0 h-screen w-[75%] bg-base-300 p-4 duration-1000 ease-in sm:w-[60%] md:w-[45%] ${
+          className={`fixed top-0 h-screen w-[75%] bg-base-300 p-4 duration-200 ease-in sm:w-[60%] md:w-[45%] ${
             nav ? "left-0 " : "left-[-100%]"
           }`}
         >
@@ -159,7 +159,10 @@ const Navbar = () => {
             <ul className="uppercase">
               {navBarLinks.map((l) => (
                 <Link key={`mobile-menu-${l.label}`} href={l.url}>
-                  <li onClick={hideNavBar} className="py-4 text-sm">
+                  <li
+                    onClick={hideNavBar}
+                    className={`${linkColor} py-4 text-sm`}
+                  >
                     {l.label}
                   </li>
                 </Link>
@@ -167,7 +170,10 @@ const Navbar = () => {
               {showActions &&
                 navBarActionLinks.map((l) => (
                   <Link key={`mobile-menu-${l.label}`} href={l.url}>
-                    <li onClick={hideNavBar} className="py-4 text-sm">
+                    <li
+                      onClick={hideNavBar}
+                      className={`${linkColor} py-4 text-sm`}
+                    >
                       {l.label}
                     </li>
                   </Link>

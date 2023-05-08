@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
   Configuration,
@@ -16,7 +12,7 @@ import { TRPCError } from "@trpc/server";
 import { type ApplicantData, type JobData } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
-import { addDelay, getFakeAiResponse, validateRecaptcha } from "~/utils/misc";
+import { getFakeAiResponse, validateRecaptcha } from "~/utils/misc";
 
 const configuration: Configuration = new Configuration({
   apiKey: env.OPENAI_API_KEY,

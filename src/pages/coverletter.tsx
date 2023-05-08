@@ -12,6 +12,7 @@ import { type CoverLetter } from "~/types/types";
 import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
 import { useRecaptcha } from "~/utils/hooks";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const CoverLetterPage: NextPage = () => {
   const [refineText, setRefineText] = useState("");
@@ -28,6 +29,7 @@ const CoverLetterPage: NextPage = () => {
   } = useAppStore((state) => state);
 
   const currentCoverLetter = coverLetters?.currentCoverLetter;
+  const router = useRouter();
 
   //TODO: test recaptcha works (currently always passing)
   const { handleReCaptchaVerify, captchaError } = useRecaptcha();
@@ -41,6 +43,12 @@ const CoverLetterPage: NextPage = () => {
       setCoverLetter(data);
     },
   });
+
+  useEffect(() => {
+    if (!applicant || !job) {
+      void router.replace("/");
+    }
+  }, [applicant, job, router]);
 
   const {
     mutate: refineCoverLetter,

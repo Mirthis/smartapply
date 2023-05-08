@@ -18,7 +18,9 @@ export default {
 
           "--rounded-btn": "0.5rem", // border radius rounded-btn utility class, used in buttons and similar element
           // secondary: "#93c5fd",
-          secondary: "#60a5fa",
+          primary: "#0ea5e9",
+          secondary: "#67CBA0",
+          accent: "#f97316",
         },
       },
     ],

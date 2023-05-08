@@ -28,7 +28,7 @@ const Spinner = ({
           fill="currentFill"
         />
       </svg>
-      {text && <p className="text-secondary">{text}</p>}
+      {text && <p>{text}</p>}
     </div>
   );
 };

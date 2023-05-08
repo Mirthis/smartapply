@@ -9,6 +9,7 @@ import { MAX_TEST_QUESTIONS } from "~/utils/constants";
 import { formatApiMessage } from "~/utils/formatter";
 import Spinner from "~/components/utils/Spinner";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const InterviewPage: NextPage = () => {
   const {
@@ -24,6 +25,7 @@ const InterviewPage: NextPage = () => {
   const currentQuestion = test?.currentQuestion;
   const messages = test?.messages ?? [];
   const questions = test?.questions ?? [];
+  const router = useRouter();
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
   // TODO: add captcha check
@@ -74,6 +76,12 @@ const InterviewPage: NextPage = () => {
   useEffect(() => {
     setDisplayedQuestion(currentQuestion);
   }, [currentQuestion]);
+
+  useEffect(() => {
+    if (!applicant || !job) {
+      void router.replace("/");
+    }
+  }, [applicant, job, router]);
 
   return (
     <>

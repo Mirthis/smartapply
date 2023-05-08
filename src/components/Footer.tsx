@@ -17,7 +17,7 @@ const footerLinks = [
 
 const Footer = () => {
   return (
-    <footer className="footer footer-center rounded bg-secondary p-10 text-secondary-content">
+    <footer className="footer footer-center rounded border border-t-2 border-secondary bg-secondary bg-opacity-70 p-10 text-secondary-content">
       <div className="grid grid-flow-col gap-x-6">
         {footerLinks.map((link) => (
           <Link href={link.url} className="link-hover link" key={link.url}>

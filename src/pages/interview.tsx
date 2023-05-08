@@ -4,7 +4,7 @@ import {
   CodeBracketIcon,
   BriefcaseIcon,
 } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
 import { InterviewType } from "~/types/types";
@@ -18,6 +18,7 @@ import OpacityTransition from "~/components/utils/OpacityTransition";
 import MessageBubble from "~/components/MessageBubble";
 import LoadingText from "~/components/utils/LoadingText";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -34,6 +35,8 @@ const InterviewPage: NextPage = () => {
   // const [interviewType, setInterviewType] = useState<InterviewType>();
   const [interviewOpen, setInterviewOpen] = useState(false);
   const [chatText, setChatText] = useState("");
+  const router = useRouter();
+
   const {
     job,
     applicant,
@@ -73,6 +76,12 @@ const InterviewPage: NextPage = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (!applicant || !job) {
+      void router.replace("/");
+    }
+  }, [applicant, job, router]);
 
   const send = (retry = false) => {
     if (interviewType && job && applicant) {

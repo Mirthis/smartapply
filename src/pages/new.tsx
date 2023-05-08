@@ -70,7 +70,7 @@ const NewApplication: NextPage = () => {
           <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
             {/* Card - Create Cover letter  */}
             <Link href="/coverletter">
-              <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
+              <div className="card h-full w-full bg-base-200 hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
                   <DocumentTextIcon className="h-16 w-16" />
                   <h2 className="card-title">Personalized Cover Letter</h2>
@@ -84,7 +84,7 @@ const NewApplication: NextPage = () => {
             </Link>
             {/* Card - Job Interview  */}
             <Link href="/interview">
-              <div className="card h-full w-full bg-base-300  hover:bg-base-200 lg:w-96">
+              <div className="card h-full w-full bg-base-200  hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
                   <ChatBubbleLeftRightIcon className="h-16 w-16" />
                   <h2 className="card-title">Interview Simulation</h2>
@@ -99,7 +99,7 @@ const NewApplication: NextPage = () => {
 
             {/* Card - Test  */}
             <Link href="/test">
-              <div className="card h-full w-full bg-base-300  hover:bg-base-200 lg:w-96">
+              <div className="card h-full w-full bg-base-200  hover:bg-base-300 lg:w-96">
                 <div className="card-body items-center text-center">
                   <ClipboardDocumentCheckIcon className="h-16 w-16" />
                   <h2 className="card-title">Multiple Choice Questions</h2>

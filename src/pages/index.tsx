@@ -15,10 +15,10 @@ const Home: NextPage = () => {
       <div className="flex flex-col items-center justify-center gap-y-8">
         {/* Hero */}
         <div className="flex min-h-[80vh] flex-col items-center justify-center gap-y-12">
-          <h1 className="max-w-6xl bg-gradient-to-r from-primary to-accent bg-clip-text pb-8 text-center text-6xl font-extrabold leading-none text-transparent md:text-9xl">
+          <h1 className="max-w-6xl bg-gradient-to-r from-primary to-secondary bg-clip-text pb-8 text-center text-6xl font-extrabold leading-none text-transparent md:text-9xl">
             Land your dream job today
           </h1>
-          <p className=" max-w-5xl text-center text-xl text-secondary md:text-3xl">
+          <p className=" max-w-5xl text-center text-xl font-semibold text-primary md:text-3xl">
             Take the stress out of job applications and interviews. Our
             AI-powered tool generates personalized cover letters and interview
             questions to help you land your dream job.
