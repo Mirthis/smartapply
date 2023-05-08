@@ -55,7 +55,7 @@ const initialState: AppStoreInitialState = {
   test: undefined,
 };
 
-if (env.NEXT_PUBLIC_SKIP_AI || true) {
+if (env.NEXT_PUBLIC_SKIP_AI) {
   initialState.job = {
     jobTitle: "Senior Manager, Data Engineering",
     jobDescription: `Expedia Group's Stream Engineering team builds the streaming platform for the whole of Expedia. The Stream Platform ingests billions of messages everyday and is quickly becoming one of the largest streaming platforms in the world. The platform supports multiple brands and internal teams and powers many of the business critical processes, data products and AI and ML workflows.
@@ -82,14 +82,14 @@ if (env.NEXT_PUBLIC_SKIP_AI || true) {
     companyName: "Expedia Group",
     companyDetails: `Expedia Group (NASDAQ: EXPE) powers travel for everyone, everywhere through our global platform. Driven by the core belief that travel is a force for good, we help people experience the world in new ways and build lasting connections. We provide industry-leading technology solutions to fuel partner growth and success, while facilitating memorable experiences for travelers. Expedia Group's family of brands includes: Brand Expedia®, Hotels.com®, Expedia® Partner Solutions, Vrbo®, trivago®, Orbitz®, Travelocity®, Hotwire®, Wotif®, ebookers®, CheapTickets®, Expedia Group™ Media Solutions, Expedia Local Expert®, CarRentals.com™, and Expedia Cruises`,
   };
-  // initialState.applicant = {
-  //   firstName: "John",
-  //   lastName: "Doe",
-  //   jobTitle: "Data and Analytics Delivery Manager",
-  //   resume: `Data and analytics expert and leader with more than 15 years of experience driving the delivery of complex transformation projects across business intelligence (BI), big data, cloud, and analytics. Thoroughly assesses enterprise needs and provides solutions in alignment with organisational structures, policies, procedures, and mission. Blends deep technical knowledge with business acumen to strategically drive efforts of cross-functional teams focused on surpassing objectives while optimising data and reporting functions. Poised to harness skills gained in a dynamic career delivering data and analytics solutions.`,
-  //   skills: `Project and Programme Management, Solution Architecture, Technical Architecture, Data Management, Business Transformations, Reporting, Agile, Scrum / SAFe, Stakeholder Relations, Delivery Management, Change Management, Data Migration, Data Engineering, Data Architecture, Data Strategy, Data Governance`,
-  //   experience: `Data and Analytics Senior Manager: Orchestrate data and analytics solution delivery to major international clients across a wide range of industries. Play a leading role in diverse information management projects, encompassing migrations and integration of legacy systems as well as delivery of new strategic analytics solutions. Coordinate efforts of multicultural teams working onshore / offshore to ensure timely and quality implementation of complex transformation programmes.`,
-  // };
+  initialState.applicant = {
+    firstName: "John",
+    lastName: "Doe",
+    jobTitle: "Data and Analytics Delivery Manager",
+    resume: `Data and analytics expert and leader with more than 15 years of experience driving the delivery of complex transformation projects across business intelligence (BI), big data, cloud, and analytics. Thoroughly assesses enterprise needs and provides solutions in alignment with organisational structures, policies, procedures, and mission. Blends deep technical knowledge with business acumen to strategically drive efforts of cross-functional teams focused on surpassing objectives while optimising data and reporting functions. Poised to harness skills gained in a dynamic career delivering data and analytics solutions.`,
+    skills: `Project and Programme Management, Solution Architecture, Technical Architecture, Data Management, Business Transformations, Reporting, Agile, Scrum / SAFe, Stakeholder Relations, Delivery Management, Change Management, Data Migration, Data Engineering, Data Architecture, Data Strategy, Data Governance`,
+    experience: `Data and Analytics Senior Manager: Orchestrate data and analytics solution delivery to major international clients across a wide range of industries. Play a leading role in diverse information management projects, encompassing migrations and integration of legacy systems as well as delivery of new strategic analytics solutions. Coordinate efforts of multicultural teams working onshore / offshore to ensure timely and quality implementation of complex transformation programmes.`,
+  };
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
