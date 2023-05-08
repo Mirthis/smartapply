@@ -76,7 +76,7 @@ export const testRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.SKIP_AI) {
+      if (env.NEXT_PUBLIC_SKIP_AI) {
         await delay(1000);
         const responseText: TestQuestion = {
           id: 0,
@@ -143,7 +143,7 @@ export const testRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.SKIP_AI) {
+      if (env.NEXT_PUBLIC_SKIP_AI) {
         await delay(1000);
         const message: ChatCompletionRequestMessage = {
           role: ChatCompletionRequestMessageRoleEnum.Assistant,

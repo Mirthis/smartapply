@@ -102,7 +102,7 @@ export const coverLettersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.SKIP_AI) {
+      if (env.NEXT_PUBLIC_SKIP_AI) {
         return await getFakeAiResponse("test cover letter");
       }
 
@@ -148,7 +148,7 @@ export const coverLettersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.SKIP_AI) {
+      if (env.NEXT_PUBLIC_SKIP_AI) {
         switch (input.refineOption) {
           case "shorten":
             return await getFakeAiResponse("Shortened letter");
