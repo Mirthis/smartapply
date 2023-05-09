@@ -15,7 +15,6 @@ const server = z.object({
   SMTP_USERNAME: z.string().min(1),
   SMTP_PASSWORD: z.string().min(1),
   EMAIL_RECIPIENT: z.string().min(1),
-  NEXT_PUBLIC_SKIP_AI: z.string().min(1).optional(),
 });
 
 /**
@@ -27,6 +26,7 @@ const client = z.object({
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1),
+  NEXT_PUBLIC_SKIP_AI: z.string().min(1).optional(),
 });
 
 /**

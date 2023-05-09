@@ -43,11 +43,15 @@ const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [shadow, setShadow] = useState(false);
   const [navBg, setNavBg] = useState("");
-  const [linkColor, setLinkColor] = useState("text-base-content");
+  const [linkColor, setLinkColor] = useState("text-primary");
+  const [showActions, setShowActions] = useState(false);
 
   const router = useRouter();
   const { applicant, job } = useAppStore();
-  const showActions = !!applicant && !!job;
+
+  useEffect(() => {
+    setShowActions(!!applicant && !!job);
+  }, [applicant, job]);
 
   const setTransparentNavBar = (transparent: boolean) => {
     if (transparent) {
@@ -102,28 +106,28 @@ const Navbar = () => {
             <Logo />
             <ul className={`hidden flex-1 flex-grow  md:flex ${linkColor}`}>
               {navBarLinks.map((l) => (
-                <Link key={`desktop-menu-${l.label}`} href={l.url}>
-                  <li className="${linkColor} ml-10 border-secondary text-sm uppercase hover:border-b">
+                <Link
+                  key={`desktop-menu-${l.label}`}
+                  href={l.url}
+                  className="link-hover link underline-offset-8"
+                >
+                  <li className="${linkColor} ml-10 text-sm font-semibold uppercase">
                     {l.label}
                   </li>
                 </Link>
               ))}
               {showActions &&
                 navBarActionLinks.map((l) => (
-                  <Link key={`desktop-menu-${l.label}`} href={l.url}>
-                    <li className="${linkColor} ml-10 border-secondary text-sm uppercase hover:border-b">
+                  <Link
+                    key={`desktop-menu-${l.label}`}
+                    href={l.url}
+                    className="link-hover link underline-offset-8"
+                  >
+                    <li className="${linkColor} ml-10 text-sm font-semibold uppercase">
                       {l.label}
                     </li>
                   </Link>
                 ))}
-              {/* {sessionStatus === "authenticated" &&
-              navBarProtectedLinks.map((l) => (
-                <Link key={`desktop-menu-${l.label}`} href={l.url}>
-                  <li className="border-secondary-400 ml-10 text-sm uppercase hover:border-b">
-                    {l.label}
-                  </li>
-                </Link>
-              ))} */}
             </ul>
           </div>
 
@@ -138,7 +142,7 @@ const Navbar = () => {
         className={nav ? "fixed left-0 top-0 h-screen w-full bg-black/70" : ""}
       >
         <div
-          className={`fixed top-0 h-screen w-[75%] bg-base-300 p-4 duration-200 ease-in sm:w-[60%] md:w-[45%] ${
+          className={`fixed top-0 h-screen w-[75%] bg-base-100 p-4 duration-200 ease-in sm:w-[60%] md:w-[45%] ${
             nav ? "left-0 " : "left-[-100%]"
           }`}
         >
@@ -161,7 +165,7 @@ const Navbar = () => {
                 <Link key={`mobile-menu-${l.label}`} href={l.url}>
                   <li
                     onClick={hideNavBar}
-                    className={`${linkColor} py-4 text-sm`}
+                    className={`${linkColor} py-4 font-semibold`}
                   >
                     {l.label}
                   </li>
@@ -172,19 +176,12 @@ const Navbar = () => {
                   <Link key={`mobile-menu-${l.label}`} href={l.url}>
                     <li
                       onClick={hideNavBar}
-                      className={`${linkColor} py-4 text-sm`}
+                      className={`${linkColor} font-semibold`}
                     >
                       {l.label}
                     </li>
                   </Link>
                 ))}
-              {/* {navBarProtectedLinks.map((l) => (
-                <Link key={`mobile-menu-${l.label}`} href={l.url}>
-                  <li onClick={hideNavBar} className="py-4 text-sm">
-                    {l.label}
-                  </li>
-                </Link>
-              ))} */}
             </ul>
           </div>
         </div>

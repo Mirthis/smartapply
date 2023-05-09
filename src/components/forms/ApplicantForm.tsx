@@ -143,71 +143,131 @@ const ApplicantForm = ({
         >
           <div className="flex flex-col gap-y-4">
             <input type="hidden" {...register("id")} />
-            <div className="flex gap-x-2">
-              <input
-                type="text"
-                className="input-bordered input w-1/2"
-                placeholder="First Name"
-                {...register("firstName")}
-                disabled={isLoadingProfile || isSubmitting}
-              />
-
-              <input
-                type="text"
-                className="input-bordered input w-1/2"
-                placeholder="Last Name"
-                {...register("lastName")}
-                disabled={isLoadingProfile || isSubmitting}
-              />
+            <div>
+              <div className="flex gap-x-2">
+                <div className="relative w-1/2">
+                  <input
+                    type="text"
+                    className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                    placeholder=" "
+                    id={"firstName"}
+                    {...register("firstName")}
+                    disabled={isLoadingProfile || isSubmitting}
+                  />
+                  <label
+                    htmlFor="firstName"
+                    className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                  >
+                    First Name
+                  </label>
+                </div>
+                <div className="relative w-1/2">
+                  <input
+                    type="text"
+                    id="lastName"
+                    className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                    placeholder=" "
+                    {...register("lastName")}
+                    disabled={isLoadingProfile || isSubmitting}
+                  />
+                  <label
+                    htmlFor="lastName"
+                    className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                  >
+                    Last Name
+                  </label>
+                </div>
+              </div>
+              {errors.firstName && (
+                <p className="text-error">{errors.firstName.message}</p>
+              )}
+              {errors.lastName && (
+                <p className="text-error">{errors.lastName.message}</p>
+              )}
             </div>
-            {errors.lastName && (
-              <p className="text-error">{errors.lastName.message}</p>
-            )}
-            {errors.firstName && (
-              <p className="text-error">{errors.firstName.message}</p>
-            )}
-
-            <input
-              type="text"
-              className="textarea-bordered textarea"
-              placeholder="Title (e.g. Software Engineer)"
-              {...register("jobTitle")}
-              disabled={isLoadingProfile || isSubmitting}
-            />
-            {errors.jobTitle && (
-              <p className="text-error">{errors.jobTitle.message}</p>
-            )}
-
-            <textarea
-              className="textarea-bordered textarea"
-              placeholder="Resume"
-              {...register("resume")}
-              disabled={isLoadingProfile || isSubmitting}
-              rows={4}
-            />
-            {errors.resume && (
-              <p className="text-error">{errors.resume.message}</p>
-            )}
-            <textarea
-              className="textarea-bordered textarea"
-              placeholder="Skills"
-              {...register("skills")}
-              disabled={isLoadingProfile || isSubmitting}
-              rows={4}
-            />
-            {errors.skills && (
-              <p className="text-error">{errors.skills.message}</p>
-            )}
-            <textarea
-              className="textarea-bordered textarea"
-              placeholder="Experience"
-              {...register("experience")}
-              disabled={isLoadingProfile || isSubmitting}
-              rows={4}
-            />
-            {errors.experience && (
-              <p className="text-error">{errors.experience.message}</p>
-            )}
+            <div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="jobTitle"
+                  className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                  placeholder=" "
+                  {...register("jobTitle")}
+                  disabled={isLoadingProfile || isSubmitting}
+                />
+                <label
+                  htmlFor="jobTitle"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Job Title
+                </label>
+              </div>
+              {errors.jobTitle && (
+                <p className="text-error">{errors.jobTitle.message}</p>
+              )}
+            </div>
+            <div>
+              <div className="relative">
+                <textarea
+                  id="resume"
+                  className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                  placeholder=" "
+                  {...register("resume")}
+                  disabled={isLoadingProfile || isSubmitting}
+                  rows={4}
+                />
+                <label
+                  htmlFor="resume"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Resume
+                </label>
+              </div>
+              {errors.resume && (
+                <p className="text-error">{errors.resume.message}</p>
+              )}
+            </div>
+            <div>
+              <div className="relative">
+                <textarea
+                  id="skills"
+                  className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                  placeholder=" "
+                  disabled={isLoadingProfile || isSubmitting}
+                  rows={4}
+                />
+                <label
+                  htmlFor="skills"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Skills
+                </label>
+              </div>
+              {errors.skills && (
+                <p className="text-error">{errors.skills.message}</p>
+              )}
+            </div>
+            <div>
+              <div className="relative">
+                <textarea
+                  id="experience"
+                  className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                  placeholder=" "
+                  {...register("experience")}
+                  disabled={isLoadingProfile || isSubmitting}
+                  rows={4}
+                />
+                <label
+                  htmlFor="experience"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Experience
+                </label>
+              </div>
+              {errors.experience && (
+                <p className="text-error">{errors.experience.message}</p>
+              )}
+            </div>
             {isLoaded && userId && type === "application" && (
               <div className="form-control">
                 <label className="label cursor-pointer">

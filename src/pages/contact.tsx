@@ -59,51 +59,87 @@ const ContactPage: NextPage = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-y-4">
             <div>
-              <input
-                type="text"
-                className="input-bordered input w-full"
-                placeholder="Your name"
-                disabled={isSubmitting}
-                {...register("name")}
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  id="name"
+                  className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                  placeholder=" "
+                  disabled={isSubmitting}
+                  {...register("name")}
+                />
+                <label
+                  htmlFor="name"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Your Name
+                </label>
+              </div>
               {errors.name && (
                 <p className="text-error">{errors.name.message}</p>
               )}
             </div>
             <div>
-              <input
-                type="text"
-                className="input-bordered input w-full"
-                placeholder="Your e-mail"
-                disabled={isSubmitting}
-                {...register("email")}
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  id="email"
+                  className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                  placeholder=" "
+                  disabled={isSubmitting}
+                  {...register("email")}
+                />
+                <label
+                  htmlFor="email"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Your e-mail
+                </label>
+              </div>
               {errors.email && (
                 <p className="text-error">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <input
-                type="text"
-                className="input-bordered input w-full"
-                placeholder="Message Subject"
-                disabled={isSubmitting}
-                {...register("subject")}
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  id="subject"
+                  className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                  placeholder=" "
+                  disabled={isSubmitting}
+                  {...register("subject")}
+                />
+                <label
+                  htmlFor="subject"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Subject
+                </label>
+              </div>
               {errors.subject && (
                 <p className="text-error">{errors.subject.message}</p>
               )}
             </div>
 
             <div>
-              <textarea
-                className="textarea-bordered textarea w-full"
-                placeholder="Message Body"
-                disabled={isSubmitting}
-                {...register("message")}
-                rows={4}
-              />
+              <div className="relative">
+                <textarea
+                  id="message"
+                  className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                  placeholder=" "
+                  disabled={isSubmitting}
+                  {...register("message")}
+                  rows={4}
+                />
+                <label
+                  htmlFor="message"
+                  className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
+                >
+                  Message Body
+                </label>
+              </div>
               {errors.message && (
                 <p className="text-error">{errors.message.message}</p>
               )}
