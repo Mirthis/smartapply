@@ -1,6 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import Title from "../Title";
 
 const Modal = ({
   isOpen,
@@ -40,14 +41,11 @@ const Modal = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-base-200  p-6 text-left align-middle shadow-xl transition-all">
-                  <div className="flex items-baseline justify-between">
+                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-base-100  p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="mb-8 flex items-center justify-between">
                     {title && (
-                      <Dialog.Title
-                        as="h3"
-                        className="mb-4 text-lg font-medium leading-6"
-                      >
-                        {title}
+                      <Dialog.Title as="h3">
+                        <Title title={title} type="subsection" />
                       </Dialog.Title>
                     )}
                     <button

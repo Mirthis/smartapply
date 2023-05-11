@@ -15,10 +15,12 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 const CoverLetterPage: NextPage = () => {
+  const router = useRouter();
+
   const [refineText, setRefineText] = useState("");
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
-
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
+
   const {
     setCoverLetter,
     addCoverLetter,
@@ -29,7 +31,6 @@ const CoverLetterPage: NextPage = () => {
   } = useAppStore((state) => state);
 
   const currentCoverLetter = coverLetters?.currentCoverLetter;
-  const router = useRouter();
 
   //TODO: test recaptcha works (currently always passing)
   const { handleReCaptchaVerify, captchaError } = useRecaptcha();

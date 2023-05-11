@@ -33,8 +33,6 @@ const JobForm = ({
     },
   });
 
-  console.log("job", job);
-
   const onSubmit = (data: JobData) => {
     setJob(data);
     if (onSuccess) {

@@ -34,7 +34,7 @@ const Title = ({
       {type === "subsection" && (
         <h3
           className={classNames(
-            "mb-2 mt-2 text-lg text-primary sm:text-xl",
+            "sm:text-2 xl mb-2 mt-2 text-xl text-primary",
             className
           )}
         >

@@ -98,7 +98,7 @@ const Navbar = () => {
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-2 2xl:px-4">
         <div className="flex w-full flex-row items-center justify-between">
           {/* Burger icon, show on small displays */}
-          <div onClick={showNavBar} className="md:hidden">
+          <div onClick={showNavBar} className=" md:hidden">
             <Bars3Icon className="h-6 w-6" />
           </div>
 
@@ -159,13 +159,13 @@ const Navbar = () => {
               </button>
             </div>
           </div>
-          <div className="flex flex-col py-4">
-            <ul className="uppercase">
+          <div className="mt-4">
+            <ul className="flex flex-col gap-y-4 uppercase">
               {navBarLinks.map((l) => (
                 <Link key={`mobile-menu-${l.label}`} href={l.url}>
                   <li
                     onClick={hideNavBar}
-                    className={`${linkColor} py-4 font-semibold`}
+                    className={`${linkColor} font-semibold`}
                   >
                     {l.label}
                   </li>

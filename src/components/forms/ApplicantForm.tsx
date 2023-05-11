@@ -233,6 +233,7 @@ const ApplicantForm = ({
                   id="skills"
                   className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
                   placeholder=" "
+                  {...register("skills")}
                   disabled={isLoadingProfile || isSubmitting}
                   rows={4}
                 />

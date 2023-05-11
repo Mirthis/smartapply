@@ -1,3 +1,9 @@
+import {
+  DocumentTextIcon,
+  ChatBubbleLeftRightIcon,
+  ClipboardDocumentCheckIcon,
+} from "@heroicons/react/24/solid";
+
 export const MAX_TEST_QUESTIONS = 5;
 export const MAX_COVER_LETTERS = 5;
 
@@ -19,5 +25,29 @@ export const featureCardsData = [
     description:
       "Our multiple choice questions feature allows you to test your knowledge and get a feel for the types of questions you might encounter during an interview. Our AI generates questions based on the job you are applying for, and you can use these questions to identify areas where you may need to brush up on your knowledge or skills. This feature is a great way to improve your interview performance and boost your confidence.",
     imgName: "feature-test.jpg",
+  },
+];
+
+export const serviceCardData = [
+  {
+    url: "/coverletter",
+    title: "Personalized Cover Letter",
+    description:
+      "Instantly get a professionally written cover letter based on the job and applicant details provided. You can further refine the generated cover letter after it is created.",
+    icon: DocumentTextIcon,
+  },
+  {
+    url: "/interview",
+    title: "Interview Simulation",
+    description:
+      "Choose the type of interview you want to take part in (HR, tech or leadership) and have a relatistic conversation with  our chat bot.",
+    icon: ChatBubbleLeftRightIcon,
+  },
+  {
+    url: "/test",
+    title: "Multiple Choice Questions",
+    description:
+      "Test your knowledge with multiple choice questions relevant to the job and role. Get immediate feedback and explanations for each answer.",
+    icon: ClipboardDocumentCheckIcon,
   },
 ];

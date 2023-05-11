@@ -14,7 +14,7 @@ const CurrentJobCard = () => {
         <div className="card-body flex flex-row items-center justify-between p-2">
           <div className="flex flex-row items-center gap-x-2">
             <BriefcaseIcon className="h-8 w-8" />
-            <h2 className="card-title">
+            <h2 className="card-title text-base sm:text-lg">
               {job?.jobTitle} @ {job?.companyName}
             </h2>
           </div>

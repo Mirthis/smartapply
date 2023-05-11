@@ -18,7 +18,7 @@ const ApplicantCard = () => {
         <div className="card-body flex flex-row items-center justify-between p-2">
           <div className="flex flex-row items-center gap-x-2">
             <UserIcon className="h-8 w-8" />
-            <h2 className="card-title">
+            <h2 className="card-title text-base sm:text-lg">
               {applicant?.firstName} {applicant?.lastName} -{" "}
               {applicant?.jobTitle}
             </h2>
