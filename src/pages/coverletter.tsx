@@ -4,7 +4,7 @@ import Spinner from "~/components/utils/Spinner";
 import { api } from "~/utils/api";
 import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "~/store/store";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
@@ -20,6 +20,7 @@ const CoverLetterPage: NextPage = () => {
   const [refineText, setRefineText] = useState("");
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
+  const firstLoad = useRef(true);
 
   const {
     setCoverLetter,
@@ -33,7 +34,7 @@ const CoverLetterPage: NextPage = () => {
   const currentCoverLetter = coverLetters?.currentCoverLetter;
 
   //TODO: test recaptcha works (currently always passing)
-  const { handleReCaptchaVerify, captchaError } = useRecaptcha();
+  const { handleReCaptchaVerify, captchaError, captchaReady } = useRecaptcha();
 
   const {
     mutate: createCoverLetter,
@@ -66,7 +67,7 @@ const CoverLetterPage: NextPage = () => {
     },
   });
 
-  const generate = async () => {
+  const generate = useCallback(async () => {
     resetCoverLetters();
     if (job && applicant) {
       const token = await handleReCaptchaVerify();
@@ -78,7 +79,21 @@ const CoverLetterPage: NextPage = () => {
         });
       }
     }
-  };
+  }, [
+    applicant,
+    createCoverLetter,
+    handleReCaptchaVerify,
+    job,
+    resetCoverLetters,
+  ]);
+
+  useEffect(() => {
+    if (!coverLetters && captchaReady && firstLoad.current) {
+      firstLoad.current = false;
+      void generate();
+      return;
+    }
+  }, [captchaReady, coverLetters, generate]);
 
   useEffect(() => {
     setDisplayedLetter(currentCoverLetter);
@@ -104,8 +119,6 @@ const CoverLetterPage: NextPage = () => {
     setIsOpenResetModal(true);
   };
 
-  // TODO: Add animation when cover letter result is available
-  // TODO: Add automatic generation on first load
   return (
     <>
       <Head>

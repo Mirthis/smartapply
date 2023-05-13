@@ -8,11 +8,13 @@ const Modal = ({
   onClose,
   children,
   title,
+  type = "standard",
 }: {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
+  type?: "standard" | "signup";
 }) => {
   return (
     <>
@@ -31,7 +33,7 @@ const Modal = ({
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto ">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-center justify-center p-2 text-center sm:p-4">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -41,11 +43,17 @@ const Modal = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-base-100  p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel
+                  className={`${
+                    type === "standard"
+                      ? "bg-base-100  p-2 sm:p-6"
+                      : "bg-transparent p-0"
+                  } w-full max-w-xl transform overflow-hidden rounded-2xl  text-left align-middle shadow-xl transition-all `}
+                >
                   <div className="mb-8 flex items-center justify-between">
                     {title && (
                       <Dialog.Title as="h3">
-                        <Title title={title} type="subsection" />
+                        <Title title={title} type="subsection" />`
                       </Dialog.Title>
                     )}
                     <button

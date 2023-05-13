@@ -1,20 +1,18 @@
-import { withClerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { authMiddleware } from "@clerk/nextjs";
 
-export default withClerkMiddleware((req: NextRequest) => {
-  return NextResponse.next();
+export default authMiddleware({
+  publicRoutes: [
+    "/",
+    "/new",
+    "/privacy",
+    "/terms",
+    "sign-in",
+    "sign-up",
+    "about",
+    "contact",
+  ],
 });
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next
-     * - static (static files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    "/(.*?trpc.*?|(?!static|.*\\..*|_next|favicon.ico).*)",
-  ],
+  matcher: ["/(.*?trpc.*?|(?!static|.*\\..*|_next|favicon.ico).*)", "/'"],
 };

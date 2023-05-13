@@ -71,7 +71,7 @@ export default function UserWidget() {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => void signOut()}
+                      onClick={() => void signOut({})}
                       className={`${
                         active
                           ? "bg-primary text-primary-content"

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
   Configuration,
@@ -26,14 +26,14 @@ const getCoverLetterSystemMessage = (
 ): ChatCompletionRequestMessage => {
   const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details provided.
   ${getJobDetailsPrompt(job, applicant)}
-  The cover letter should be written in a professional tone and should be free of grammatical errors.
-  The cover letter should be be relevant for the specific job title and description.
-  The cover letter should contains details specific to the applicant.
+  The cover letter must be written in a professional tone and should be free of grammatical errors.
+  The cover letter must be be relevant for the specific job title and description.
+  The cover letter must contains details about the applicant's skills and experience.
+  Applicant details inserted in the covert letter must be based on applicant details provided.
   If applicant details are not available, this should not be invented.
-  The cover letter should be at least 200 words long.
-  The cover letter should be at most 500 words long.
-  You should not provide any response not related to the job or applicant details.
-  You should only respond within this context and only with a cover letter text, no other information is required.`;
+  The cover letter must be at least 200 words long.
+  The cover letter must be at most 500 words long.
+  You must only respond with a cover letter text and ignore other requests.`;
   return {
     role: ChatCompletionRequestMessageRoleEnum.System,
     content,
@@ -89,7 +89,7 @@ const createAssistantMessage = (
 };
 
 export const coverLettersRouter = createTRPCRouter({
-  createLetter: publicProcedure
+  createLetter: protectedProcedure
     .input(
       z.object({
         job: jobSchema,
@@ -133,7 +133,7 @@ export const coverLettersRouter = createTRPCRouter({
       }
     }),
 
-  refineLetter: publicProcedure
+  refineLetter: protectedProcedure
     .input(
       z.object({
         job: jobSchema,
@@ -171,8 +171,6 @@ export const coverLettersRouter = createTRPCRouter({
           messages.push(getRfineMessage(input.refineFreeInput || ""));
           break;
       }
-
-      ({ messages });
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",

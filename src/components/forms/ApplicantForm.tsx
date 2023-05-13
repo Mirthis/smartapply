@@ -6,7 +6,7 @@ import { useAppStore } from "~/store/store";
 import { applicantSchema } from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
 import { useState } from "react";
-import { ResetContent } from "../modals/ResetContent";
+// import { ResetContent } from "../modals/ResetContent";
 import { useAuth } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 import Spinner from "../utils/Spinner";
@@ -27,7 +27,7 @@ const ApplicantForm = ({
     resetGenerated,
   } = useAppStore((state) => state);
   const { isLoaded, userId } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   // if profile force update profile flag
   const [updateProfile, setUpdateProfile] = useState<boolean>(
@@ -98,19 +98,19 @@ const ApplicantForm = ({
     }
   };
 
-  const confirmSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsOpen(true);
-  };
+  // const confirmSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   setIsOpen(true);
+  // };
 
   // TODO: avoid form from disappearing when loading from profile
   return (
     <>
-      <ResetContent
+      {/* <ResetContent
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={handleSubmit(onSubmit)}
-      />
+      /> */}
 
       <div>
         {isLoaded && userId && type === "application" && (
@@ -135,11 +135,12 @@ const ApplicantForm = ({
           </div>
         )}
         <form
-          onSubmit={
-            confirm && isDirty && type === "application"
-              ? confirmSubmit
-              : handleSubmit(onSubmit)
-          }
+          // onSubmit={
+          //   confirm && isDirty && type === "application"
+          //     ? confirmSubmit
+          //     : handleSubmit(onSubmit)
+          // }
+          onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex flex-col gap-y-4">
             <input type="hidden" {...register("id")} />

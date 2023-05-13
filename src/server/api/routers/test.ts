@@ -1,6 +1,6 @@
 import { array, z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
   Configuration,
@@ -68,7 +68,7 @@ const getQuestionPrompt = (): ChatCompletionRequestMessage => {
 };
 
 export const testRouter = createTRPCRouter({
-  getQuestion: publicProcedure
+  getQuestion: protectedProcedure
     .input(
       z.object({
         job: jobSchema,
@@ -128,7 +128,7 @@ export const testRouter = createTRPCRouter({
       }
     }),
 
-  getAnswerExplanation: publicProcedure
+  getAnswerExplanation: protectedProcedure
     .input(
       z.object({
         job: jobSchema,
