@@ -6,6 +6,14 @@ const footerLinks = [
     url: "/",
   },
   {
+    title: "Privacy Policy",
+    url: "/privacy",
+  },
+  {
+    title: "Terms of Service",
+    url: "/terms",
+  },
+  {
     title: "About",
     url: "/about",
   },
