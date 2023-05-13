@@ -99,7 +99,7 @@ export const coverLettersRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       if (env.NEXT_PUBLIC_SKIP_AI) {
-        return await getFakeAiResponse("test cover letter");
+        return await getFakeAiResponse("test cover letter\n\n1");
       }
 
       await validateRecaptcha(input.captchaToken);
@@ -149,9 +149,11 @@ export const coverLettersRouter = createTRPCRouter({
           case "shorten":
             return await getFakeAiResponse("Shortened letter");
           case "extend":
-            return await getFakeAiResponse("Extended letter");
+            return await getFakeAiResponse(
+              "Extended letter\n\nExtended letter\n\nExtended letter"
+            );
           case "freeinput":
-            return await getFakeAiResponse("Refined letter");
+            return await getFakeAiResponse("Refined letter\n\n1\n\n2\n\n3");
         }
       }
 

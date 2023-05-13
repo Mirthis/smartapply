@@ -13,6 +13,7 @@ import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
 import { useRecaptcha } from "~/utils/hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import OpacityTransition from "~/components/utils/OpacityTransition";
 
 const CoverLetterPage: NextPage = () => {
   const router = useRouter();
@@ -147,14 +148,16 @@ const CoverLetterPage: NextPage = () => {
       {!coverLetters && (
         <div className="text-center">
           <button
-            className="btn-primary btn w-full sm:w-96"
+            className="btn-primary btn w-full disabled:btn-outline sm:w-96"
             onClick={generate}
             disabled={createLoading}
           >
             {createLoading ? (
               <div className="flex items-center gap-x-2">
-                <Spinner className="mb-2 h-10 w-10" />
-                <p>Generating cover letter...</p>
+                <Spinner
+                  className="mb-2 h-10 w-10"
+                  text="Generating cover letter..."
+                />
               </div>
             ) : (
               <p>Generate Cover Letter</p>
@@ -182,12 +185,12 @@ const CoverLetterPage: NextPage = () => {
                   </a>
                 ))}
               </div>
-              <select className="select-bordered select select-sm block lg:hidden">
+              <select
+                className="select-bordered select select-sm block lg:hidden"
+                value={displayedLetter?.id}
+              >
                 {coverLetters?.coverLetters.map((c) => (
                   <option
-                    {...(displayedLetter?.id === c.id
-                      ? { selected: true }
-                      : {})}
                     key={c.id}
                     onSelect={() => handleLettersTabChange(c.id)}
                   >
@@ -201,90 +204,98 @@ const CoverLetterPage: NextPage = () => {
       )}
 
       {!createLoading && displayedLetter && (
-        <div>
-          <div className="relative rounded-md bg-base-200 p-2">
-            {formatApiMessage(displayedLetter.text).map((p, i) => (
-              <p key={i} className="mb-2">
-                {p}
-              </p>
-            ))}
-            <button
-              className="group absolute right-2 top-2"
-              title="Copy to clipboard"
-              onClick={() => {
-                void navigator.clipboard.writeText(displayedLetter.text);
-              }}
-            >
-              <div className="flex">
-                <p className="opacity-0 transition-opacity duration-700 group-active:opacity-100 group-active:duration-0">
-                  Copied
+        <OpacityTransition show appear>
+          <div>
+            <div className="relative rounded-md bg-base-200 p-2">
+              {formatApiMessage(displayedLetter.text).map((p, i) => (
+                <p key={`${displayedLetter.id}-${i}`} className="mb-2">
+                  {p}
                 </p>
-                <ClipboardIcon className="h-6 w-6" />
+              ))}
+              <button
+                className="group absolute right-2 top-2"
+                title="Copy to clipboard"
+                onClick={() => {
+                  void navigator.clipboard.writeText(displayedLetter.text);
+                }}
+              >
+                <div className="flex">
+                  <p className="opacity-0 transition-opacity duration-700 group-active:opacity-100 group-active:duration-0">
+                    Copied
+                  </p>
+                  <ClipboardIcon className="h-6 w-6" />
+                </div>
+              </button>
+            </div>
+            <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 lg:flex-row">
+              <div className="flex w-full items-center justify-center gap-x-2">
+                <input
+                  type="text"
+                  className="input-bordered input w-full"
+                  placeholder="Specify wich change you need (i.e.: include more details from my profile)"
+                  minLength={5}
+                  maxLength={100}
+                  value={refineText}
+                  onChange={(e) => setRefineText(e.target.value)}
+                />
+
+                <button
+                  className="btn-primary btn"
+                  onClick={() => refine("freeinput")}
+                  disabled={
+                    refineLoading ||
+                    createLoading ||
+                    refineText.length < 5 ||
+                    !currentCoverLetter ||
+                    refineText.length > 100
+                  }
+                >
+                  Refine
+                </button>
               </div>
-            </button>
-          </div>
-          <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 lg:flex-row">
-            <div className="flex w-full items-center justify-center gap-x-2">
-              <input
-                type="text"
-                className="input-bordered input w-full"
-                placeholder="Specify wich change you need (i.e.: include more details from my profile)"
-                minLength={5}
-                maxLength={100}
-                value={refineText}
-                onChange={(e) => setRefineText(e.target.value)}
+              <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:w-fit">
+                <button
+                  className="btn-secondary btn"
+                  onClick={() => refine("shorten")}
+                  disabled={
+                    refineLoading || createLoading || !currentCoverLetter
+                  }
+                >
+                  Shorten
+                </button>
+                <button
+                  className="btn-secondary btn"
+                  onClick={() => refine("extend")}
+                  disabled={
+                    refineLoading || createLoading || !currentCoverLetter
+                  }
+                >
+                  Extend
+                </button>
+
+                <button
+                  className="btn-secondary btn"
+                  onClick={handleReset}
+                  disabled={
+                    refineLoading || createLoading || !currentCoverLetter
+                  }
+                >
+                  Reset
+                </button>
+              </div>
+              <Spinner
+                className={`${
+                  refineLoading || createLoading ? "visible" : "invisible"
+                } h-16 w-16`}
               />
-
-              <button
-                className="btn-primary btn"
-                onClick={() => refine("freeinput")}
-                disabled={
-                  refineLoading ||
-                  createLoading ||
-                  refineText.length < 5 ||
-                  !currentCoverLetter ||
-                  refineText.length > 100
-                }
-              >
-                Refine
-              </button>
             </div>
-            <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:w-fit">
-              <button
-                className="btn-secondary btn"
-                onClick={() => refine("shorten")}
-                disabled={refineLoading || createLoading || !currentCoverLetter}
-              >
-                Shorten
-              </button>
-              <button
-                className="btn-secondary btn"
-                onClick={() => refine("extend")}
-                disabled={refineLoading || createLoading || !currentCoverLetter}
-              >
-                Extend
-              </button>
-
-              <button
-                className="btn-secondary btn"
-                onClick={handleReset}
-                disabled={refineLoading || createLoading || !currentCoverLetter}
-              >
-                Reset
-              </button>
-            </div>
-            <Spinner
-              className={`${
-                refineLoading || createLoading ? "visible" : "invisible"
-              } h-16 w-16`}
-            />
+            {refineError && (
+              <div className="text-right font-bold text-error">
+                Ooop, something went wrong. Try again.
+              </div>
+            )}
           </div>
-          {refineError && (
-            <div className="text-right font-bold text-error">
-              Ooop, something went wrong. Try again.
-            </div>
-          )}
-        </div>
+        </OpacityTransition>
       )}
       {captchaError && (
         <div className="mt-4 text-center font-semibold text-error">

@@ -8,11 +8,11 @@ const Spinner = ({
   text?: string;
 }) => {
   return (
-    <div role="status" className="flex gap-y-2">
+    <div role="status" className="flex items-center gap-x-2">
       <svg
         aria-hidden="true"
         className={classNames(
-          "mr-2 h-6 w-6 animate-spin fill-primary text-secondary",
+          "h-6 w-6 animate-spin fill-primary text-secondary",
           className
         )}
         viewBox="0 0 100 101"

@@ -1,4 +1,4 @@
-import { SignUp } from "@clerk/nextjs";
+import { SignIn } from "@clerk/nextjs";
 import Modal from "./Modal";
 
 export const SignInModal = ({
@@ -12,10 +12,10 @@ export const SignInModal = ({
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} type="signup">
-      <SignUp
+      <SignIn
         // path="/sign-in"
         // routing="path"
-        signInUrl="/sign-in"
+        signUpUrl="/sign-in"
         redirectUrl={redirectUrl}
       />
     </Modal>

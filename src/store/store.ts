@@ -57,7 +57,7 @@ const initialState: AppStoreInitialState = {
 
 if (!!env.NEXT_PUBLIC_SKIP_AI) {
   initialState.job = {
-    jobTitle: "Senior Manager, Data Engineering",
+    jobTitle: " Senior Manager, Data Engineering",
     jobDescription: `Expedia Group's Stream Engineering team builds the streaming platform for the whole of Expedia. The Stream Platform ingests billions of messages everyday and is quickly becoming one of the largest streaming platforms in the world. The platform supports multiple brands and internal teams and powers many of the business critical processes, data products and AI and ML workflows.
 
     The team is focused on delivery of a scalable, reliable, secure and easy to use platform. The team places a heavy emphasis on distributed systems architecture and automation, utilising appropriate technologies such as Kafka, Spring, Kubernetes and common Devops automation tooling. We scale on AWS but we aim to be able to deploy to any environment in any location to meet any demand.

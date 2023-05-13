@@ -159,7 +159,7 @@ const ApplicantForm = ({
                     htmlFor="firstName"
                     className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
                   >
-                    First Name
+                    First Name *
                   </label>
                 </div>
                 <div className="relative w-1/2">
@@ -175,7 +175,7 @@ const ApplicantForm = ({
                     htmlFor="lastName"
                     className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
                   >
-                    Last Name
+                    Last Name *
                   </label>
                 </div>
               </div>
@@ -200,7 +200,7 @@ const ApplicantForm = ({
                   htmlFor="jobTitle"
                   className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
                 >
-                  Job Title
+                  Job Title *
                 </label>
               </div>
               {errors.jobTitle && (
@@ -221,7 +221,7 @@ const ApplicantForm = ({
                   htmlFor="resume"
                   className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
                 >
-                  Resume
+                  Resume *
                 </label>
               </div>
               {errors.resume && (
