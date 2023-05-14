@@ -30,13 +30,7 @@ const ApplicantForm = ({
   // const [isOpen, setIsOpen] = useState(false);
 
   // if profile force update profile flag
-  const [updateProfile, setUpdateProfile] = useState<boolean>(
-    type === "profile"
-  );
-  // if profile don't use the applicant from the store
-  // const [applicant, setApplicant] = useState<ApplicantData | undefined>(
-  //   type !== "profile" ? storeApplicant : undefined
-  // );
+  const [updateProfile, setUpdateProfile] = useState<boolean>(false);
 
   const { isFetching: isLoadingProfile, refetch: refetchProfile } =
     api.applicant.getForLoggedUser.useQuery(undefined, {
@@ -49,6 +43,7 @@ const ApplicantForm = ({
         }
       },
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
     });
 
   const { mutate } = api.applicant.createOrUpdate.useMutation({

@@ -37,15 +37,18 @@ const InterviewPage: NextPage = () => {
       },
     });
 
-  const { mutate: getAnswerExplanation, isLoading: isLoadingAnswer } =
-    api.test.getAnswerExplanation.useMutation({
-      onSuccess: (data) => {
-        const id = test?.lastId;
-        if (!id) return;
-        addTestExplanation(id, data.content);
-        addTestMessage(data);
-      },
-    });
+  const {
+    mutate: getAnswerExplanation,
+    isLoading: isLoadingAnswer,
+    isError: isAnswerError,
+  } = api.test.getAnswerExplanation.useMutation({
+    onSuccess: (data) => {
+      const id = test?.lastId;
+      if (!id) return;
+      addTestExplanation(id, data.content);
+      addTestMessage(data);
+    },
+  });
 
   const getQuestion = useCallback(() => {
     if (job && applicant) {
@@ -141,7 +144,7 @@ const InterviewPage: NextPage = () => {
             {displayedQuestion.answers.map((answer, index) => {
               let classes = "";
               const currentAnswer = displayedQuestion.providedAnswer === index;
-              if (currentAnswer) {
+              if (currentAnswer && !isAnswerError) {
                 if (
                   displayedQuestion.providedAnswer ===
                   displayedQuestion.correctAnswer
@@ -156,10 +159,11 @@ const InterviewPage: NextPage = () => {
                   key={`q-${displayedQuestion.id}-${index}`}
                   disabled={
                     (displayedQuestion.providedAnswer !== undefined &&
-                      !currentAnswer) ||
+                      !currentAnswer &&
+                      !isAnswerError) ||
                     isLoadingAnswer
                   }
-                  className={`${classes} btn-outline btn-secondary btn justify-start text-left normal-case`}
+                  className={`${classes} btn-outline btn-primary btn justify-start text-left normal-case`}
                   onClick={() => {
                     sendAnswer(displayedQuestion.id, index);
                   }}
@@ -199,6 +203,12 @@ const InterviewPage: NextPage = () => {
           >
             {questions.length == 0 ? "Get First Question" : "Get Next Question"}
           </button>
+        </div>
+      )}
+      {isAnswerError && (
+        <div className="mt-4 font-semibold text-error">
+          There was an error while submitting your answer. Please try again
+          later.
         </div>
       )}
       {currentQuestion?.explanation &&

@@ -122,7 +122,7 @@ export const coverLettersRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      ({ responseText });
+      console.log({ response });
       if (responseText) {
         return responseText;
       } else {
