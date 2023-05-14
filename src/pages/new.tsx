@@ -8,7 +8,6 @@ import { useState } from "react";
 import Head from "next/head";
 import ServiceCard from "~/components/ServiceCard";
 import { serviceCardData } from "~/utils/constants";
-import { SignInModal } from "~/components/modals/SignInModal";
 
 const NewApplication: NextPage = () => {
   // state for application form

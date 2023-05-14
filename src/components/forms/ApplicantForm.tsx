@@ -14,11 +14,9 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 const ApplicantForm = ({
   onSuccess,
-  confirm,
   type = "application",
 }: {
   onSuccess?: () => void;
-  confirm?: boolean;
   type?: "application" | "profile";
 }) => {
   const {

@@ -110,23 +110,31 @@ export const coverLettersRouter = createTRPCRouter({
       ];
       console.info({ messages });
 
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages,
-      });
-      const finishReason = response.data.choices[0]?.finish_reason;
-      if (finishReason === "lenght") {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Cover letter generation failed due to excessive length",
+      try {
+        const response = await openai.createChatCompletion({
+          model: "gpt-3.5-turbo",
+          messages,
         });
-      }
+        console.info({ response });
+        const finishReason = response.data.choices[0]?.finish_reason;
+        if (finishReason === "lenght") {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Cover letter generation failed due to excessive length",
+          });
+        }
 
-      const responseText = response.data.choices[0]?.message?.content;
-      console.info({ response });
-      if (responseText) {
-        return responseText;
-      } else {
+        const responseText = response.data.choices[0]?.message?.content;
+        if (responseText) {
+          return responseText;
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "OpenAI API returned no response",
+          });
+        }
+      } catch (err) {
+        console.error(err);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "OpenAI API returned no response",
