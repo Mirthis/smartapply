@@ -15,6 +15,7 @@ const server = z.object({
   SMTP_USERNAME: z.string().min(1),
   SMTP_PASSWORD: z.string().min(1),
   EMAIL_RECIPIENT: z.string().min(1),
+  SKIP_AI: z.string().min(1).optional(),
 });
 
 /**
@@ -26,7 +27,7 @@ const client = z.object({
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1),
-  NEXT_PUBLIC_SKIP_AI: z.string().min(1).optional(),
+  NEXT_PUBLIC_INIT_STORE: z.string().min(1).optional(),
 });
 
 /**
@@ -46,11 +47,12 @@ const processEnv = {
   SMTP_USERNAME: process.env.SMTP_USERNAME,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   EMAIL_RECIPIENT: process.env.EMAIL_RECIPIENT,
-  NEXT_PUBLIC_SKIP_AI: process.env.NEXT_PUBLIC_SKIP_AI,
+  SKIP_AI: process.env.SKIP_AI,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+  NEXT_PUBLIC_INIT_STORE: process.env.NEXT_PUBLIC_INIT_STORE,
 };
 
 // Don't touch the part below

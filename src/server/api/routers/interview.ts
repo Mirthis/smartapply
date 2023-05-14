@@ -105,7 +105,7 @@ export const interviewRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.NEXT_PUBLIC_SKIP_AI) {
+      if (env.SKIP_AI) {
         await delay(1000);
         const message: ChatCompletionRequestMessage = {
           role: ChatCompletionRequestMessageRoleEnum.Assistant,

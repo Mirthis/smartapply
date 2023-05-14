@@ -98,16 +98,16 @@ export const coverLettersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.NEXT_PUBLIC_SKIP_AI) {
-        return await getFakeAiResponse("test cover letter\n\n1");
-      }
-
       await validateRecaptcha(input.captchaToken);
 
       const messages = [
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),
       ];
+
+      if (env.SKIP_AI) {
+        return await getFakeAiResponse("test cover letter\n\n1");
+      }
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
@@ -144,7 +144,7 @@ export const coverLettersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.NEXT_PUBLIC_SKIP_AI) {
+      if (env.SKIP_AI) {
         switch (input.refineOption) {
           case "shorten":
             return await getFakeAiResponse("Shortened letter");
