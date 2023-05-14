@@ -98,7 +98,7 @@ export const coverLettersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      if (env.NEXT_PUBLIC_SKIP_AI) {
+      if (!env.NEXT_PUBLIC_SKIP_AI) {
         return await getFakeAiResponse("test cover letter\n\n1");
       }
 
@@ -108,33 +108,24 @@ export const coverLettersRouter = createTRPCRouter({
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),
       ];
-      console.info({ messages });
 
-      try {
-        const response = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages,
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages,
+      });
+
+      const finishReason = response.data.choices[0]?.finish_reason;
+      if (finishReason === "lenght") {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Cover letter generation failed due to excessive length",
         });
-        console.info({ response });
-        const finishReason = response.data.choices[0]?.finish_reason;
-        if (finishReason === "lenght") {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Cover letter generation failed due to excessive length",
-          });
-        }
+      }
 
-        const responseText = response.data.choices[0]?.message?.content;
-        if (responseText) {
-          return responseText;
-        } else {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "OpenAI API returned no response",
-          });
-        }
-      } catch (err) {
-        console.error(err);
+      const responseText = response.data.choices[0]?.message?.content;
+      if (responseText) {
+        return responseText;
+      } else {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "OpenAI API returned no response",
