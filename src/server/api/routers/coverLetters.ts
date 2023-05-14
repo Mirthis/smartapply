@@ -108,6 +108,7 @@ export const coverLettersRouter = createTRPCRouter({
         getCoverLetterSystemMessage(input.job, input.applicant),
         getCoverLetterUserMessage(),
       ];
+      console.info({ messages });
 
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
@@ -122,7 +123,7 @@ export const coverLettersRouter = createTRPCRouter({
       }
 
       const responseText = response.data.choices[0]?.message?.content;
-      console.log({ response });
+      console.info({ response });
       if (responseText) {
         return responseText;
       } else {
