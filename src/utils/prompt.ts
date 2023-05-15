@@ -6,14 +6,12 @@ export const getJobDetailsPrompt = (
 ) => {
   const company = job.companyName ?? "unspecified company";
 
-  let prompt = `${
-    job.companyName
-      ? `The compnay tht applicant is applying for is ${company}`
-      : ""
+  let prompt = `Job details are as follows: ${
+    job.companyName ? `Compnay name: ${company}` : ""
   }.
-  ${job.companyDetails ? `The company details are ${job.companyDetails}` : ""}
-  The applicant is applying for the position of ${job.jobTitle}.
-  The job description is as follows: ${job.jobDescription}
+  ${job.companyDetails ? `Company details: ${job.companyDetails}` : ""}
+  Job title: ${job.jobTitle}.
+  Job description: ${job.jobDescription}
   `;
   if (applicant) {
     const applicantName =
@@ -23,7 +21,7 @@ export const getJobDetailsPrompt = (
 
     prompt += `Applicant details are as follows:
     ${applicantName ? `Name: ${applicantName}` : ""}
-    ${applicant.jobTitle ? `Title: ${applicant.jobTitle}` : ""}
+    ${applicant.jobTitle ? `Job Title: ${applicant.jobTitle}` : ""}
     ${applicant.resume ? `Summary resume:  ${applicant.resume}` : ""}
     ${applicant.skills ? `Skills: ${applicant.skills}` : ""}
     ${applicant.experience ? `Experience: ${applicant.experience}` : ""}`;

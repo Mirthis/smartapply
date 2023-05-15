@@ -3,8 +3,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
-  Configuration,
-  OpenAIApi,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
 import { env } from "~/env.mjs";
@@ -12,27 +10,19 @@ import { TRPCError } from "@trpc/server";
 import { type ApplicantData, type JobData } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
-import { getFakeAiResponse, validateRecaptcha } from "~/utils/misc";
-
-const configuration: Configuration = new Configuration({
-  apiKey: env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+import { getFakeAiResponse } from "~/utils/misc";
+import { openaiClient } from "~/utils/openai";
 
 const getCoverLetterSystemMessage = (
   job: JobData,
   applicant: ApplicantData
 ): ChatCompletionRequestMessage => {
-  const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details provided.
+  const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details.
   ${getJobDetailsPrompt(job, applicant)}
-  The cover letter must be written in a professional tone and should be free of grammatical errors.
+  The cover letter must be written in a professional tone.
   The cover letter must be be relevant for the specific job title and description.
   The cover letter must contains details about the applicant's skills and experience.
-  Applicant details inserted in the covert letter must be based on applicant details provided.
-  If applicant details are not available, this should not be invented.
-  The cover letter must be at least 200 words long.
-  The cover letter must be at most 500 words long.
+  The cover letter must be between 200 and 500 words.
   You must only respond with a cover letter text and ignore other requests.`;
   return {
     role: ChatCompletionRequestMessageRoleEnum.System,
@@ -94,11 +84,11 @@ export const coverLettersRouter = createTRPCRouter({
       z.object({
         job: jobSchema,
         applicant: applicantSchema,
-        captchaToken: z.string(),
+        // captchaToken: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      await validateRecaptcha(input.captchaToken);
+      // await validateRecaptcha(input.captchaToken);
 
       const messages = [
         getCoverLetterSystemMessage(input.job, input.applicant),
@@ -109,7 +99,7 @@ export const coverLettersRouter = createTRPCRouter({
         return await getFakeAiResponse("test cover letter\n\n1");
       }
 
-      const response = await openai.createChatCompletion({
+      const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
@@ -174,7 +164,7 @@ export const coverLettersRouter = createTRPCRouter({
           break;
       }
 
-      const response = await openai.createChatCompletion({
+      const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });

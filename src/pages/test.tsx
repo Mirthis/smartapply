@@ -23,7 +23,6 @@ const InterviewPage: NextPage = () => {
     resetTest,
   } = useAppStore((state) => state);
   const currentQuestion = test?.currentQuestion;
-  const messages = test?.messages ?? [];
   const questions = test?.questions ?? [];
   const router = useRouter();
 
@@ -51,13 +50,17 @@ const InterviewPage: NextPage = () => {
   });
 
   const getQuestion = useCallback(() => {
+    // extract question text (no answers) and concatenate in single string
+    const questionsText = test?.questions.map((q) => q.question).join("\n");
+
     if (job && applicant) {
       newQuestion({
         job,
         applicant,
+        pastQuestions: questionsText,
       });
     }
-  }, [job, applicant, newQuestion]);
+  }, [job, applicant, newQuestion, test]);
 
   const sendAnswer = (questionId: number, answerId: number) => {
     const question = test?.questions.find((q) => q.id === questionId);
@@ -70,7 +73,7 @@ const InterviewPage: NextPage = () => {
         job,
         applicant,
         answer,
-        messages,
+        question: question.question,
       });
     }
     addTestAnswer(questionId, answerId);

@@ -1,10 +1,8 @@
-import { array, z } from "zod";
+import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
-  Configuration,
-  OpenAIApi,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
 import { env } from "~/env.mjs";
@@ -12,20 +10,12 @@ import { TRPCError } from "@trpc/server";
 import { type JobData, type TestQuestion } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
-
-const configuration: Configuration = new Configuration({
-  apiKey: env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import { addDelay } from "~/utils/misc";
+import { openaiClient } from "~/utils/openai";
 
 const getSystemMessage = (job: JobData) => {
   const content = `Your focus is to determine if the applicant is a good fit for the job.
-  You will ask multiple choice questions to the applicant, related to skills and responsibilities required by the job.
-  The questions must not test if the applicant knows the required skills, but if the applicant has the require skills
-  You will focus on technical skills and hard skills required by the job.
+  You will ask multiple choice questi ons to test the applicant knoweldge of the technical skills required by the job.
   You must not ask the same queston twice.
   ${getJobDetailsPrompt(job)}
   Each question should have 4 possible answers.
@@ -50,12 +40,26 @@ const getSystemMessage = (job: JobData) => {
   };
 };
 
-const getExplanationPrompt = (answer: string): ChatCompletionRequestMessage => {
-  const content = `I think the correct answer is ${answer}.
+const getExplanationPrompt = (
+  question: string,
+  answer: string
+): ChatCompletionRequestMessage => {
+  const content = `Your question was: ${question}
+  I think the correct answer is ${answer}.
   Tell me if this is correct or not and provide a detailed explanation for the correct answer.`;
 
   return {
     role: ChatCompletionRequestMessageRoleEnum.User,
+    content,
+  };
+};
+
+const getPastQuestionsPrompt = (pastQuestions: string) => {
+  const content = `Here are the questions you asked so far:
+  ${pastQuestions}
+  `;
+  return {
+    role: ChatCompletionRequestMessageRoleEnum.System,
     content,
   };
 };
@@ -73,11 +77,12 @@ export const testRouter = createTRPCRouter({
       z.object({
         job: jobSchema,
         applicant: applicantSchema,
+        pastQuestions: z.string().nullish(),
       })
     )
     .mutation(async ({ input }) => {
       if (env.SKIP_AI) {
-        await delay(1000);
+        await addDelay(1000);
         const responseText: TestQuestion = {
           id: 0,
           question: "What is React?",
@@ -96,9 +101,15 @@ export const testRouter = createTRPCRouter({
         return message;
       }
 
-      const messages = [getSystemMessage(input.job), getQuestionPrompt()];
+      const messages: ChatCompletionRequestMessage[] = [
+        getSystemMessage(input.job),
+      ];
+      if (input.pastQuestions) {
+        messages.push(getPastQuestionsPrompt(input.pastQuestions));
+      }
+      messages.push(getQuestionPrompt());
 
-      const response = await openai.createChatCompletion({
+      const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
@@ -133,12 +144,7 @@ export const testRouter = createTRPCRouter({
       z.object({
         job: jobSchema,
         applicant: applicantSchema,
-        messages: array(
-          z.object({
-            role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
-            content: z.string(),
-          })
-        ),
+        question: z.string(),
         answer: z.string(),
       })
     )
@@ -148,7 +154,7 @@ export const testRouter = createTRPCRouter({
         //   code: "INTERNAL_SERVER_ERROR",
         //   message: "OpenAI API returned no response",
         // });
-        await delay(1000);
+        await addDelay(1000);
         const message: ChatCompletionRequestMessage = {
           role: ChatCompletionRequestMessageRoleEnum.Assistant,
           content: "Correct answer.",
@@ -156,13 +162,9 @@ export const testRouter = createTRPCRouter({
         return message;
       }
 
-      const messages = [
-        getSystemMessage(input.job),
-        ...input.messages,
-        getExplanationPrompt(input.answer),
-      ];
+      const messages = [getExplanationPrompt(input.question, input.answer)];
 
-      const response = await openai.createChatCompletion({
+      const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });

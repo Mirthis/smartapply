@@ -4,13 +4,13 @@ import Spinner from "~/components/utils/Spinner";
 import { api } from "~/utils/api";
 import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppStore } from "~/store/store";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
 import { type CoverLetter } from "~/types/types";
 import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
-import { useRecaptcha } from "~/utils/hooks";
+// import { useRecaptcha } from "~/utils/hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import OpacityTransition from "~/components/utils/OpacityTransition";
@@ -21,7 +21,6 @@ const CoverLetterPage: NextPage = () => {
   const [refineText, setRefineText] = useState("");
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
-  const firstLoad = useRef(true);
 
   const {
     setCoverLetter,
@@ -35,7 +34,7 @@ const CoverLetterPage: NextPage = () => {
   const currentCoverLetter = coverLetters?.currentCoverLetter;
 
   //TODO: test recaptcha works (currently always passing)
-  const { handleReCaptchaVerify, captchaError, captchaReady } = useRecaptcha();
+  // const { handleReCaptchaVerify, captchaError, captchaReady } = useRecaptcha();
 
   const {
     mutate: createCoverLetter,
@@ -68,33 +67,25 @@ const CoverLetterPage: NextPage = () => {
     },
   });
 
-  const generate = useCallback(async () => {
+  const generate = useCallback(() => {
     resetCoverLetters();
     if (job && applicant) {
-      const token = await handleReCaptchaVerify();
-      if (token) {
-        createCoverLetter({
-          job,
-          applicant,
-          captchaToken: token,
-        });
-      }
+      // const token = await handleReCaptchaVerify();
+      // if (token) {
+      createCoverLetter({
+        job,
+        applicant,
+        // captchaToken: token,
+      });
+      // }
     }
   }, [
     applicant,
     createCoverLetter,
-    handleReCaptchaVerify,
+    // handleReCaptchaVerify,
     job,
     resetCoverLetters,
   ]);
-
-  useEffect(() => {
-    if (!coverLetters && captchaReady && firstLoad.current) {
-      firstLoad.current = false;
-      void generate();
-      return;
-    }
-  }, [captchaReady, coverLetters, generate]);
 
   useEffect(() => {
     setDisplayedLetter(currentCoverLetter);
@@ -163,6 +154,9 @@ const CoverLetterPage: NextPage = () => {
               <p>Generate Cover Letter</p>
             )}
           </button>
+          <p className="font-semibold text-info">
+            Cover letter creation may take from 30 to 60 seconds
+          </p>
         </div>
       )}
 
@@ -188,12 +182,10 @@ const CoverLetterPage: NextPage = () => {
               <select
                 className="select-bordered select select-sm block lg:hidden"
                 value={displayedLetter?.id}
+                onChange={(e) => handleLettersTabChange(+e.target.value)}
               >
                 {coverLetters?.coverLetters.map((c) => (
-                  <option
-                    key={c.id}
-                    onSelect={() => handleLettersTabChange(c.id)}
-                  >
+                  <option key={c.id} value={c.id}>
                     v{c.id} - {c.label}
                   </option>
                 ))}
@@ -287,11 +279,6 @@ const CoverLetterPage: NextPage = () => {
               Ooop, something went wrong. Try again.
             </div>
           )}
-        </div>
-      )}
-      {captchaError && (
-        <div className="mt-4 text-center font-semibold text-error">
-          Ooop, something went wrong with the Captcha verification. Try again.
         </div>
       )}
     </>

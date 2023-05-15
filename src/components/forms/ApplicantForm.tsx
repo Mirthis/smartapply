@@ -109,7 +109,7 @@ const ApplicantForm = ({
         {isLoaded && userId && type === "application" && (
           <div className="mb-2 text-center">
             <button
-              className="btn-ghost btn   w-80 text-primary"
+              className="btn-ghost btn w-80 text-primary"
               onClick={() => refetchProfile()}
               title="Reload data from profile"
             >

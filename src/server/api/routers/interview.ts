@@ -3,8 +3,6 @@ import { array, z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   type ChatCompletionRequestMessage,
-  Configuration,
-  OpenAIApi,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
 import { env } from "~/env.mjs";
@@ -12,18 +10,14 @@ import { TRPCError } from "@trpc/server";
 import { InterviewType, type ApplicantData, type JobData } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
-
-const configuration: Configuration = new Configuration({
-  apiKey: env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+import { openaiClient } from "~/utils/openai";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getInterviewCommonPrompt = () => {
   return `
   Your focus will be to determine if the applicant is a good fit for the job
+  You should ask the applicant 5 different questions, one at a time.
   After asking 5 questions You will close the interview by asking the applicant if they have any questions for you.
   If the applicant ask questions before you ask him you should say that you will answer them at the end of the interview.
   You will only answer 3 questions from the applicant.
@@ -125,7 +119,7 @@ export const interviewRouter = createTRPCRouter({
         ...input.interviewMessages,
       ];
 
-      const response = await openai.createChatCompletion({
+      const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });

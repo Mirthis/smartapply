@@ -19,6 +19,7 @@ import MessageBubble from "~/components/MessageBubble";
 import LoadingText from "~/components/utils/LoadingText";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { UserCircleIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -123,6 +124,7 @@ const InterviewPage: NextPage = () => {
       </Head>
       <Title title="Interview" />
       <ApplicationDetails />
+      {/* Interview is not started yet */}
       {!interviewType && (
         <>
           <Title title="Interview" type="section" />
@@ -168,6 +170,7 @@ const InterviewPage: NextPage = () => {
           </div>
         </>
       )}
+      {/* Interview is started */}
       {interviewType && (
         <>
           <Title title={interviewTitle(interviewType)} type="section" />
@@ -182,9 +185,12 @@ const InterviewPage: NextPage = () => {
             ))}
           </div>
           <OpacityTransition show={isLoading} noFadeOut>
-            <div className="chat chat-start">
-              <div className="chat-bubble chat-bubble-primary">
-                <LoadingText />
+            <div className="flex items-end gap-x-2">
+              <UserCircleIcon className="h-14 w-14 text-secondary" />
+              <div className="chat chat-start">
+                <div className="chat-bubble chat-bubble-secondary">
+                  <LoadingText />
+                </div>
               </div>
             </div>
           </OpacityTransition>
@@ -207,12 +213,13 @@ const InterviewPage: NextPage = () => {
       )}
       {/* Chat Input */}
       {interviewOpen && (
-        <div className="mt-4 flex items-end justify-start gap-x-2">
+        <div className="mt-4 flex items-start justify-start gap-x-2">
           <textarea
             value={chatText}
             onChange={(e) => setChatText(e.target.value)}
-            className="textarea-bordered textarea w-full"
+            className="textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
             placeholder="Type your message here"
+            rows={2}
           ></textarea>
           <button
             className="btn-primary btn"
@@ -220,7 +227,8 @@ const InterviewPage: NextPage = () => {
             onClick={() => send()}
             disabled={chatText.length === 0 || isLoading}
           >
-            Send
+            <PaperAirplaneIcon className="h-6 w-6" />
+            <span className="ml-2 hidden sm:block">Send</span>
           </button>
         </div>
       )}
