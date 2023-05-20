@@ -2,6 +2,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useState, type ComponentType } from "react";
 import { SignInModal } from "./modals/SignInModal";
+import { BasicCard } from "./BasicCard";
 
 const ServiceCard = ({
   url,
@@ -25,6 +26,8 @@ const ServiceCard = ({
     setModalState({ isOpen: true, redirectUrl });
   };
 
+  const onClick = userId ? () => void router.push(url) : () => openModal(url);
+
   return (
     <>
       <SignInModal
@@ -33,17 +36,13 @@ const ServiceCard = ({
         redirectUrl={modalState.redirectUrl}
       />
       {isLoaded && (
-        <button
-          onClick={userId ? () => void router.push(url) : () => openModal(url)}
-        >
-          <div className="card h-full w-full bg-base-200  hover:bg-base-300 lg:w-96">
-            <div className="card-body items-center text-center">
-              <Icon className="h-16 w-16" />
-              <h2 className="card-title">{title}</h2>
-              <p>{description}</p>
-            </div>
-          </div>
-        </button>
+        <BasicCard
+          url={url}
+          title={title}
+          description={description}
+          Icon={Icon}
+          onClick={onClick}
+        />
       )}
     </>
   );

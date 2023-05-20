@@ -20,6 +20,8 @@ import LoadingText from "~/components/utils/LoadingText";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { UserCircleIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { BasicCard } from "~/components/BasicCard";
+import { interviewTypeCardData } from "~/utils/constants";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -129,6 +131,16 @@ const InterviewPage: NextPage = () => {
         <>
           <Title title="Interview" type="section" />
           <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
+            {interviewTypeCardData.map((card) => (
+              <BasicCard
+                onClick={() => changeInterviewType(card.type)}
+                title={card.title}
+                description={card.description}
+                Icon={card.icon}
+                key={card.title}
+              />
+            ))}
+
             <button onClick={() => changeInterviewType(InterviewType.hr)}>
               <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
                 <div className="card-body items-center text-center">
@@ -150,19 +162,6 @@ const InterviewPage: NextPage = () => {
                   <p>
                     Simulate a technical interview focuing on the
                     applicant&apos;s technical skills.
-                  </p>
-                </div>
-              </div>
-            </button>
-
-            <button onClick={() => changeInterviewType(InterviewType.lead)}>
-              <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
-                <div className="card-body items-center text-center">
-                  <BriefcaseIcon className="h-16 w-16" />
-                  <h2 className="card-title">Leadership intervie</h2>
-                  <p>
-                    Simulate a leadership interview focuing on the
-                    applicant&apos;s leadership skills.
                   </p>
                 </div>
               </div>

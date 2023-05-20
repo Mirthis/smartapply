@@ -2,7 +2,10 @@ import {
   DocumentTextIcon,
   ChatBubbleLeftRightIcon,
   ClipboardDocumentCheckIcon,
+  UserIcon,
+  CodeBracketIcon,
 } from "@heroicons/react/24/solid";
+import { InterviewType } from "~/types/types";
 
 export const MAX_TEST_QUESTIONS = 5;
 export const MAX_COVER_LETTERS = 5;
@@ -49,5 +52,22 @@ export const serviceCardData = [
     description:
       "Test your knowledge with multiple choice questions relevant to the job and role. Get immediate feedback and explanations for each answer.",
     icon: ClipboardDocumentCheckIcon,
+  },
+];
+
+export const interviewTypeCardData = [
+  {
+    title: "HR Interview",
+    description:
+      "Simulate an HR interview focuing on soft skills and high-level assessment of the applicant.",
+    icon: UserIcon,
+    type: InterviewType.hr,
+  },
+  {
+    title: "Technical Interview",
+    description:
+      "Simulate a technical interview focuing on the applicant&apos;s technical skills.",
+    icon: CodeBracketIcon,
+    type: InterviewType.tech,
   },
 ];
