@@ -6,10 +6,11 @@ export default authMiddleware({
     "/new",
     "/privacy",
     "/terms",
-    "sign-in",
-    "sign-up",
-    "about",
-    "contact",
+    "/sign-in",
+    "/sign-up",
+    "/about",
+    "/contact",
+    "/testStreaming",
   ],
 });
 

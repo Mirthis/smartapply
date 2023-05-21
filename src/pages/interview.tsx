@@ -1,9 +1,5 @@
 import { type NextPage } from "next";
-import {
-  UserIcon,
-  CodeBracketIcon,
-  BriefcaseIcon,
-} from "@heroicons/react/24/outline";
+import { UserIcon, CodeBracketIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
@@ -47,6 +43,7 @@ const InterviewPage: NextPage = () => {
     addInterviewMessage,
     initInterview,
     resetInterview,
+    initFromLocalStore,
   } = useAppStore((state) => state);
   const messages = interview?.messages ?? [];
   const interviewType = interview?.type;
@@ -80,11 +77,16 @@ const InterviewPage: NextPage = () => {
     }
   };
 
+  // TODO: find a better way to manage loading from storage
   useEffect(() => {
     if (!applicant || !job) {
-      void router.replace("/");
+      const { applicant: storedApplicant, job: storedJob } =
+        initFromLocalStore();
+      if (!storedApplicant || !storedJob) {
+        void router.replace("/");
+      }
     }
-  }, [applicant, job, router]);
+  }, [applicant, job, router, initFromLocalStore]);
 
   const send = (retry = false) => {
     if (interviewType && job && applicant) {

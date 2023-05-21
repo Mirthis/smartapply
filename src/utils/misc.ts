@@ -39,7 +39,7 @@ export const validateRecaptcha = async (token: string) => {
 };
 
 // TODO: Use for more complex responses or get rid of it
-export const getFakeAiResponse = async (text: string) => {
+export const getFakeAiResponse = async (text: string): Promise<string> => {
   await addDelay(1000);
   return text;
 };

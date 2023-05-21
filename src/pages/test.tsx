@@ -21,6 +21,7 @@ const InterviewPage: NextPage = () => {
     addTestMessage,
     addTestExplanation,
     resetTest,
+    initFromLocalStore,
   } = useAppStore((state) => state);
   const currentQuestion = test?.currentQuestion;
   const questions = test?.questions ?? [];
@@ -83,11 +84,16 @@ const InterviewPage: NextPage = () => {
     setDisplayedQuestion(currentQuestion);
   }, [currentQuestion]);
 
+  // TODO: find a better way to manage loading from storage
   useEffect(() => {
     if (!applicant || !job) {
-      void router.replace("/");
+      const { applicant: storedApplicant, job: storedJob } =
+        initFromLocalStore();
+      if (!storedApplicant || !storedJob) {
+        void router.replace("/");
+      }
     }
-  }, [applicant, job, router]);
+  }, [applicant, job, router, initFromLocalStore]);
 
   return (
     <>

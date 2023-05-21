@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type NextPage } from "next";
 import Spinner from "~/components/utils/Spinner";
-import { api } from "~/utils/api";
 import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "~/store/store";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
-import { type CoverLetter } from "~/types/types";
+import { type CoverLetter, RefineMode } from "~/types/types";
 import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
-// import { useRecaptcha } from "~/utils/hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import OpacityTransition from "~/components/utils/OpacityTransition";
+import { useGenerateCoverLetter } from "~/utils/hooks";
 
 const CoverLetterPage: NextPage = () => {
   const router = useRouter();
@@ -21,87 +20,68 @@ const CoverLetterPage: NextPage = () => {
   const [refineText, setRefineText] = useState("");
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
+  // const [displayedText, setDisplayedText] = useState("");
 
   const {
-    setCoverLetter,
     addCoverLetter,
     coverLetters,
     job,
     applicant,
     resetCoverLetters,
+    initFromLocalStore,
   } = useAppStore((state) => state);
 
-  const currentCoverLetter = coverLetters?.currentCoverLetter;
-
-  //TODO: test recaptcha works (currently always passing)
-  // const { handleReCaptchaVerify, captchaError, captchaReady } = useRecaptcha();
-
   const {
-    mutate: createCoverLetter,
+    createCoverLetter,
+    refineCoverLetter,
     isLoading: createLoading,
     isError: createError,
-  } = api.coverLetters.createLetter.useMutation({
-    onSuccess: (data) => {
-      setCoverLetter(data);
+    text: newText,
+  } = useGenerateCoverLetter({
+    onSuccess: (data, label) => {
+      const newCoverLetter = addCoverLetter(data, label);
+      setDisplayedLetter(newCoverLetter);
     },
   });
+
+  const generate = () => {
+    resetCoverLetters();
+    if (job && applicant) {
+      void createCoverLetter(job, applicant);
+    }
+  };
+
+  const refine = (refineMode: RefineMode) => {
+    if (job && applicant && displayedLetter) {
+      void refineCoverLetter(
+        job,
+        applicant,
+        displayedLetter.text,
+        refineMode,
+        refineText
+      );
+    }
+  };
 
   useEffect(() => {
     if (!applicant || !job) {
-      void router.replace("/");
+      const { applicant: storedApplicant, job: storedJob } =
+        initFromLocalStore();
+      if (!storedApplicant || !storedJob) {
+        void router.replace("/");
+      }
     }
-  }, [applicant, job, router]);
+  }, [applicant, job, router, initFromLocalStore]);
 
-  const {
-    mutate: refineCoverLetter,
-    isLoading: refineLoading,
-    isError: refineError,
-  } = api.coverLetters.refineLetter.useMutation({
-    onSuccess: (data, { refineOption }) => {
-      const label = {
-        freeinput: "Refine",
-        shorten: "Shorten",
-        extend: "Extend",
-      }[refineOption];
-      addCoverLetter(data, label);
-    },
-  });
+  // useEffect(() => {
+  //   if (!coverLetters) return;
+  //   const currentCoverLetter =
+  //     coverLetters.coverLetters[coverLetters.coverLetters.length - 1];
 
-  const generate = useCallback(() => {
-    resetCoverLetters();
-    if (job && applicant) {
-      // const token = await handleReCaptchaVerify();
-      // if (token) {
-      createCoverLetter({
-        job,
-        applicant,
-        // captchaToken: token,
-      });
-      // }
-    }
-  }, [
-    applicant,
-    createCoverLetter,
-    // handleReCaptchaVerify,
-    job,
-    resetCoverLetters,
-  ]);
+  //   if (!currentCoverLetter) return;
 
-  useEffect(() => {
-    setDisplayedLetter(currentCoverLetter);
-  }, [currentCoverLetter]);
-
-  const refine = (mode: "freeinput" | "shorten" | "extend") => {
-    if (job && applicant && coverLetters) {
-      refineCoverLetter({
-        job,
-        applicant,
-        coverLetter: coverLetters.currentCoverLetter.text,
-        refineOption: mode,
-        refineFreeInput: refineText,
-      });
-    }
-  };
+  //   setDisplayedLetter(currentCoverLetter);
+  // }, [coverLetters]);
 
   const handleLettersTabChange = (index: number) => {
     setDisplayedLetter(coverLetters?.coverLetters.find((c) => c.id === index));
@@ -110,6 +90,8 @@ const CoverLetterPage: NextPage = () => {
   const handleReset = () => {
     setIsOpenResetModal(true);
   };
+
+  const displayedText = createLoading ? newText : displayedLetter?.text;
 
   return (
     <>
@@ -130,13 +112,7 @@ const CoverLetterPage: NextPage = () => {
       <ApplicationDetails />
       <div className="mb-4" />
 
-      {createError && (
-        <div className="mb-4 font-bold text-error">
-          Ooop, something went wrong. Try again.
-        </div>
-      )}
-
-      {!coverLetters && (
+      {!coverLetters && !newText && (
         <div className="text-center">
           <button
             className="btn-primary btn w-full disabled:btn-outline sm:w-96"
@@ -154,9 +130,6 @@ const CoverLetterPage: NextPage = () => {
               <p>Generate Cover Letter</p>
             )}
           </button>
-          <p className="font-semibold text-info">
-            Cover letter creation may take from 30 to 60 seconds
-          </p>
         </div>
       )}
 
@@ -195,11 +168,16 @@ const CoverLetterPage: NextPage = () => {
         </div>
       )}
 
-      {!createLoading && displayedLetter && (
+      {displayedText && (
         <div>
           <div className="relative rounded-md bg-base-200 p-2">
-            {formatApiMessage(displayedLetter.text).map((p, i) => (
-              <OpacityTransition show appear key={`${displayedLetter.id}-${i}`}>
+            {/* {displayedText} */}
+            {formatApiMessage(displayedText).map((p, i) => (
+              <OpacityTransition
+                show
+                appear
+                key={`${displayedLetter?.id || 0}-${i}`}
+              >
                 <p className="mb-2">{p}</p>
               </OpacityTransition>
             ))}
@@ -207,7 +185,7 @@ const CoverLetterPage: NextPage = () => {
               className="group absolute right-2 top-2"
               title="Copy to clipboard"
               onClick={() => {
-                void navigator.clipboard.writeText(displayedLetter.text);
+                void navigator.clipboard.writeText(displayedText);
               }}
             >
               <div className="flex">
@@ -232,12 +210,11 @@ const CoverLetterPage: NextPage = () => {
 
               <button
                 className="btn-primary btn"
-                onClick={() => refine("freeinput")}
+                onClick={() => refine(RefineMode.FreeInput)}
                 disabled={
-                  refineLoading ||
                   createLoading ||
                   refineText.length < 5 ||
-                  !currentCoverLetter ||
+                  !displayedLetter ||
                   refineText.length > 100
                 }
               >
@@ -247,15 +224,15 @@ const CoverLetterPage: NextPage = () => {
             <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:w-fit">
               <button
                 className="btn-secondary btn"
-                onClick={() => refine("shorten")}
-                disabled={refineLoading || createLoading || !currentCoverLetter}
+                onClick={() => refine(RefineMode.Shorten)}
+                disabled={createLoading || !displayedLetter}
               >
                 Shorten
               </button>
               <button
                 className="btn-secondary btn"
-                onClick={() => refine("extend")}
-                disabled={refineLoading || createLoading || !currentCoverLetter}
+                onClick={() => refine(RefineMode.Extend)}
+                disabled={createLoading || !displayedLetter}
               >
                 Extend
               </button>
@@ -263,22 +240,20 @@ const CoverLetterPage: NextPage = () => {
               <button
                 className="btn-secondary btn"
                 onClick={handleReset}
-                disabled={refineLoading || createLoading || !currentCoverLetter}
+                disabled={createLoading || !displayedLetter}
               >
                 Reset
               </button>
             </div>
             <Spinner
-              className={`${
-                refineLoading || createLoading ? "visible" : "invisible"
-              } h-16 w-16`}
+              className={`${createLoading ? "visible" : "invisible"} h-16 w-16`}
             />
           </div>
-          {refineError && (
-            <div className="text-right font-bold text-error">
-              Ooop, something went wrong. Try again.
-            </div>
-          )}
+        </div>
+      )}
+      {createError && (
+        <div className="mt-2 text-center font-bold text-error">
+          Ooop, something went wrong. Try again.
         </div>
       )}
     </>

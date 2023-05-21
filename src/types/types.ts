@@ -59,3 +59,9 @@ export enum FormStep {
   Applicant = "applicant",
   Complete = "complete",
 }
+
+export enum RefineMode {
+  FreeInput = "freeinput",
+  Shorten = "shorten",
+  Extend = "extend",
+}

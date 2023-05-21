@@ -96,15 +96,8 @@ const ApplicantForm = ({
   //   setIsOpen(true);
   // };
 
-  // TODO: avoid form from disappearing when loading from profile
   return (
     <>
-      {/* <ResetContent
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={handleSubmit(onSubmit)}
-      /> */}
-
       <div>
         {isLoaded && userId && type === "application" && (
           <div className="mb-2 text-center">
@@ -127,14 +120,7 @@ const ApplicantForm = ({
             </button>
           </div>
         )}
-        <form
-          // onSubmit={
-          //   confirm && isDirty && type === "application"
-          //     ? confirmSubmit
-          //     : handleSubmit(onSubmit)
-          // }
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-y-4">
             <input type="hidden" {...register("id")} />
             <div>
