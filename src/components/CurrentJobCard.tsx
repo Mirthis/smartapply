@@ -15,7 +15,7 @@ const CurrentJobCard = () => {
           <div className="flex flex-row items-center gap-x-2">
             <BriefcaseIcon className="h-8 w-8" />
             <h2 className="card-title text-base sm:text-lg">
-              {job?.jobTitle} @ {job?.companyName}
+              {job?.jobTitle} {job?.companyName ? `@ ${job?.companyName}` : ""}
             </h2>
           </div>
           <div className="card-actions justify-end">

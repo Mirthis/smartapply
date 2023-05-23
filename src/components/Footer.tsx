@@ -26,9 +26,13 @@ const footerLinks = [
 const Footer = () => {
   return (
     <footer className="footer footer-center border border-t-2 border-secondary bg-primary bg-opacity-70 p-10 text-secondary-content">
-      <div className="grid grid-flow-col gap-x-6">
+      <div className="flex flex-wrap justify-center gap-x-4">
         {footerLinks.map((link) => (
-          <Link href={link.url} className="link-hover link" key={link.url}>
+          <Link
+            href={link.url}
+            className="no link-hover link whitespace-nowrap"
+            key={link.url}
+          >
             {link.title}
           </Link>
         ))}

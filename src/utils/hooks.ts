@@ -39,36 +39,24 @@ export const useRecaptcha = () => {
   };
 };
 
-// TOOD: refactor to remove duplication in state mamangement and resposne parsing
-export const useGenerateCoverLetter = (options?: {
-  onSuccess: (data: string, label: string) => void;
-}) => {
+export const useStreamingApi = <T>(
+  fetchFn: (args: T) => Promise<Response>,
+  options?: {
+    onSuccess: (data: string, label: string) => void;
+  }
+) => {
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const createCoverLetter = async (job: JobData, applicant: ApplicantData) => {
+  const execute = async (args: T) => {
     setIsLoading(true);
     setIsError(false);
-    const response = await fetch("/api/newCoverLetter", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        job,
-        applicant,
-      }),
-    });
-
-    if (!response.ok) {
-      setIsError(true);
-      setIsLoading(false);
-      return;
-    }
+    const response = await fetchFn(args);
 
     const data = response.body;
-    if (!data) {
+
+    if (!response.ok || !data) {
       setIsError(true);
       setIsLoading(false);
       return;
@@ -95,72 +83,74 @@ export const useGenerateCoverLetter = (options?: {
     return currentResponse.join("");
   };
 
-  const refineCoverLetter = async (
-    job: JobData,
-    applicant: ApplicantData,
-    srcCoverLetter: string,
-    refineMode: RefineMode,
-    refineText: string
-  ) => {
-    setIsLoading(true);
-    setIsError(false);
+  return {
+    execute,
+    isLoading,
+    isError,
+    text: result,
+  };
+};
 
-    const response = await fetch("/api/refineCoverLetter", {
+export const useGenerateCoverLetter = (options?: {
+  onSuccess: (data: string, label: string) => void;
+}) => {
+  const fn = (args: { job: JobData; applicant: ApplicantData }) =>
+    fetch("/api/newCoverLetter", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        job,
-        applicant,
-        srcCoverLetter,
-        refineMode,
-        refineText,
+        job: args.job,
+        applicant: args.applicant,
       }),
     });
 
-    if (!response.ok) {
-      setIsError(true);
-      setIsLoading(false);
-      return;
-    }
+  return useStreamingApi(fn, options);
+};
 
-    const data = response.body;
-    if (!data) {
-      setIsError(true);
-      setIsLoading(false);
-      return;
-    }
+export const useRefineCoverLetter = (options?: {
+  onSuccess: (data: string, label: string) => void;
+}) => {
+  const fn = (args: {
+    job: JobData;
+    applicant: ApplicantData;
+    srcCoverLetter: string;
+    refineMode: RefineMode;
+    refineText: string;
+  }) =>
+    fetch("/api/refineCoverLetter", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...args,
+      }),
+    });
 
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
+  return useStreamingApi(fn, options);
+};
 
-    let currentResponse: string[] = [];
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      currentResponse = [...currentResponse, chunkValue];
-      setResult(currentResponse.join(""));
-    }
-    // breaks text indent on refresh due to streaming
-    // localStorage.setItem('response', JSON.stringify(currentResponse));
-    setIsLoading(false);
-
-    if (options?.onSuccess)
-      options.onSuccess(currentResponse.join(""), refineMode.toString());
-
-    return currentResponse.join("");
-  };
-
-  return {
-    createCoverLetter,
-    refineCoverLetter,
-    isLoading,
-    isError,
-    text: result,
-  };
+export const useValidateTestResponse = (options?: {
+  onSuccess: (data: string, label: string) => void;
+}) => {
+  const fn = (args: {
+    job: JobData;
+    applicant: ApplicantData;
+    question: string;
+    answer: string;
+  }) =>
+    fetch("/api/validateTestResponse", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...args,
+      }),
+    });
+  return useStreamingApi(fn, options);
 };
 
 export const useStore = <T, F>(

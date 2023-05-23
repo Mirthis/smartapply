@@ -59,36 +59,43 @@ const getInitalState = () => {
 
   if (!!env.NEXT_PUBLIC_INIT_STORE) {
     initialState.job = {
-      jobTitle: "Front End Engineer",
-      jobDescription: `Who you are:
-      Strong knowledge of modern Javascript
-      Strong knowledge of CSS fundamentals and best practices
-      Prior commercial experience working with React and Redux
-      Good understanding of REST APIs
-      Experience working with GIT
+      jobTitle: "Sr Technical Program Manager",
+      jobDescription: `As a Senior Technical Program Manager at Ring, you will work with a focused team of product managers, engineers, and partner teams building and releasing new products and features. You will have an enormous opportunity to impact the customer experience, design, architecture, and implementation of a cutting edge product that will be used every day.
+      We are looking for entrepreneurial, innovative individuals who thrive on solving tough problems. Maturity, high judgment, negotiation skills, ability to influence, analytical talent, and leadership are essential to success in this role. 
+      You will anticipate bottlenecks, provide escalation management, anticipate and make tradeoffs, and balance customer and business needs versus technical constraints. An ability to take large, complex projects and break them down into manageable pieces, develop functional specifications, then deliver them in a successful and timely manner is expected.
+    
+      Key job responsibilities:
+      Collaborate with Business, Engineering, and other internal teams to solve business needs
+      Be expected to be familiar with system development cycle and key performance metrics
+      Communicate regularly with senior management on status, risks, and change control
+      Be expected to dive deep into the technical details of the program
       
-      Desirable:
-      Commercial experience with Typescript
-      Experience working with Webpack
-      Experience in optimising rendering and loading performances
-      Experience with refactoring, following best practices
-      Experience in writing unit, integration and acceptance tests
-      
-      What the job involves:
-      In order to expand our team, we’re looking for a Front-end Developer with previous experience in the React and Redux ecosystem
-      You will be working in a cross-functional team in a continuous delivery workflow, developing new features
-      You will also be responsible for refactoring code, improving the quality of the codebase and keeping it in a well organised and updated state
-      Working in a multicultural, collaborative environment, you will have the opportunity to make an impact and grow both professionally and personally`,
-      companyName: "VIOOH",
-      companyDetails: `VIOOH's mission is to connect Out of Home (OOH) and digital advertising to create brand experiences and meaningful outcomes for advertisers. Their aim is to make it easy to trade, efficiently by delivering a premium OOH marketplace which connects buyers and sellers, simply.`,
+      REFERRED QUALIFICATIONS:
+      Ability to communicate effectively with both technical and non-technical individuals
+      Excellent oral and written communication skills
+      Track record for being detail-oriented with a demonstrated ability to self-motivate and follow-through on projects
+      Ability to define scope, and solve problems creatively and practically
+      Strong track record of software project delivery for large, cross functional, projects
+      Fluency with Atlassian SCM Suite (Confluence/JIRA)
+      Experience in productization and shipping of software products (Services or Consumer Electronics)
+      Knowledge of Software Development Life Cycle (SDLC)
+      Tenacious, does not give up   
+    `,
+      companyName: "Amazon",
+      companyDetails: null,
+      // companyDetails: `VIOOH's mission is to connect Out of Home (OOH) and digital advertising to create brand experiences and meaningful outcomes for advertisers. Their aim is to make it easy to trade, efficiently by delivering a premium OOH marketplace which connects buyers and sellers, simply.`,
     };
     initialState.applicant = {
       firstName: "John",
       lastName: "Doe",
-      jobTitle: "Full Stack Engineer",
-      resume: `Engineer with 5 years of experience developing full stack applications using Node, React and NextJs. I have worked in a variety of industries including finance, healthcare and retail. I am passionate about building products that solve real world problems.`,
-      skills: `Javascript, Typescript, React, NextJs, Tailwind CSS, Git, Prisma, NodeJs`,
-      experience: `Developed a web application for a healthcare company that allows patients to book appointments with doctors. The application was built using React, NextJs and Prisma. The application was deployed to AWS using Docker and Kubernetes.`,
+      jobTitle: "Delivery Manager",
+      resume: `Data and analytics expert and leader with more than 15 years of experience driving the delivery of complex transformation projects across business intelligence (BI), big data, cloud, and analytics. Thoroughly assesses enterprise needs and provides solutions in alignment with organisational structures, policies, procedures, and mission. Blends deep technical knowledge with business acumen to strategically drive efforts of cross-functional teams focused on surpassing objectives while optimising data and reporting functions. Poised to harness skills gained in a dynamic career delivering data and analytics solutions.`,
+      skills: `Project and Programme Management | Solution Architecture | Technical Architecture | Data Management Business Transformations | Reporting | Agile, Scrum / SAFe | Stakeholder Relations | Delivery Management  Change Management | Data Migration | Data Engineering | Data Architecture | Data Strategy | Data Governance`,
+      experience: `07.2007-Present:
+      Data and Analytics Senior Manager
+      Orchestrate data and analytics solution delivery to major international clients across a wide range of industries.
+      Play a leading role in diverse information management projects, encompassing migrations and integration of legacy systems as well as delivery of new strategic analytics solutions.
+      Coordinate efforts of multicultural teams working onshore / offshore to ensure timely and quality implementation of complex transformation programmes.`,
     };
     initialState.initialized = true;
   }

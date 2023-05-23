@@ -52,7 +52,7 @@ const Modal = ({
                 >
                   <div className="mb-8 flex items-center justify-between">
                     {title && (
-                      <Dialog.Title as="h3">
+                      <Dialog.Title as="div">
                         <Title title={title} type="subsection" />`
                       </Dialog.Title>
                     )}

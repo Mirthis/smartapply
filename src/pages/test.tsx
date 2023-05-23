@@ -10,6 +10,7 @@ import { formatApiMessage } from "~/utils/formatter";
 import Spinner from "~/components/utils/Spinner";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useValidateTestResponse } from "~/utils/hooks";
 
 const InterviewPage: NextPage = () => {
   const {
@@ -38,15 +39,16 @@ const InterviewPage: NextPage = () => {
     });
 
   const {
-    mutate: getAnswerExplanation,
+    execute: getAnswerExplanation,
     isLoading: isLoadingAnswer,
     isError: isAnswerError,
-  } = api.test.getAnswerExplanation.useMutation({
+    text: answerExplanation,
+  } = useValidateTestResponse({
     onSuccess: (data) => {
       const id = test?.lastId;
       if (!id) return;
-      addTestExplanation(id, data.content);
-      addTestMessage(data);
+      addTestExplanation(id, data);
+      // addTestMessage(data);
     },
   });
 
@@ -70,7 +72,7 @@ const InterviewPage: NextPage = () => {
     if (!answer) return;
 
     if (job && applicant) {
-      getAnswerExplanation({
+      void getAnswerExplanation({
         job,
         applicant,
         answer,
@@ -95,6 +97,9 @@ const InterviewPage: NextPage = () => {
     }
   }, [applicant, job, router, initFromLocalStore]);
 
+  const displayedExplanation =
+    answerExplanation || displayedQuestion?.explanation;
+
   return (
     <>
       <Head>
@@ -105,9 +110,9 @@ const InterviewPage: NextPage = () => {
           key="title"
         />
       </Head>
-      <Title title="Test your knowledge" />
+      <Title title="Test your knowledge" type="page" />
       <ApplicationDetails />
-      <div className="mb-4" />
+      <Title title="Test your knowledge" type="section" />
       {questions.length > 1 && (
         <div className="btn-group gap-x-2">
           {questions.map((q, i) => {
@@ -137,10 +142,10 @@ const InterviewPage: NextPage = () => {
         <>
           <h2 className="mb-2 text-2xl font-bold">Loading new question...</h2>
           <div className="flex flex-col space-y-2">
-            <div className="btn-outline btn-secondary btn animate-pulse" />
-            <div className="btn-outline btn-secondary btn animate-pulse" />
-            <div className="btn-outline btn-secondary btn animate-pulse" />
-            <div className="btn-outline btn-secondary btn animate-pulse" />
+            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
           </div>
         </>
       )}
@@ -187,10 +192,10 @@ const InterviewPage: NextPage = () => {
               <Spinner /> Verifying you answer...
             </div>
           )}
-          {displayedQuestion.explanation && (
+          {displayedExplanation && (
             <div className="mt-4">
               <h3 className="mb-2 text-xl font-bold">Explanation</h3>
-              {formatApiMessage(displayedQuestion.explanation).map((p, i) => (
+              {formatApiMessage(displayedExplanation).map((p, i) => (
                 <p key={i} className="mb-2">
                   {p}
                 </p>

@@ -12,7 +12,7 @@ import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import OpacityTransition from "~/components/utils/OpacityTransition";
-import { useGenerateCoverLetter } from "~/utils/hooks";
+import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
 
 const CoverLetterPage: NextPage = () => {
   const router = useRouter();
@@ -32,12 +32,23 @@ const CoverLetterPage: NextPage = () => {
   } = useAppStore((state) => state);
 
   const {
-    createCoverLetter,
-    refineCoverLetter,
+    execute: createCoverLetter,
     isLoading: createLoading,
     isError: createError,
-    text: newText,
+    text: createResponseText,
   } = useGenerateCoverLetter({
+    onSuccess: (data, label) => {
+      const newCoverLetter = addCoverLetter(data, label);
+      setDisplayedLetter(newCoverLetter);
+    },
+  });
+
+  const {
+    execute: refineCoverLetter,
+    isLoading: refineLoading,
+    isError: refineError,
+    text: refineResponseText,
+  } = useRefineCoverLetter({
     onSuccess: (data, label) => {
       const newCoverLetter = addCoverLetter(data, label);
       setDisplayedLetter(newCoverLetter);
@@ -47,19 +58,19 @@ const CoverLetterPage: NextPage = () => {
   const generate = () => {
     resetCoverLetters();
     if (job && applicant) {
-      void createCoverLetter(job, applicant);
+      void createCoverLetter({ job, applicant });
     }
   };
 
   const refine = (refineMode: RefineMode) => {
     if (job && applicant && displayedLetter) {
-      void refineCoverLetter(
+      void refineCoverLetter({
         job,
         applicant,
-        displayedLetter.text,
+        srcCoverLetter: displayedLetter.text,
         refineMode,
-        refineText
-      );
+        refineText,
+      });
     }
   };
 
@@ -73,15 +84,15 @@ const CoverLetterPage: NextPage = () => {
     }
   }, [applicant, job, router, initFromLocalStore]);
 
-  // useEffect(() => {
-  //   if (!coverLetters) return;
-  //   const currentCoverLetter =
-  //     coverLetters.coverLetters[coverLetters.coverLetters.length - 1];
+  useEffect(() => {
+    if (!coverLetters) return;
+    const currentCoverLetter =
+      coverLetters.coverLetters[coverLetters.coverLetters.length - 1];
 
-  //   if (!currentCoverLetter) return;
+    if (!currentCoverLetter) return;
 
-  //   setDisplayedLetter(currentCoverLetter);
-  // }, [coverLetters]);
+    setDisplayedLetter(currentCoverLetter);
+  }, [coverLetters]);
 
   const handleLettersTabChange = (index: number) => {
     setDisplayedLetter(coverLetters?.coverLetters.find((c) => c.id === index));
@@ -91,7 +102,15 @@ const CoverLetterPage: NextPage = () => {
     setIsOpenResetModal(true);
   };
 
-  const displayedText = createLoading ? newText : displayedLetter?.text;
+  const getDisplayedText = () => {
+    if (createLoading) return createResponseText;
+    if (refineLoading) return refineResponseText;
+    return displayedLetter?.text;
+  };
+
+  const displayedText = getDisplayedText();
+  const isLoading = createLoading || refineLoading;
+  const isError = createError || refineError;
 
   return (
     <>
@@ -110,14 +129,13 @@ const CoverLetterPage: NextPage = () => {
       />
       <Title title="Create Cover Letter" />
       <ApplicationDetails />
-      <div className="mb-4" />
 
-      {!coverLetters && !newText && (
-        <div className="text-center">
+      {!coverLetters && !createResponseText && (
+        <div className="mt-4 text-center">
           <button
             className="btn-primary btn w-full disabled:btn-outline sm:w-96"
             onClick={generate}
-            disabled={createLoading}
+            disabled={isLoading}
           >
             {createLoading ? (
               <div className="flex items-center gap-x-2">
@@ -212,7 +230,7 @@ const CoverLetterPage: NextPage = () => {
                 className="btn-primary btn"
                 onClick={() => refine(RefineMode.FreeInput)}
                 disabled={
-                  createLoading ||
+                  isLoading ||
                   refineText.length < 5 ||
                   !displayedLetter ||
                   refineText.length > 100
@@ -225,14 +243,14 @@ const CoverLetterPage: NextPage = () => {
               <button
                 className="btn-secondary btn"
                 onClick={() => refine(RefineMode.Shorten)}
-                disabled={createLoading || !displayedLetter}
+                disabled={isLoading || !displayedLetter}
               >
                 Shorten
               </button>
               <button
                 className="btn-secondary btn"
                 onClick={() => refine(RefineMode.Extend)}
-                disabled={createLoading || !displayedLetter}
+                disabled={isLoading || !displayedLetter}
               >
                 Extend
               </button>
@@ -240,18 +258,18 @@ const CoverLetterPage: NextPage = () => {
               <button
                 className="btn-secondary btn"
                 onClick={handleReset}
-                disabled={createLoading || !displayedLetter}
+                disabled={isLoading || !displayedLetter}
               >
                 Reset
               </button>
             </div>
             <Spinner
-              className={`${createLoading ? "visible" : "invisible"} h-16 w-16`}
+              className={`${isLoading ? "visible" : "invisible"} h-16 w-16`}
             />
           </div>
         </div>
       )}
-      {createError && (
+      {isError && (
         <div className="mt-2 text-center font-bold text-error">
           Ooop, something went wrong. Try again.
         </div>
