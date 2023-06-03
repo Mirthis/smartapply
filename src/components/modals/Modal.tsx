@@ -50,10 +50,10 @@ const Modal = ({
                       : "bg-transparent p-0"
                   } w-full max-w-xl transform overflow-hidden rounded-2xl  text-left align-middle shadow-xl transition-all `}
                 >
-                  <div className="mb-8 flex items-center justify-between">
+                  <div className="mb-4 flex items-center justify-between">
                     {title && (
                       <Dialog.Title as="div">
-                        <Title title={title} type="subsection" />`
+                        <Title title={title} type="subsection" />
                       </Dialog.Title>
                     )}
                     <button

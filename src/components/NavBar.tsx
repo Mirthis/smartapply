@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import UserWidget from "./UserWidget";
 import Logo from "./Logo";
 import { useAppStore } from "~/store/store";
+import { useAuth } from "@clerk/nextjs";
 
 // import ContactIcons from "./ContactIcons";
 
@@ -13,7 +14,7 @@ interface NavBarLinkData {
   url: string;
 }
 
-const navBarLinks: NavBarLinkData[] = [
+const publicLinks: NavBarLinkData[] = [
   {
     label: "Home",
     url: "/",
@@ -24,7 +25,14 @@ const navBarLinks: NavBarLinkData[] = [
   },
 ];
 
-const navBarActionLinks: NavBarLinkData[] = [
+const protectedLinks: NavBarLinkData[] = [
+  {
+    label: "Saved Application",
+    url: "/applications",
+  },
+];
+
+const actionLinks: NavBarLinkData[] = [
   {
     label: "Cover Letter",
     url: "/coverletter",
@@ -44,14 +52,10 @@ const Navbar = () => {
   const [shadow, setShadow] = useState(false);
   const [navBg, setNavBg] = useState("");
   const [linkColor, setLinkColor] = useState("text-primary");
-  const [showActions, setShowActions] = useState(false);
+  const { isSignedIn } = useAuth();
 
   const router = useRouter();
-  const { applicant, job } = useAppStore();
-
-  useEffect(() => {
-    setShowActions(!!applicant && !!job);
-  }, [applicant, job]);
+  const { applicationId } = useAppStore();
 
   const setTransparentNavBar = (transparent: boolean) => {
     if (transparent) {
@@ -88,6 +92,22 @@ const Navbar = () => {
     setNav(false);
   };
 
+  const navBarLinks = useMemo(() => {
+    console.log("updating links...");
+    const links = [...publicLinks];
+    if (isSignedIn) {
+      links.push(...protectedLinks);
+    }
+    if (applicationId) {
+      const applicationLinks = actionLinks.map((l) => ({
+        ...l,
+        url: `${l.url}/${applicationId}`,
+      }));
+      links.push(...applicationLinks);
+    }
+    return links;
+  }, [isSignedIn, applicationId]);
+
   return (
     <div
       className={`${
@@ -116,18 +136,6 @@ const Navbar = () => {
                   </li>
                 </Link>
               ))}
-              {showActions &&
-                navBarActionLinks.map((l) => (
-                  <Link
-                    key={`desktop-menu-${l.label}`}
-                    href={l.url}
-                    className="link-hover link underline-offset-8"
-                  >
-                    <li className="${linkColor} ml-10 text-sm font-semibold uppercase">
-                      {l.label}
-                    </li>
-                  </Link>
-                ))}
             </ul>
           </div>
 
@@ -171,17 +179,6 @@ const Navbar = () => {
                   </li>
                 </Link>
               ))}
-              {showActions &&
-                navBarActionLinks.map((l) => (
-                  <Link key={`mobile-menu-${l.label}`} href={l.url}>
-                    <li
-                      onClick={hideNavBar}
-                      className={`${linkColor} font-semibold`}
-                    >
-                      {l.label}
-                    </li>
-                  </Link>
-                ))}
             </ul>
           </div>
         </div>

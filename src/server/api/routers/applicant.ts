@@ -100,7 +100,7 @@ export const applicantRouter = createTRPCRouter({
   getForLoggedUser: protectedProcedure.query(async ({ ctx }) => {
     // return applicant with id
     const userId = ctx.auth.userId;
-    const applicant = await ctx.prisma.applicant.findFirst({
+    const applicant = await ctx.prisma.applicant.findMany({
       where: {
         userId: userId,
         Profile: {

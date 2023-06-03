@@ -5,6 +5,8 @@ import {
   type jobSchema,
 } from "./schemas";
 import { type ChatCompletionRequestMessage } from "openai";
+import { type inferRouterOutputs } from "@trpc/server";
+import { type AppRouter } from "~/server/api/root";
 
 export type JobData = z.infer<typeof jobSchema>;
 export type ApplicantData = z.infer<typeof applicantSchema>;
@@ -21,16 +23,10 @@ export type InterviewMessage = ChatCompletionRequestMessage & {
 };
 
 export interface CoverLetter {
-  id: number;
+  id: string;
   text: string;
   label: string;
 }
-
-export type CoverLettersData = {
-  coverLetters: CoverLetter[];
-  currentCoverLetter: CoverLetter;
-  lastId: number;
-};
 
 export type InterviewData = {
   type: InterviewType;
@@ -65,3 +61,7 @@ export enum RefineMode {
   Shorten = "shorten",
   Extend = "extend",
 }
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+
+export type ApplicationData = RouterOutput["application"]["getAllForUser"][0];

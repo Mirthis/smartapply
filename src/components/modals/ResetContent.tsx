@@ -15,7 +15,7 @@ export const ResetContent = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Confirm Application Change">
+    <Modal isOpen={isOpen} onClose={onClose} title="Clear Generating content">
       <p>Changing the job or applicant data will clear any generated content</p>
       <div className="mb-4" />
       <div className="flex gap-x-4">

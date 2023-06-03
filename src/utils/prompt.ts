@@ -10,8 +10,8 @@ export const getJobDetailsPrompt = (
     job.companyName ? `Compnay name: ${company}` : ""
   }.
   ${job.companyDetails ? `Company details: ${job.companyDetails}` : ""}
-  Job title: ${job.jobTitle}.
-  Job description: ${job.jobDescription}
+  Job title: ${job.title}.
+  Job description: ${job.description}
   `;
   if (applicant) {
     const applicantName =

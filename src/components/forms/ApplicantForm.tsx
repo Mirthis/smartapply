@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppStore } from "~/store/store";
 import { applicantSchema } from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { ResetContent } from "../modals/ResetContent";
 import { useAuth } from "@clerk/nextjs";
 import { api } from "~/utils/api";
@@ -36,7 +36,7 @@ const ApplicantForm = ({
       onSuccess: (data) => {
         if (data) {
           // update displayed applicant after retrieving from db
-          reset(data, { keepDefaultValues: true });
+          // reset(data, { keepDefaultValues: true });
           setUpdateProfile(true);
         }
       },
@@ -55,13 +55,16 @@ const ApplicantForm = ({
 
   const {
     register,
-    reset,
     handleSubmit,
     formState: { errors, isValid, isDirty, isSubmitting },
+    reset,
   } = useForm<ApplicantData>({
     resolver: zodResolver(applicantSchema),
     mode: "onTouched",
-    defaultValues: {
+  });
+
+  useEffect(() => {
+    reset({
       id: storeApplicant?.id ?? undefined,
       firstName: storeApplicant?.firstName ?? "",
       lastName: storeApplicant?.lastName ?? "",
@@ -69,8 +72,8 @@ const ApplicantForm = ({
       resume: storeApplicant?.resume ?? "",
       skills: storeApplicant?.skills ?? "",
       experience: storeApplicant?.experience ?? "",
-    },
-  });
+    });
+  }, [storeApplicant, reset]);
 
   // TODO: Add loading state
   // TODO: Add error state
@@ -169,14 +172,14 @@ const ApplicantForm = ({
               <div className="relative">
                 <input
                   type="text"
-                  id="jobTitle"
+                  id="title"
                   className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
                   placeholder=" "
                   {...register("jobTitle")}
                   disabled={isLoadingProfile || isSubmitting}
                 />
                 <label
-                  htmlFor="jobTitle"
+                  htmlFor="title"
                   className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 font-extralight duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:font-normal peer-focus:text-primary"
                 >
                   Job Title *

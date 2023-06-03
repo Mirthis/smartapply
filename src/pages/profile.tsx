@@ -8,11 +8,13 @@ import Spinner from "~/components/utils/Spinner";
 import { api } from "~/utils/api";
 
 const ProfilePage: NextPage = () => {
-  const { isLoading, data: applicant } =
+  const { isLoading, data: applicants } =
     api.applicant.getForLoggedUser.useQuery(undefined, {
       refetchOnWindowFocus: false,
     });
   const [isOpen, setIsOpen] = useState(false);
+  const mainApplicant = applicants?.find((a) => a.isMain) ?? applicants?.[0];
+  const otherApplicants = applicants?.filter((a) => a.id !== mainApplicant?.id);
 
   return (
     <>
@@ -37,20 +39,55 @@ const ProfilePage: NextPage = () => {
       </div>
       {/* TODO: add skeleton for loader */}
       {isLoading && <Spinner text="Loading applicant data..." />}
-      {!isLoading && !applicant && <p>No applicant details saved.</p>}
-      {applicant && (
+      {!isLoading && !applicants && <p>No applicant details saved.</p>}
+      {mainApplicant && (
         <div>
           <p className="text-lg font-semibold">
-            {applicant.firstName} {applicant.lastName}
+            {mainApplicant.firstName} {mainApplicant.lastName}
           </p>
-          <p className="text-lg font-semibold">{applicant.jobTitle}</p>
+          <p className="text-lg font-semibold">{mainApplicant.jobTitle}</p>
           <Title title="Resume" type="subsection" />
-          <p>{applicant.resume}</p>
+          <p>{mainApplicant.resume}</p>
           <Title title="Skills" type="subsection" />
-          <p>{applicant.skills}</p>
+          <p>{mainApplicant.skills}</p>
           <Title title="Experience" type="subsection" />
-          <p>{applicant.experience}</p>
+          <p>{mainApplicant.experience}</p>
         </div>
+      )}
+      {otherApplicants && otherApplicants.length > 0 && (
+        <>
+          <Title title="Other Applicants" type="section" />
+          <div className="overflow-x-auto">
+            <table className="table">
+              {/* head */}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {applicants?.map((applicant) => (
+                  <tr key={applicant.id}>
+                    <td>{applicant.jobTitle}</td>
+                    <td>
+                      <button>Edit</button>
+                    </td>
+                    <td>
+                      <button>Delete</button>
+                    </td>
+                    <td>
+                      <button>Make primary</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </>
   );

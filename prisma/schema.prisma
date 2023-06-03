@@ -38,7 +38,48 @@ model Applicant {
   resume     String
   skills     String?
   experience String?
+  isMain     Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   Profile    Profile?
+  Applications Application[]
+
+  @@unique([id, userId])
+}
+
+model Application {
+  id          String   @id @default(cuid())
+  userId     String
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id])
+  jobId       String
+  job         Job @relation(fields: [jobId], references: [id])
+  coverLetters CoverLetter[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([jobId])
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  userId     String
+  title    String
+  description String
+  companyName String?
+  companyDetails String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Application Application?
+}
+
+model CoverLetter {
+  id          String   @id @default(cuid())
+  userId     String
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  text String
+  label String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

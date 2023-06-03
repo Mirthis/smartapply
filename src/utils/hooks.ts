@@ -42,7 +42,7 @@ export const useRecaptcha = () => {
 export const useStreamingApi = <T>(
   fetchFn: (args: T) => Promise<Response>,
   options?: {
-    onSuccess: (data: string, label: string) => void;
+    onSuccess: (data: string, args: T) => void;
   }
 ) => {
   const [result, setResult] = useState("");
@@ -78,7 +78,7 @@ export const useStreamingApi = <T>(
     // localStorage.setItem('response', JSON.stringify(currentResponse));
     setIsLoading(false);
 
-    if (options?.onSuccess) options.onSuccess(currentResponse.join(""), "new");
+    if (options?.onSuccess) options.onSuccess(currentResponse.join(""), args);
 
     return currentResponse.join("");
   };
@@ -92,7 +92,7 @@ export const useStreamingApi = <T>(
 };
 
 export const useGenerateCoverLetter = (options?: {
-  onSuccess: (data: string, label: string) => void;
+  onSuccess: (data: string) => void;
 }) => {
   const fn = (args: { job: JobData; applicant: ApplicantData }) =>
     fetch("/api/newCoverLetter", {
@@ -109,16 +109,18 @@ export const useGenerateCoverLetter = (options?: {
   return useStreamingApi(fn, options);
 };
 
+type RefineCoverLetterArgs = {
+  job: JobData;
+  applicant: ApplicantData;
+  srcCoverLetter: string;
+  refineMode: RefineMode;
+  refineText: string;
+};
+
 export const useRefineCoverLetter = (options?: {
-  onSuccess: (data: string, label: string) => void;
+  onSuccess: (data: string, args: RefineCoverLetterArgs) => void;
 }) => {
-  const fn = (args: {
-    job: JobData;
-    applicant: ApplicantData;
-    srcCoverLetter: string;
-    refineMode: RefineMode;
-    refineText: string;
-  }) =>
+  const fn = (args: RefineCoverLetterArgs) =>
     fetch("/api/refineCoverLetter", {
       method: "POST",
       headers: {
@@ -133,7 +135,7 @@ export const useRefineCoverLetter = (options?: {
 };
 
 export const useValidateTestResponse = (options?: {
-  onSuccess: (data: string, label: string) => void;
+  onSuccess: (data: string) => void;
 }) => {
   const fn = (args: {
     job: JobData;

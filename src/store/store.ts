@@ -8,18 +8,17 @@ import {
   type ApplicantData,
   type JobData,
   type InterviewType,
-  type CoverLettersData,
   type InterviewData,
   type TestData,
   type TestQuestion,
   type CoverLetter,
 } from "~/types/types";
-import { MAX_COVER_LETTERS } from "~/utils/constants";
 
 type AppStoreInitialState = {
+  applicationId?: string;
   applicant?: ApplicantData;
   job?: JobData;
-  coverLetters?: CoverLettersData;
+  coverLetters: CoverLetter[];
   interview?: InterviewData;
   test?: TestData;
   initialized: boolean;
@@ -30,10 +29,18 @@ type AppStore = AppStoreInitialState & {
     job: JobData | undefined;
     applicant: ApplicantData | undefined;
   };
+  setApplication: (
+    applicationId: string,
+    applicant: ApplicantData,
+    job: JobData
+  ) => void;
+  setApplicationId: (applicationId: string) => void;
   setApplicant: (applicant: ApplicantData) => void;
   setJob: (job: JobData) => void;
   // setCoverLetter: (coverLetter: string) => void;
-  addCoverLetter: (coverLetter: string, label: string) => CoverLetter;
+  addCoverLetter: (coverLetter: CoverLetter) => void;
+  setCoverLetters: (coverLetters: CoverLetter[]) => void;
+  clearCoverLetters: () => void;
   initInterview: (type: InterviewType) => void;
   addInterviewMessage: (message: ChatCompletionRequestMessage) => void;
   addTestMessage: (question: ChatCompletionResponseMessage) => void;
@@ -42,7 +49,6 @@ type AppStore = AppStoreInitialState & {
   addTestExplanation: (questionId: number, explanation: string) => void;
   resetTest: () => void;
   resetInterview: () => void;
-  resetCoverLetters: () => void;
   resetGenerated: () => void;
   reset: () => void;
 };
@@ -51,7 +57,7 @@ const getInitalState = () => {
   const initialState: AppStoreInitialState = {
     job: undefined,
     applicant: undefined,
-    coverLetters: undefined,
+    coverLetters: [],
     interview: undefined,
     test: undefined,
     initialized: false,
@@ -59,8 +65,8 @@ const getInitalState = () => {
 
   if (!!env.NEXT_PUBLIC_INIT_STORE) {
     initialState.job = {
-      jobTitle: "Sr Technical Program Manager",
-      jobDescription: `As a Senior Technical Program Manager at Ring, you will work with a focused team of product managers, engineers, and partner teams building and releasing new products and features. You will have an enormous opportunity to impact the customer experience, design, architecture, and implementation of a cutting edge product that will be used every day.
+      title: "Sr Technical Program Manager",
+      description: `As a Senior Technical Program Manager at Ring, you will work with a focused team of product managers, engineers, and partner teams building and releasing new products and features. You will have an enormous opportunity to impact the customer experience, design, architecture, and implementation of a cutting edge product that will be used every day.
       We are looking for entrepreneurial, innovative individuals who thrive on solving tough problems. Maturity, high judgment, negotiation skills, ability to influence, analytical talent, and leadership are essential to success in this role. 
       You will anticipate bottlenecks, provide escalation management, anticipate and make tradeoffs, and balance customer and business needs versus technical constraints. An ability to take large, complex projects and break them down into manageable pieces, develop functional specifications, then deliver them in a successful and timely manner is expected.
     
@@ -108,49 +114,48 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setApplicant: (applicant) => {
     set({
       applicant,
-      interview: undefined,
-      coverLetters: undefined,
-      initialized: true,
     });
     localStorage.setItem("applicant", JSON.stringify(applicant));
   },
   setJob: (job) => {
     set({
       job,
-      interview: undefined,
-      coverLetters: undefined,
-      initialized: true,
     });
     localStorage.setItem("job", JSON.stringify(job));
   },
-  addCoverLetter: (coverLetter, label: string) => {
-    const coverLetters = get().coverLetters;
-    const nextId = (coverLetters?.lastId ?? 0) + 1;
-    const newCoverLetter = {
-      id: nextId,
-      text: coverLetter,
-      label,
-    };
-    const newCoverLetters = [
-      ...(coverLetters?.coverLetters ?? []),
-      newCoverLetter,
-    ];
-    if (newCoverLetters.length > MAX_COVER_LETTERS) {
-      newCoverLetters.shift();
-    }
-    set({
-      coverLetters: {
-        coverLetters: newCoverLetters,
-        currentCoverLetter: newCoverLetter,
-        lastId: nextId,
-      },
-    });
-    return newCoverLetter;
+  setApplicationId: (applicationId) => {
+    set({ applicationId });
   },
-  resetCoverLetters: () => set({ coverLetters: undefined }),
+  setApplication: (applicationId, applicant, job) => {
+    set({
+      applicationId,
+      applicant,
+      job,
+    });
+    localStorage.setItem("applicationId", JSON.stringify(applicationId));
+    localStorage.setItem("applicant", JSON.stringify(applicant));
+    localStorage.setItem("job", JSON.stringify(job));
+  },
+  addCoverLetter: (coverLetter) => {
+    const coverLetters = get().coverLetters;
+
+    const newCoverLetters = coverLetters
+      ? [coverLetter, ...coverLetters]
+      : [coverLetter];
+
+    set({
+      coverLetters: newCoverLetters,
+    });
+    return coverLetter;
+  },
+  setCoverLetters: (coverLetters) => {
+    set({ coverLetters: coverLetters });
+  },
+  clearCoverLetters: () => set({ coverLetters: [] }),
   initFromLocalStore: () => {
     if (get().initialized)
       return { applicant: get().applicant, job: get().job };
+    const storedApplicationId = localStorage.getItem("applicationId");
     const storedApplicant = localStorage.getItem("applicant");
     const storedJob = localStorage.getItem("job");
 
@@ -158,7 +163,12 @@ export const useAppStore = create<AppStore>((set, get) => ({
       ? (JSON.parse(storedApplicant) as ApplicantData)
       : undefined;
     const job = storedJob ? (JSON.parse(storedJob) as JobData) : undefined;
-    set({ applicant, job, initialized: true });
+    set({
+      applicationId: storedApplicationId ?? undefined,
+      applicant,
+      job,
+      initialized: true,
+    });
     return { applicant, job };
   },
   initInterview: (type) => {

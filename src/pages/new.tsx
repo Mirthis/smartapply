@@ -4,14 +4,19 @@ import { type NextPage } from "next";
 import ApplicantForm from "~/components/forms/ApplicantForm";
 import JobForm from "~/components/forms/JobForm";
 import { FormStep } from "~/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import ServiceCard from "~/components/ServiceCard";
 import { serviceCardData } from "~/utils/constants";
+import { api } from "~/utils/api";
+import { useAppStore } from "~/store/store";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 const NewApplication: NextPage = () => {
   // state for application form
   const [step, setStep] = useState<FormStep>(FormStep.Job);
+  const router = useRouter();
 
   // move to next form step
   const nextStep = () => {
@@ -21,6 +26,66 @@ const NewApplication: NextPage = () => {
       setStep(FormStep.Complete);
     }
   };
+
+  useEffect(() => {
+    if (router.query.step === "job") {
+      setStep(FormStep.Job);
+    }
+    if (router.query.step === "applicant") {
+      setStep(FormStep.Applicant);
+    }
+    if (router.query.step === "complete") {
+      setStep(FormStep.Complete);
+    }
+  }, [router]);
+
+  const {
+    job,
+    applicant,
+    applicationId,
+    initFromLocalStore,
+    setApplicationId,
+  } = useAppStore((state) => state);
+
+  const { mutate: createApplication } =
+    api.application.createOrUpdate.useMutation({
+      onSuccess: (data) => {
+        setApplicationId(data.id);
+      },
+    });
+
+  const { isLoaded, userId } = useAuth();
+
+  useEffect(() => {
+    // Create a new application if not present already, data are available and user is logged in
+    if (
+      step === FormStep.Complete &&
+      isLoaded &&
+      userId &&
+      !applicationId &&
+      job &&
+      applicant
+    ) {
+      createApplication({
+        job,
+        applicant,
+      });
+    }
+  }, [
+    job,
+    applicant,
+    step,
+    isLoaded,
+    userId,
+    applicationId,
+    createApplication,
+  ]);
+
+  useEffect(() => {
+    if (!applicant || !job) {
+      initFromLocalStore();
+    }
+  }, [applicant, job, initFromLocalStore]);
 
   return (
     <>
@@ -70,7 +135,13 @@ const NewApplication: NextPage = () => {
         {step === FormStep.Complete && (
           <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
             {serviceCardData.map((card) => (
-              <ServiceCard Icon={card.icon} key={card.url} {...card} />
+              <ServiceCard
+                Icon={card.icon}
+                key={card.url}
+                title={card.title}
+                description={card.description}
+                url={`${card.url}/${applicationId ?? "N/A"}`}
+              />
             ))}
           </div>
         )}

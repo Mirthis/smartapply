@@ -15,7 +15,7 @@ CREATE TABLE "Applicant" (
     "userId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "jobTitle" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "resume" TEXT NOT NULL,
     "skills" TEXT,
     "experience" TEXT,

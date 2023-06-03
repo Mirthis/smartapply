@@ -26,7 +26,9 @@ const ServiceCard = ({
     setModalState({ isOpen: true, redirectUrl });
   };
 
-  const onClick = userId ? () => void router.push(url) : () => openModal(url);
+  const onClick = userId
+    ? () => void router.push(url)
+    : () => openModal("/new");
 
   return (
     <>

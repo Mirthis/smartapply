@@ -10,7 +10,7 @@ const JD_MIN_LENGTH = 20;
 const JD_MAX_LENGTH = 5000;
 
 export const jobSchema = z.object({
-  jobTitle: z
+  title: z
     .string()
     .min(JOB_TITLE_MIN_LENGTH, {
       message: `Job title must be at least ${JOB_TITLE_MIN_LENGTH} characters`,
@@ -18,7 +18,7 @@ export const jobSchema = z.object({
     .max(JOB_TITLE_MAX_LENGTH, {
       message: `Job title can be maximum ${JOB_TITLE_MAX_LENGTH} characters`,
     }),
-  jobDescription: z
+  description: z
     .string()
     .min(JD_MIN_LENGTH, {
       message: `Job description must be at least ${JD_MIN_LENGTH} characters`,
