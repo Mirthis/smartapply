@@ -202,31 +202,33 @@ const NewApplication: NextPage = () => {
               <Spinner text="Loading applicant from profile" />
             )}
             {applicants && applicants.length > 0 && (
-              <div className="flex flex-col  gap-2 md:flex-row">
-                <label className="label">
-                  <span className="label-text font-semibold text-primary">
-                    Select an applicant from your profile
-                  </span>
-                </label>
-                <select
-                  className="select-bordered select w-full md:w-fit"
-                  // value={profileApplicantId}
-                  defaultValue="N/A"
-                  onChange={handleProfileApplicantChange}
-                >
-                  <option disabled value="N/A">
-                    -- Select an applicant --
-                  </option>
-                  {applicants.map((applicant) => (
-                    <option key={applicant.id} value={applicant.id}>
-                      {applicant.jobTitle} - {applicant.firstName}{" "}
-                      {applicant.lastName}
+              <>
+                <div className="flex flex-col  gap-2 md:flex-row">
+                  <label className="label">
+                    <span className="label-text font-semibold text-primary">
+                      Select an applicant from your profile
+                    </span>
+                  </label>
+                  <select
+                    className="select-bordered select w-full md:w-fit"
+                    // value={profileApplicantId}
+                    defaultValue="N/A"
+                    onChange={handleProfileApplicantChange}
+                  >
+                    <option disabled value="N/A">
+                      -- Select an applicant --
                     </option>
-                  ))}
-                </select>
-              </div>
+                    {applicants.map((applicant) => (
+                      <option key={applicant.id} value={applicant.id}>
+                        {applicant.jobTitle} - {applicant.firstName}{" "}
+                        {applicant.lastName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="divider">Or</div>
+              </>
             )}
-            <div className="divider">Or</div>
             <ApplicantForm
               applicant={formApplicant}
               onSubmit={onApplicantFormSubmit}

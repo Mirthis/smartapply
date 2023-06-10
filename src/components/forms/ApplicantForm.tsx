@@ -15,8 +15,6 @@ const ApplicantForm = ({
   onSubmit: (data: ApplicantData) => void;
   forceNewOnEdit?: boolean;
 }) => {
-  console.log({ applicant });
-
   const {
     register,
     handleSubmit,

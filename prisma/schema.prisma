@@ -42,8 +42,8 @@ model Applicant {
   isInProfile Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  Profile    Profile?
-  Applications Application[]
+  profile    Profile?
+  applications Application[]
 
   @@unique([id, userId])
   @@index ([userId])
@@ -53,9 +53,9 @@ model Application {
   id          String   @id @default(cuid())
   userId     String
   applicantId String
-  applicant   Applicant @relation(fields: [applicantId], references: [id])
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   jobId       String
-  job         Job @relation(fields: [jobId], references: [id])
+  job         Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
   coverLetters CoverLetter[]
   
   createdAt   DateTime @default(now())

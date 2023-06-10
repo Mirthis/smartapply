@@ -6,6 +6,14 @@ const footerLinks = [
     url: "/",
   },
   {
+    title: "Contact Us",
+    url: "/contact",
+  },
+  {
+    title: "Beta",
+    url: "/beta",
+  },
+  {
     title: "Privacy Policy",
     url: "/privacy",
   },
@@ -16,10 +24,6 @@ const footerLinks = [
   {
     title: "About",
     url: "/about",
-  },
-  {
-    title: "Contact",
-    url: "/contact",
   },
 ];
 

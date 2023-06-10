@@ -4,68 +4,6 @@ import { applicantSchema, jobSchema } from "~/types/schemas";
 import { TRPCError } from "@trpc/server";
 
 export const applicationRouter = createTRPCRouter({
-  createOrUpdateOld: protectedProcedure
-    .input(
-      z.object({
-        applicant: applicantSchema,
-        job: jobSchema,
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { job, applicant } = input;
-      const userId = ctx.auth.userId;
-      let applicantId: string;
-      // if applicant id provided check applicant exists in db for the user
-      if (applicant.id) {
-        await ctx.prisma.applicant.findUniqueOrThrow({
-          where: {
-            id_userId: {
-              id: applicant.id,
-              userId,
-            },
-          },
-        });
-        applicantId = applicant.id;
-      }
-      // if applicant id not provided create a new one
-      else {
-        const newApplicant = await ctx.prisma.applicant.create({
-          data: {
-            userId,
-            firstName: applicant.firstName,
-            lastName: applicant.lastName,
-            jobTitle: applicant.jobTitle,
-            resume: applicant.resume,
-            experience: applicant.experience,
-            skills: applicant.skills,
-          },
-        });
-        applicantId = newApplicant.id;
-      }
-
-      // create application and job
-      const application = await ctx.prisma.application.create({
-        data: {
-          job: {
-            create: {
-              title: job.title,
-              description: job.description,
-              companyName: job.companyName,
-              companyDetails: job.companyDetails,
-              userId,
-            },
-          },
-          applicant: {
-            connect: {
-              id: applicantId,
-            },
-          },
-          userId,
-        },
-      });
-      return application;
-    }),
-
   createOrUpdate: protectedProcedure
     .input(
       z.object({
@@ -105,6 +43,23 @@ export const applicationRouter = createTRPCRouter({
         const isMain = profileApplicants === 0;
         const isInProfile = profileApplicants === 0;
 
+        // check if applicant is used in any application
+        // let createNew = true;
+        // if (input.applicant.id && input.applicationId) {
+        //   const usedApplicant = await ctx.prisma.application.count({
+        //     where: {
+        //       applicantId: input.applicant.id,
+        //       id: {
+        //         not: input.applicationId,
+        //       },
+        //     },
+        //   });
+        //   if (usedApplicant === 0) {
+        //     createNew = false;
+        //   }
+        // }
+
+        // if used
         const newApplicant = await ctx.prisma.applicant.create({
           data: {
             userId,
@@ -192,6 +147,27 @@ export const applicationRouter = createTRPCRouter({
           applicant: true,
         },
       });
+
+      // delete orphan applicants
+      await ctx.prisma.applicant.deleteMany({
+        where: {
+          userId,
+          applications: {
+            none: {},
+          },
+          isInProfile: false,
+        },
+      });
+      // delete orphan jobs
+      await ctx.prisma.job.deleteMany({
+        where: {
+          userId,
+          applications: {
+            none: {},
+          },
+        },
+      });
+
       return application;
     }),
 
