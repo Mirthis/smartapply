@@ -11,22 +11,45 @@ import Spinner from "~/components/utils/Spinner";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useValidateTestResponse } from "~/utils/hooks";
+import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
 
 const InterviewPage: NextPage = () => {
   const {
-    job,
-    applicant,
+    application,
     test,
     addTestQuestion,
     addTestAnswer,
     addTestMessage,
     addTestExplanation,
     resetTest,
-    initFromLocalStore,
+    setApplication,
   } = useAppStore((state) => state);
   const currentQuestion = test?.currentQuestion;
   const questions = test?.questions ?? [];
   const router = useRouter();
+
+  const queryId =
+    router.query.id && !Array.isArray(router.query.id)
+      ? router.query.id
+      : "N/A";
+
+  // TODO: Add error handling
+  const { isFetching: isLoadingApplication } = api.application.get.useQuery(
+    {
+      id: queryId,
+    },
+    {
+      enabled: router.query.id !== application?.id,
+      onSuccess: (data) => {
+        setApplication(data);
+      },
+      onError: (error) => {
+        if (error.message === "No Application found") {
+          void router.replace("/");
+        }
+      },
+    }
+  );
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
   // TODO: add captcha check
@@ -56,14 +79,14 @@ const InterviewPage: NextPage = () => {
     // extract question text (no answers) and concatenate in single string
     const questionsText = test?.questions.map((q) => q.question).join("\n");
 
-    if (job && applicant) {
+    if (application) {
       newQuestion({
-        job,
-        applicant,
+        job: application.job,
+        applicant: application.applicant,
         pastQuestions: questionsText,
       });
     }
-  }, [job, applicant, newQuestion, test]);
+  }, [application, newQuestion, test]);
 
   const sendAnswer = (questionId: number, answerId: number) => {
     const question = test?.questions.find((q) => q.id === questionId);
@@ -71,10 +94,10 @@ const InterviewPage: NextPage = () => {
     const answer = question.answers[answerId];
     if (!answer) return;
 
-    if (job && applicant) {
+    if (application) {
       void getAnswerExplanation({
-        job,
-        applicant,
+        job: application.job,
+        applicant: application.applicant,
         answer,
         question: question.question,
       });
@@ -85,17 +108,6 @@ const InterviewPage: NextPage = () => {
   useEffect(() => {
     setDisplayedQuestion(currentQuestion);
   }, [currentQuestion]);
-
-  // TODO: find a better way to manage loading from storage
-  useEffect(() => {
-    if (!applicant || !job) {
-      const { applicant: storedApplicant, job: storedJob } =
-        initFromLocalStore();
-      if (!storedApplicant || !storedJob) {
-        void router.replace("/");
-      }
-    }
-  }, [applicant, job, router, initFromLocalStore]);
 
   const displayedExplanation =
     answerExplanation || displayedQuestion?.explanation;
@@ -111,8 +123,11 @@ const InterviewPage: NextPage = () => {
         />
       </Head>
       <Title title="Test your knowledge" type="page" />
-      <ApplicationDetails />
-      <Title title="Test your knowledge" type="section" />
+      {isLoadingApplication || !application ? (
+        <ApplicationDetailsSkeleton />
+      ) : (
+        <ApplicationDetails application={application} />
+      )}
       {questions.length > 1 && (
         <div className="btn-group gap-x-2">
           {questions.map((q, i) => {

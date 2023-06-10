@@ -1,20 +1,65 @@
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  PencilSquareIcon,
+  ArrowUpTrayIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+
 import { type NextPage } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
 import Title from "~/components/Title";
-import { EditApplicantbModal } from "~/components/modals/EditApplicationModal";
+import { DeleteProfileApplicantbModal } from "~/components/modals/DeleteProfileApplicantModal";
+import { EditProfileApplicantModal } from "~/components/modals/EditProfileApplicantModal copy";
 import Spinner from "~/components/utils/Spinner";
+import { type ApplicantData } from "~/types/types";
 import { api } from "~/utils/api";
 
 const ProfilePage: NextPage = () => {
+  const utils = api.useContext();
+
   const { isLoading, data: applicants } =
-    api.applicant.getForLoggedUser.useQuery(undefined, {
-      refetchOnWindowFocus: false,
+    api.applicant.getForLoggedUser.useQuery(
+      { isInProfile: true },
+      {
+        refetchOnWindowFocus: false,
+      }
+    );
+
+  const { mutate: setApplicantAsMain, isLoading: settingAsMain } =
+    api.applicant.setAsMain.useMutation({
+      onSuccess: () => {
+        void utils.applicant.getForLoggedUser.invalidate();
+      },
     });
-  const [isOpen, setIsOpen] = useState(false);
-  const mainApplicant = applicants?.find((a) => a.isMain) ?? applicants?.[0];
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+  const [modalApplicant, setModalApplicant] = useState<ApplicantData>();
+  const mainApplicant = applicants?.find((a) => a.isMain);
   const otherApplicants = applicants?.filter((a) => a.id !== mainApplicant?.id);
+
+  const handleNewApplicant = () => {
+    setModalApplicant(undefined);
+    setIsEditOpen(true);
+  };
+
+  const handleEditApplicant = (selectedApplicant: ApplicantData) => {
+    setModalApplicant(selectedApplicant);
+    setIsEditOpen(true);
+  };
+
+  const handleRemoveApplicant = (selectedApplicant: ApplicantData) => {
+    setModalApplicant(selectedApplicant);
+    setIsRemoveOpen(true);
+  };
+
+  const handleSetAsMain = (selectedApplicant: ApplicantData) => {
+    // TODO: fix typing so that id is not optional
+    if (selectedApplicant.id) {
+      void setApplicantAsMain({ id: selectedApplicant.id });
+    }
+  };
 
   return (
     <>
@@ -22,70 +67,114 @@ const ProfilePage: NextPage = () => {
         <title>SmartApply - Profile</title>
         <meta property="og:title" content="SmartApply - Profile" key="title" />
       </Head>
-      <EditApplicantbModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        type="profile"
+      <EditProfileApplicantModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        applicant={modalApplicant}
       />
+      {modalApplicant && (
+        <DeleteProfileApplicantbModal
+          isOpen={isRemoveOpen}
+          onClose={() => setIsRemoveOpen(false)}
+          applicant={modalApplicant}
+        />
+      )}
+
       <Title title="Profile" />
       <div className="flex items-center gap-x-4">
-        <Title title="Applicant Details" type="section" />
+        <Title title="Saved Applicants" type="section" />
         <button
-          className="btn-ghost btn-circle btn"
-          onClick={() => setIsOpen(true)}
+          className="btn-ghost btn flex gap-x-2 text-accent underline"
+          onClick={handleNewApplicant}
         >
-          <PencilSquareIcon className="h-8 w-8 text-accent" />
+          <PlusIcon className="h-6 w-6 " />
+          <p>Add new</p>
         </button>
       </div>
       {/* TODO: add skeleton for loader */}
       {isLoading && <Spinner text="Loading applicant data..." />}
-      {!isLoading && !applicants && <p>No applicant details saved.</p>}
+      {!isLoading && applicants?.length === 0 && (
+        <p>No applicant details saved.</p>
+      )}
       {mainApplicant && (
-        <div>
-          <p className="text-lg font-semibold">
-            {mainApplicant.firstName} {mainApplicant.lastName}
-          </p>
-          <p className="text-lg font-semibold">{mainApplicant.jobTitle}</p>
-          <Title title="Resume" type="subsection" />
-          <p>{mainApplicant.resume}</p>
-          <Title title="Skills" type="subsection" />
-          <p>{mainApplicant.skills}</p>
-          <Title title="Experience" type="subsection" />
-          <p>{mainApplicant.experience}</p>
-        </div>
+        <>
+          <div className="flex items-center gap-x-4">
+            <Title title="Main Applicant" type="subsection" />
+            <button
+              className="btn-ghost btn-circle btn"
+              onClick={() => handleEditApplicant(mainApplicant)}
+            >
+              <PencilSquareIcon className="h-6 w-6 text-accent" />
+            </button>
+          </div>
+          <div>
+            <p className="text-lg font-semibold">{mainApplicant.jobTitle}</p>
+            <p className="text-lg">
+              {mainApplicant.firstName} {mainApplicant.lastName}
+            </p>
+            <Title title="Resume" type="subsubsection" />
+            <p>{mainApplicant.resume}</p>
+            {mainApplicant.skills && (
+              <>
+                <Title title="Skills" type="subsubsection" />
+                <p>{mainApplicant.skills}</p>
+              </>
+            )}
+            {mainApplicant.experience && (
+              <>
+                <Title title="Experience" type="subsubsection" />
+                <p>{mainApplicant.experience}</p>
+              </>
+            )}
+          </div>
+        </>
       )}
       {otherApplicants && otherApplicants.length > 0 && (
         <>
-          <Title title="Other Applicants" type="section" />
-          <div className="overflow-x-auto">
-            <table className="table">
-              {/* head */}
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {applicants?.map((applicant) => (
-                  <tr key={applicant.id}>
-                    <td>{applicant.jobTitle}</td>
-                    <td>
-                      <button>Edit</button>
-                    </td>
-                    <td>
-                      <button>Delete</button>
-                    </td>
-                    <td>
-                      <button>Make primary</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <Title title="Other Applicants" type="subsection" />
+          <div className="flex flex-col">
+            {otherApplicants.map((applicant) => (
+              <>
+                <div
+                  key={applicant.id}
+                  className="flex items-center justify-between"
+                >
+                  <p>
+                    <span className="font-semibold">{applicant.jobTitle}</span>
+                    <br />
+                    {applicant.firstName} {applicant.lastName}
+                  </p>
+                  <div className="flex">
+                    <button
+                      className="btn-ghost btn-circle btn"
+                      onClick={() => handleEditApplicant(applicant)}
+                    >
+                      <PencilSquareIcon className="h-6 w-6 text-accent" />
+                    </button>
+
+                    <button
+                      className="btn-ghost btn-circle btn"
+                      onClick={() => handleSetAsMain(applicant)}
+                      disabled={settingAsMain}
+                    >
+                      {settingAsMain ? (
+                        <Spinner className="h-6 w-6 text-success" />
+                      ) : (
+                        <ArrowUpTrayIcon className="h-6 w-6 text-success" />
+                      )}
+                    </button>
+
+                    <button
+                      className="btn-ghost btn-circle btn"
+                      onClick={() => handleRemoveApplicant(applicant)}
+                    >
+                      <TrashIcon className="h-6 w-6 text-error" />
+                    </button>
+                  </div>
+                </div>
+                <div className="divider" />
+              </>
+            ))}
           </div>
         </>
       )}

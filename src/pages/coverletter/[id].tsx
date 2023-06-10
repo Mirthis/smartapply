@@ -15,6 +15,8 @@ import OpacityTransition from "~/components/utils/OpacityTransition";
 import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
 import { api } from "~/utils/api";
 import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/utils/constants";
+import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
+import CoverLettersSkeleton from "~/components/skeletons/CoverLettersSkeleton";
 
 const CoverLetterPage: NextPage = () => {
   const router = useRouter();
@@ -24,9 +26,7 @@ const CoverLetterPage: NextPage = () => {
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
 
   const {
-    applicationId,
-    applicant,
-    job,
+    application,
     coverLetters,
     setApplication,
     addCoverLetter,
@@ -45,9 +45,14 @@ const CoverLetterPage: NextPage = () => {
       id: queryId,
     },
     {
-      enabled: router.query.id !== applicationId,
+      enabled: router.query.id !== application?.id,
       onSuccess: (data) => {
-        setApplication(data.id, data.applicant, data.job);
+        setApplication(data);
+      },
+      onError: (error) => {
+        if (error.message === "No Application found") {
+          void router.replace("/");
+        }
       },
     }
   );
@@ -58,7 +63,7 @@ const CoverLetterPage: NextPage = () => {
         applicationId: queryId,
       },
       {
-        enabled: router.query.id !== applicationId,
+        enabled: router.query.id !== application?.id,
         onSuccess: (data) => {
           setCoverLetters(data);
         },
@@ -84,8 +89,12 @@ const CoverLetterPage: NextPage = () => {
     text: createResponseText,
   } = useGenerateCoverLetter({
     onSuccess: (data) => {
-      if (applicationId) {
-        addLetterToDb({ applicationId, text: data, label: "new" });
+      if (application) {
+        addLetterToDb({
+          applicationId: application.id,
+          text: data,
+          label: "new",
+        });
       }
     },
   });
@@ -97,30 +106,35 @@ const CoverLetterPage: NextPage = () => {
     text: refineResponseText,
   } = useRefineCoverLetter({
     onSuccess: (data, args) => {
-      if (applicationId) {
-        addLetterToDb({ applicationId, text: data, label: args.refineMode });
+      if (application) {
+        addLetterToDb({
+          applicationId: application.id,
+          text: data,
+          label: args.refineMode,
+        });
       }
     },
   });
 
   const reset = () => {
-    if (applicationId) {
-      deleteAll({ applicationId });
+    if (application) {
+      deleteAll({ applicationId: application.id });
     }
     generate();
   };
 
   const generate = () => {
-    if (job && applicant) {
+    if (application) {
+      const { job, applicant } = application;
       void createCoverLetter({ job, applicant });
     }
   };
 
   const refine = (refineMode: RefineMode) => {
-    if (job && applicant && displayedLetter) {
+    if (application && displayedLetter) {
       void refineCoverLetter({
-        job,
-        applicant,
+        job: application.job,
+        applicant: application.applicant,
         srcCoverLetter: displayedLetter.text,
         refineMode,
         refineText,
@@ -178,23 +192,12 @@ const CoverLetterPage: NextPage = () => {
         onConfirm={reset}
       />
       <Title title="Create Cover Letter" />
-      {isLoadingApplication ? (
-        <div className="flex animate-pulse flex-col gap-x-4 gap-y-4 lg:flex-row">
-          <div className="card h-20 w-full bg-base-300"></div>
-          <div className="card h-20 w-full bg-base-300"></div>
-        </div>
+      {isLoadingApplication || !application ? (
+        <ApplicationDetailsSkeleton />
       ) : (
-        <ApplicationDetails />
+        <ApplicationDetails application={application} />
       )}
-      {isLoadingCoverLetters && (
-        <div className="mt-4 flex animate-pulse flex-col gap-y-4">
-          <div className="card h-32 w-full bg-base-300 " />
-          <div className="flex-rows flex gap-x-2">
-            <div className="card h-14 w-3/4 bg-base-300 " />
-            <div className="card h-14 w-1/4 bg-base-300 " />
-          </div>
-        </div>
-      )}
+      {isLoadingCoverLetters && <CoverLettersSkeleton />}
 
       {!isLoading && (
         <>

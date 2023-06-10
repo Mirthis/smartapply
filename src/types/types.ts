@@ -51,8 +51,10 @@ export type TestData = {
 };
 
 export enum FormStep {
+  New = "new",
   Job = "job",
   Applicant = "applicant",
+  Service = "service",
   Complete = "complete",
 }
 

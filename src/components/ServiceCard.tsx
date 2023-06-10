@@ -32,11 +32,6 @@ const ServiceCard = ({
 
   return (
     <>
-      <SignInModal
-        isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false, redirectUrl: "" })}
-        redirectUrl={modalState.redirectUrl}
-      />
       {isLoaded && (
         <BasicCard
           url={url}

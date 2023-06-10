@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import { api } from "~/utils/api";
 import Spinner from "../utils/Spinner";
 
-export const DeleteApplicantbModal = ({
+export const DeleteApplictionbModal = ({
   isOpen,
   onClose,
   application,

@@ -6,7 +6,7 @@ const Title = ({
   className,
 }: {
   title: string;
-  type?: "page" | "section" | "subsection";
+  type?: "page" | "section" | "subsection" | "subsubsection";
   className?: string;
 }) => {
   return (
@@ -34,7 +34,17 @@ const Title = ({
       {type === "subsection" && (
         <h3
           className={classNames(
-            "sm:text-2 xl mb-2 mt-2 text-xl text-primary",
+            "xl mb-2 mt-2 text-xl text-primary sm:text-2xl",
+            className
+          )}
+        >
+          {title}
+        </h3>
+      )}
+      {type === "subsubsection" && (
+        <h3
+          className={classNames(
+            "xl mb-2 mt-2 text-lg text-primary sm:text-xl",
             className
           )}
         >

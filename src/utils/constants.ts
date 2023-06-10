@@ -34,21 +34,21 @@ export const featureCardsData = [
 
 export const serviceCardData = [
   {
-    url: "/coverletter",
+    url: "/new?step=complete&action=coverletter",
     title: "Personalized Cover Letter",
     description:
       "Instantly get a professionally written cover letter based on the job and applicant details provided. You can further refine the generated cover letter after it is created.",
     icon: DocumentTextIcon,
   },
   {
-    url: "/interview",
+    url: "/new?step=complete&action=interview",
     title: "Interview Simulation",
     description:
       "Choose the type of interview you want to take part in (HR, tech or leadership) and have a relatistic conversation with  our chat bot.",
     icon: ChatBubbleLeftRightIcon,
   },
   {
-    url: "/test",
+    url: "/new?step=complete&action=test",
     title: "Multiple Choice Questions",
     description:
       "Test your knowledge with multiple choice questions relevant to the job and role. Get immediate feedback and explanations for each answer.",

@@ -10,6 +10,7 @@ const JD_MIN_LENGTH = 20;
 const JD_MAX_LENGTH = 5000;
 
 export const jobSchema = z.object({
+  id: z.string().nullish(),
   title: z
     .string()
     .min(JOB_TITLE_MIN_LENGTH, {

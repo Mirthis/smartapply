@@ -38,13 +38,15 @@ model Applicant {
   resume     String
   skills     String?
   experience String?
-  isMain     Boolean  @default(false)
+  isMain      Boolean @default(false)
+  isInProfile Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   Profile    Profile?
   Applications Application[]
 
   @@unique([id, userId])
+  @@index ([userId])
 }
 
 model Application {
@@ -55,10 +57,10 @@ model Application {
   jobId       String
   job         Job @relation(fields: [jobId], references: [id])
   coverLetters CoverLetter[]
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([jobId])
 }
 
 model Job {
@@ -68,9 +70,11 @@ model Job {
   description String
   companyName String?
   companyDetails String?
+  applications Application[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Application Application?
+
+  @@unique([id, userId])
 }
 
 model CoverLetter {
@@ -82,4 +86,6 @@ model CoverLetter {
   label String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([applicationId])
 }

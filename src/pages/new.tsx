@@ -3,89 +3,146 @@ import { type NextPage } from "next";
 
 import ApplicantForm from "~/components/forms/ApplicantForm";
 import JobForm from "~/components/forms/JobForm";
-import { FormStep } from "~/types/types";
+import { type ApplicantData, FormStep, type JobData } from "~/types/types";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import ServiceCard from "~/components/ServiceCard";
 import { serviceCardData } from "~/utils/constants";
 import { api } from "~/utils/api";
 import { useAppStore } from "~/store/store";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { SignInModal } from "~/components/modals/SignInModal";
+import { BasicCard } from "~/components/BasicCard";
+import Spinner from "~/components/utils/Spinner";
+import Title from "~/components/Title";
 
 const NewApplication: NextPage = () => {
   // state for application form
   const [step, setStep] = useState<FormStep>(FormStep.Job);
   const router = useRouter();
+  const {
+    newApplication: { job: newJob, applicant: newApplicant },
+    initFromLocalStore,
+    application,
+    setNewJob,
+    setNewApplicant,
+    setApplication,
+    reset,
+  } = useAppStore((state) => state);
+
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    redirectUrl: "",
+  });
+
+  const { userId } = useAuth();
 
   // move to next form step
   const nextStep = () => {
     if (step === FormStep.Job) {
       setStep(FormStep.Applicant);
     } else if (step === FormStep.Applicant) {
+      setStep(FormStep.Service);
+    } else if (step === FormStep.Service) {
       setStep(FormStep.Complete);
     }
   };
 
+  // set step based on url query
   useEffect(() => {
-    if (router.query.step === "job") {
+    if (router.query.step === undefined) {
+      reset();
       setStep(FormStep.Job);
-    }
-    if (router.query.step === "applicant") {
+    } else if (router.query.step === "job") {
+      setStep(FormStep.Job);
+    } else if (router.query.step === "applicant") {
       setStep(FormStep.Applicant);
-    }
-    if (router.query.step === "complete") {
+    } else if (router.query.step === "service") {
+      setStep(FormStep.Service);
+    } else if (router.query.step === "complete") {
       setStep(FormStep.Complete);
     }
-  }, [router]);
+  }, [router, reset]);
 
   const {
-    job,
-    applicant,
-    applicationId,
-    initFromLocalStore,
-    setApplicationId,
-  } = useAppStore((state) => state);
+    mutate: createApplication,
+    isLoading: creatingApplication,
+    isSuccess: applicationCreated,
+    isError: applicationCreationError,
+  } = api.application.createOrUpdate.useMutation({
+    onSuccess: (data) => {
+      const url = router.query.action as string;
+      if (!url) return;
+      void router.push(`/${url}/${data.id}`);
+      setApplication(data);
+    },
+  });
 
-  const { mutate: createApplication } =
-    api.application.createOrUpdate.useMutation({
-      onSuccess: (data) => {
-        setApplicationId(data.id);
-      },
-    });
-
-  const { isLoaded, userId } = useAuth();
-
+  // redirect to new application page if applicationId is available and
+  // application creation has been already completed
   useEffect(() => {
-    // Create a new application if not present already, data are available and user is logged in
-    if (
-      step === FormStep.Complete &&
-      isLoaded &&
-      userId &&
-      !applicationId &&
-      job &&
-      applicant
-    ) {
-      createApplication({
-        job,
-        applicant,
-      });
+    if (application && step !== FormStep.Complete) {
+      void router.replace("/new");
     }
-  }, [
-    job,
-    applicant,
-    step,
-    isLoaded,
-    userId,
-    applicationId,
-    createApplication,
-  ]);
+  }, [application, router, step]);
+
+  const { isLoading, data: applicants } =
+    api.applicant.getForLoggedUser.useQuery(
+      { isInProfile: true },
+      {
+        refetchOnWindowFocus: false,
+        enabled: !!userId,
+      }
+    );
+
+  const [formApplicant, setFormApplicant] = useState(newApplicant);
+
+  const handleProfileApplicantChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const id = e.target.value;
+    const profileApplicant =
+      applicants?.find((applicant) => applicant.id === id) ?? newApplicant;
+    setFormApplicant(profileApplicant);
+  };
+
+  // Create a new application when data are available and user is logged in
+  useEffect(() => {
+    if (step === FormStep.Complete && userId && newJob && newApplicant) {
+      if (newApplicant.id) {
+        createApplication({
+          job: newJob,
+          applicantId: newApplicant.id,
+        });
+      } else {
+        createApplication({
+          job: newJob,
+          applicant: newApplicant,
+        });
+      }
+    }
+  }, [newJob, newApplicant, step, userId, createApplication]);
 
   useEffect(() => {
-    if (!applicant || !job) {
+    if (!newApplicant && !newJob) {
       initFromLocalStore();
     }
-  }, [applicant, job, initFromLocalStore]);
+  }, [newApplicant, newJob, initFromLocalStore]);
+
+  const onJobFormSubmit = (data: JobData) => {
+    setNewJob(data);
+    nextStep();
+  };
+
+  const onApplicantFormSubmit = (data: ApplicantData) => {
+    setNewApplicant(data);
+    nextStep();
+  };
+
+  const openModal = (redirectUrl: string) => {
+    setModalState({ isOpen: true, redirectUrl });
+  };
 
   return (
     <>
@@ -98,18 +155,21 @@ const NewApplication: NextPage = () => {
         />
       </Head>
       {/* Login Modal */}
+      <SignInModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ isOpen: false, redirectUrl: "" })}
+        redirectUrl={modalState.redirectUrl}
+      />
 
       {/* Step progress and navigation */}
       <div className="text-center">
         <ul className="steps steps-horizontal mx-auto w-full sm:w-96">
           <li className={"step-primary step"}>
-            <button onClick={() => setStep(FormStep.Job)}>Job</button>
+            <Link href="new?step=job">Job</Link>
           </li>
           <li className={`${step !== FormStep.Job ? "step-primary" : ""} step`}>
             {step !== FormStep.Job ? (
-              <button onClick={() => setStep(FormStep.Applicant)}>
-                <span>Applicant</span>
-              </button>
+              <Link href="new?step=applicant">Applicant</Link>
             ) : (
               <span>Applicant</span>
             )}
@@ -123,26 +183,90 @@ const NewApplication: NextPage = () => {
           </li>
         </ul>
       </div>
-      <div className="mb-4" />
+      <Title title="New Application" />
       <div className="flex flex-col gap-y-4">
         {/* First step Job Form */}
-        {step === FormStep.Job && <JobForm onSuccess={nextStep} />}
+        {step === FormStep.Job && (
+          <>
+            <Title title="Job Details" type="section" />
+            <JobForm job={newJob} onSubmit={onJobFormSubmit} />
+          </>
+        )}
         {/* Second step Applicant Form */}
         {step === FormStep.Applicant && (
-          <ApplicantForm onSuccess={nextStep} type="application" />
+          <>
+            {/* show select for profile applicants if there are any */}
+            <Title title="Applicant Details" type="section" />
+
+            {userId && isLoading && (
+              <Spinner text="Loading applicant from profile" />
+            )}
+            {applicants && applicants.length > 0 && (
+              <div className="flex flex-col  gap-2 md:flex-row">
+                <label className="label">
+                  <span className="label-text font-semibold text-primary">
+                    Select an applicant from your profile
+                  </span>
+                </label>
+                <select
+                  className="select-bordered select w-full md:w-fit"
+                  // value={profileApplicantId}
+                  defaultValue="N/A"
+                  onChange={handleProfileApplicantChange}
+                >
+                  <option disabled value="N/A">
+                    -- Select an applicant --
+                  </option>
+                  {applicants.map((applicant) => (
+                    <option key={applicant.id} value={applicant.id}>
+                      {applicant.jobTitle} - {applicant.firstName}{" "}
+                      {applicant.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="divider">Or</div>
+            <ApplicantForm
+              applicant={formApplicant}
+              onSubmit={onApplicantFormSubmit}
+              forceNewOnEdit={!!userId}
+            />
+          </>
         )}
         {/* Third step Option Cards  */}
+        {step === FormStep.Service && (
+          <>
+            <Title title="Select Service" type="section" />
+
+            <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
+              {serviceCardData.map((card) => (
+                <BasicCard
+                  Icon={card.icon}
+                  key={card.url}
+                  title={card.title}
+                  description={card.description}
+                  url={card.url}
+                  onClick={userId ? undefined : () => openModal(card.url)}
+                />
+              ))}
+            </div>
+          </>
+        )}
         {step === FormStep.Complete && (
-          <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
-            {serviceCardData.map((card) => (
-              <ServiceCard
-                Icon={card.icon}
-                key={card.url}
-                title={card.title}
-                description={card.description}
-                url={`${card.url}/${applicationId ?? "N/A"}`}
-              />
-            ))}
+          <div>
+            {creatingApplication && <Spinner text="Creating application..." />}
+            {!creatingApplication && applicationCreated && (
+              <div>
+                <Spinner text="Redirecting you..." />
+              </div>
+            )}
+            {applicationCreationError && (
+              <p className="text-erorr">
+                An error occurred while creating your application. Please try
+                again later.
+              </p>
+            )}
           </div>
         )}
       </div>

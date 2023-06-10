@@ -55,7 +55,7 @@ const Navbar = () => {
   const { isSignedIn } = useAuth();
 
   const router = useRouter();
-  const { applicationId } = useAppStore();
+  const { application } = useAppStore();
 
   const setTransparentNavBar = (transparent: boolean) => {
     if (transparent) {
@@ -93,20 +93,19 @@ const Navbar = () => {
   };
 
   const navBarLinks = useMemo(() => {
-    console.log("updating links...");
     const links = [...publicLinks];
     if (isSignedIn) {
       links.push(...protectedLinks);
     }
-    if (applicationId) {
+    if (application) {
       const applicationLinks = actionLinks.map((l) => ({
         ...l,
-        url: `${l.url}/${applicationId}`,
+        url: `${l.url}/${application.id}`,
       }));
       links.push(...applicationLinks);
     }
     return links;
-  }, [isSignedIn, applicationId]);
+  }, [isSignedIn, application]);
 
   return (
     <div

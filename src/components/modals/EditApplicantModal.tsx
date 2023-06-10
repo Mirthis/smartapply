@@ -1,45 +1,101 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+import { useAppStore } from "~/store/store";
+import Modal from "./Modal";
+import { ResetContent } from "./ConfirmApplicationChange";
+import { useState } from "react";
+import { type ApplicationData, type ApplicantData } from "~/types/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applicantSchema } from "~/types/schemas";
-import { type ApplicantData } from "~/types/types";
 import Spinner from "../utils/Spinner";
-import { useEffect } from "react";
+import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
-const ApplicantForm = ({
-  applicant,
-  onSubmit,
-  forceNewOnEdit = false,
+export const EditApplicantModal = ({
+  isOpen,
+  onClose,
+  application,
 }: {
-  applicant: ApplicantData | undefined;
-  onSubmit: (data: ApplicantData) => void;
-  forceNewOnEdit?: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+  application: ApplicationData;
 }) => {
-  console.log({ applicant });
+  const { applicant, job, id: applicationId } = application;
+
+  const { setApplication } = useAppStore((state) => state);
+
+  const [isOpenConfirm, setIsOpenConfirm] = useState(false);
+  const router = useRouter();
+
+  const { mutateAsync: upsertApplication } =
+    api.application.createOrUpdate.useMutation({
+      onSuccess: (data) => {
+        setApplication(data);
+        if (applicationId && data.id !== applicationId) {
+          const newUrl = router.asPath.replace(applicationId, data.id);
+          void router.push(newUrl);
+        }
+        onClose();
+      },
+    });
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid, isSubmitting, isDirty },
   } = useForm<ApplicantData>({
     resolver: zodResolver(applicantSchema),
     mode: "onTouched",
-    defaultValues: applicant,
+    defaultValues: {
+      id: applicant?.id ?? "",
+      firstName: applicant?.firstName ?? "",
+      lastName: applicant?.lastName ?? "",
+      jobTitle: applicant?.jobTitle ?? "",
+      experience: applicant?.experience ?? "",
+      resume: applicant?.resume ?? "",
+      skills: applicant?.skills ?? "",
+    },
   });
 
-  useEffect(() => {
-    reset(applicant);
-  }, [applicant, reset]);
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsOpenConfirm(true);
+  };
 
-  const onSubmitInner = (data: ApplicantData) => {
-    data.id = forceNewOnEdit && isDirty ? undefined : data.id;
-    onSubmit(data);
+  const submitCreate = async (data: ApplicantData) => {
+    if (!job?.id) return;
+    await upsertApplication({
+      applicationId: undefined,
+      applicant: data,
+      jobId: job.id,
+    });
+  };
+
+  const submitUpdate = async (data: ApplicantData) => {
+    if (!applicationId || !job?.id) return;
+
+    await upsertApplication({
+      applicationId,
+      applicant: data,
+      jobId: job.id,
+    });
+  };
+
+  const confirmChange = (mode: "create" | "update") => {
+    if (mode === "create") {
+      void handleSubmit(submitCreate)();
+    } else {
+      void handleSubmit(submitUpdate)();
+    }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmitInner)}>
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Applicant Details">
+      <ResetContent
+        isOpen={isOpenConfirm}
+        onClose={() => setIsOpenConfirm(false)}
+        onConfirm={confirmChange}
+      />
+      <form onSubmit={onSubmit}>
         <div className="flex flex-col gap-y-4">
           <input type="hidden" {...register("id")} />
           <div>
@@ -170,7 +226,7 @@ const ApplicantForm = ({
           </div>
 
           <button
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isSubmitting || !isDirty}
             type="submit"
             className="btn-primary btn"
           >
@@ -184,8 +240,6 @@ const ApplicantForm = ({
           </button>
         </div>
       </form>
-    </>
+    </Modal>
   );
 };
-
-export default ApplicantForm;
