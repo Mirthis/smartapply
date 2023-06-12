@@ -11,6 +11,7 @@ export default authMiddleware({
     "/about",
     "/contact",
     "/testStreaming",
+    "/beta",
   ],
 });
 
