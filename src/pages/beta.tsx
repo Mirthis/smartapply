@@ -28,28 +28,26 @@ const BetaPage: NextPage = () => {
       <Title title="Change Log" type="section" />
       <Title title="2023-06-12" type="subsection" />
       <p>New features and improvements:</p>
-      <p>
-        <ul className="list-inside list-disc">
-          <li>
-            Add &quot;Saved Applications&quot; section allowing to select a
-            previously created applications
-          </li>
-          <li>
-            Cover letters geenerated for each application are now stored and can
-            be retrieved selecting the corresponding application
-          </li>
-          <li>Applicant details used can be saved in the user profile</li>
-          <li>Multiple applicants can be stored in the user profile</li>
-          <li>
-            A stored applicant can be selected during the application creation
-            process
-          </li>
-          <li>Minor UI improvemetns </li>
-          <li>Add the beta page (this page)</li>
-        </ul>
-      </p>
+      <ul className="list-inside list-disc">
+        <li>
+          Add &quot;Saved Applications&quot; section allowing to select a
+          previously created applications
+        </li>
+        <li>
+          Cover letters geenerated for each application are now stored and can
+          be retrieved selecting the corresponding application
+        </li>
+        <li>Applicant details used can be saved in the user profile</li>
+        <li>Multiple applicants can be stored in the user profile</li>
+        <li>
+          A stored applicant can be selected during the application creation
+          process
+        </li>
+        <li>Minor UI improvemetns </li>
+        <li>Add the beta page (this page)</li>
+      </ul>
       <Title title="2023-05-20" type="subsection" />
-      New features and improvements:
+      <p>New features and improvements:</p>
       <ul className="list-inside list-disc">
         <li>Social login via LinkedIn and Google</li>
         <li>Restric access to logged in users</li>
@@ -68,7 +66,7 @@ const BetaPage: NextPage = () => {
         </li>
       </ul>
       <Title title="2023-05-12" type="subsection" />
-      Inital release:
+      <p>Inital release:</p>
       <ul className="list-inside list-disc">
         <li>Application creation by inserting job and appicant data</li>
         <li>Cover Letter generation and refinements</li>
