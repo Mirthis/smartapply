@@ -43,6 +43,7 @@ const ContactForm = () => {
         </p>
       )}
       {!isSubmitSuccessful && (
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-y-4">
             <div>

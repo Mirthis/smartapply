@@ -12,9 +12,10 @@ export default authMiddleware({
     "/contact",
     "/testStreaming",
     "/beta",
+    "/api/(.*)",
   ],
 });
 
 export const config = {
-  matcher: ["/(.*?trpc.*?|(?!static|.*\\..*|_next|favicon.ico).*)", "/'"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
