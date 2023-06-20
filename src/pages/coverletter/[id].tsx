@@ -11,7 +11,6 @@ import { type CoverLetter, RefineMode } from "~/types/types";
 import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import OpacityTransition from "~/components/utils/OpacityTransition";
 import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
 import { api } from "~/utils/api";
 import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/utils/constants";
@@ -162,7 +161,11 @@ const CoverLetterPage: NextPage = () => {
   }, [coverLetters, displayedLetter]);
 
   const handleLettersTabChange = (index: string) => {
-    setDisplayedLetter(coverLetters.find((c) => c.id === index));
+    const selectedLetter = coverLetters.find((c) => c.id === index);
+    if (selectedLetter) {
+      setDisplayedLetter(selectedLetter);
+      setDisplayedText(selectedLetter?.text);
+    }
   };
 
   const handleReset = () => {
@@ -285,13 +288,11 @@ const CoverLetterPage: NextPage = () => {
                   <div className="relative rounded-md bg-base-200 p-2">
                     {/* {displayedText} */}
                     <div>
-                      <OpacityTransition show appear>
-                        {formatApiMessage(displayedText).map((p, i) => (
-                          <p className="mb-2" key={i}>
-                            {p}
-                          </p>
-                        ))}
-                      </OpacityTransition>
+                      {formatApiMessage(displayedText).map((p, i) => (
+                        <p className="mb-2" key={`coverletter-paragraph-${i}`}>
+                          {p}
+                        </p>
+                      ))}
                     </div>
                     <button
                       className="group absolute right-2 top-2"
