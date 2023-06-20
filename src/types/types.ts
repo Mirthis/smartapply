@@ -3,6 +3,7 @@ import {
   type contactFormSchema,
   type applicantSchema,
   type jobSchema,
+  type interviewRequestSchema,
 } from "./schemas";
 import { type ChatCompletionRequestMessage } from "openai";
 import { type inferRouterOutputs } from "@trpc/server";
@@ -11,6 +12,11 @@ import { type AppRouter } from "~/server/api/root";
 export type JobData = z.infer<typeof jobSchema>;
 export type ApplicantData = z.infer<typeof applicantSchema>;
 export type ContactFormData = z.infer<typeof contactFormSchema>;
+export type InterviewRequest = z.infer<typeof interviewRequestSchema>;
+export type InterviewHookRequest = Omit<
+  z.infer<typeof interviewRequestSchema>,
+  "messages"
+>;
 
 export enum InterviewType {
   tech = "Technology",
@@ -31,6 +37,7 @@ export interface CoverLetter {
 export type InterviewData = {
   type: InterviewType;
   messages: InterviewMessage[];
+  isOpen: boolean;
   lastId: number;
 };
 

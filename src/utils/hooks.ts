@@ -1,9 +1,11 @@
+import { type ChatCompletionResponseMessage } from "openai";
 import { useCallback, useState, useEffect } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import {
   type RefineMode,
   type ApplicantData,
   type JobData,
+  type InterviewHookRequest,
 } from "~/types/types";
 
 export const useRecaptcha = () => {
@@ -39,26 +41,52 @@ export const useRecaptcha = () => {
   };
 };
 
+type FetchStdArgs = {
+  text?: string;
+  messages?: ChatCompletionResponseMessage[];
+};
+
 export const useStreamingApi = <T>(
-  fetchFn: (args: T) => Promise<Response>,
+  fetchFn: (args: T & FetchStdArgs) => Promise<Response>,
   options?: {
     onSuccess: (data: string, args: T) => void;
+    initMessages?: ChatCompletionResponseMessage[];
   }
 ) => {
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>(
+    options?.initMessages ?? []
+  );
 
-  const execute = async (args: T) => {
+  const execute = async (args: T & FetchStdArgs) => {
+    setResult("");
     setIsLoading(true);
     setIsError(false);
-    const response = await fetchFn(args);
+    const requestMessages = messages;
+    if (args.text) {
+      requestMessages.push({
+        content: args.text,
+        role: "user",
+      });
+      setMessages(requestMessages);
+    }
+
+    const newMessage: ChatCompletionResponseMessage = {
+      content: "",
+      role: "assistant",
+    };
+    setMessages((prevMessages) => prevMessages.concat(newMessage));
+
+    const response = await fetchFn({ ...args, messages: requestMessages });
 
     const data = response.body;
 
     if (!response.ok || !data) {
       setIsError(true);
       setIsLoading(false);
+      setMessages((prevMessages) => prevMessages.slice(0, -1));
       return;
     }
 
@@ -67,12 +95,18 @@ export const useStreamingApi = <T>(
     let done = false;
 
     let currentResponse: string[] = [];
+
     while (!done) {
       const { value, done: doneReading } = await reader.read();
       done = doneReading;
       const chunkValue = decoder.decode(value);
       currentResponse = [...currentResponse, chunkValue];
-      setResult(currentResponse.join(""));
+      const text = currentResponse.join("");
+      setResult(text);
+      newMessage.content = text;
+      setMessages((prevMessages) => {
+        return prevMessages.slice(0, -1).concat(newMessage);
+      });
     }
     // breaks text indent on refresh due to streaming
     // localStorage.setItem('response', JSON.stringify(currentResponse));
@@ -83,11 +117,18 @@ export const useStreamingApi = <T>(
     return currentResponse.join("");
   };
 
+  const reset = () => {
+    setResult("");
+    setMessages([]);
+  };
+
   return {
     execute,
     isLoading,
     isError,
     text: result,
+    messages,
+    reset,
   };
 };
 
@@ -103,6 +144,24 @@ export const useGenerateCoverLetter = (options?: {
       body: JSON.stringify({
         job: args.job,
         applicant: args.applicant,
+      }),
+    });
+
+  return useStreamingApi(fn, options);
+};
+
+export const useInterview = (options?: {
+  onSuccess: (data: string) => void;
+  initMessages?: ChatCompletionResponseMessage[];
+}) => {
+  const fn = (args: InterviewHookRequest) =>
+    fetch("/api/interview", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...args,
       }),
     });
 

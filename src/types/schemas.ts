@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { InterviewType } from "./types";
+import { ChatCompletionRequestMessageRoleEnum } from "openai";
 
 const COMPANY_NAME_MIN_LENGTH = 2;
 const COMPANY_NAME_MAX_LENGTH = 20;
@@ -136,4 +138,17 @@ export const contactFormSchema = z.object({
   email: z.string().email(),
   subject: z.string().min(5).max(50),
   message: z.string().min(10).max(500),
+});
+
+export const interviewRequestSchema = z.object({
+  job: jobSchema,
+  applicant: applicantSchema,
+  interviewType: z.nativeEnum(InterviewType),
+  messages: z.array(
+    z.object({
+      role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
+      content: z.string(),
+    })
+  ),
+  // text: z.string(),
 });

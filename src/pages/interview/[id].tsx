@@ -1,5 +1,4 @@
 import { type NextPage } from "next";
-import { UserIcon, CodeBracketIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import Title from "~/components/Title";
 import { ApplicationDetails } from "~/components/ApplicationDetails";
@@ -12,13 +11,13 @@ import {
 } from "openai";
 import OpacityTransition from "~/components/utils/OpacityTransition";
 import MessageBubble from "~/components/MessageBubble";
-import LoadingText from "~/components/utils/LoadingText";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { UserCircleIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { BasicCard } from "~/components/BasicCard";
 import { interviewTypeCardData } from "~/utils/constants";
 import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
+import { useInterview } from "~/utils/hooks";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -33,7 +32,6 @@ const interviewTitle = (type: InterviewType) => {
 
 const InterviewPage: NextPage = () => {
   // const [interviewType, setInterviewType] = useState<InterviewType>();
-  const [interviewOpen, setInterviewOpen] = useState(false);
   const [chatText, setChatText] = useState("");
   const router = useRouter();
 
@@ -44,9 +42,10 @@ const InterviewPage: NextPage = () => {
     addInterviewMessage,
     initInterview,
     resetInterview,
+    closeInterview,
   } = useAppStore((state) => state);
-  const messages = interview?.messages ?? [];
-  const interviewType = interview?.type;
+  // const messages = interview?.messages ?? [];
+  // const interviewType = interview?.type;
 
   const queryId =
     router.query.id && !Array.isArray(router.query.id)
@@ -71,36 +70,60 @@ const InterviewPage: NextPage = () => {
     }
   );
 
+  // const {
+  //   mutate: sendMessage,
+  //   isLoading: isLoadingMessage,
+  //   isError,
+  // } = api.interview.sendMessage.useMutation({
+  //   onSuccess: (data) => {
+  //     if (data.content.endsWith("*END*")) {
+  //       setInterviewOpen(false);
+  //       data.content = data.content.replace("*END*", "");
+  //     }
+  //     addInterviewMessage(data);
+  //     setChatText("");
+  //   },
+  // });
+
+  const handleReset = () => {
+    resetInterview();
+    resetInterviewHook();
+  };
+
   const {
-    mutate: sendMessage,
-    isLoading,
+    execute: sendMessage,
+    isLoading: isLoadingMessage,
     isError,
-  } = api.interview.sendMessage.useMutation({
+    messages: lastMessages,
+    reset: resetInterviewHook,
+  } = useInterview({
     onSuccess: (data) => {
-      if (data.content.endsWith("*END*")) {
-        setInterviewOpen(false);
-        data.content = data.content.replace("*END*", "");
+      if (data.endsWith("*END*")) {
+        closeInterview();
+        data = data.replace("*END*", "");
       }
-      addInterviewMessage(data);
+      addInterviewMessage({
+        content: data,
+        role: ChatCompletionRequestMessageRoleEnum.Assistant,
+      });
       setChatText("");
     },
+    initMessages: interview?.messages,
   });
 
   const changeInterviewType = (type: InterviewType) => {
-    setInterviewOpen(true);
     initInterview(type);
     if (application) {
-      sendMessage({
+      void sendMessage({
         job: application.job,
         applicant: application.applicant,
         interviewType: type,
-        interviewMessages: [],
       });
     }
   };
 
   const send = (retry = false) => {
-    if (interviewType && application) {
+    if (interview && application) {
       const newMessage = {
         role: ChatCompletionRequestMessageRoleEnum.User,
         content: chatText,
@@ -114,11 +137,11 @@ const InterviewPage: NextPage = () => {
         messages.push(newMessage);
       }
 
-      sendMessage({
+      void sendMessage({
         job: application.job,
         applicant: application.applicant,
-        interviewType,
-        interviewMessages: messages,
+        interviewType: interview.type,
+        text: retry ? undefined : chatText,
       });
 
       if (!retry) {
@@ -146,7 +169,7 @@ const InterviewPage: NextPage = () => {
       {application && (
         <>
           {/* Interview is not started yet */}
-          {!interviewType && (
+          {!interview && (
             <>
               <Title title="Interview" type="section" />
               <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
@@ -159,63 +182,38 @@ const InterviewPage: NextPage = () => {
                     key={card.title}
                   />
                 ))}
-
-                <button onClick={() => changeInterviewType(InterviewType.hr)}>
-                  <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
-                    <div className="card-body items-center text-center">
-                      <UserIcon className="h-16 w-16" />
-                      <h2 className="card-title">HR Interview</h2>
-                      <p>
-                        Simulate an HR interview focuing on soft skills and
-                        high-level assessment of the applicant.
-                      </p>
-                    </div>
-                  </div>
-                </button>
-
-                <button onClick={() => changeInterviewType(InterviewType.tech)}>
-                  <div className="card h-full w-full bg-base-300 hover:bg-base-200 lg:w-96">
-                    <div className="card-body items-center text-center">
-                      <CodeBracketIcon className="h-16 w-16" />
-                      <h2 className="card-title">Technical Interview</h2>
-                      <p>
-                        Simulate a technical interview focuing on the
-                        applicant&apos;s technical skills.
-                      </p>
-                    </div>
-                  </div>
-                </button>
               </div>
             </>
           )}
           {/* Interview is started */}
-          {interviewType && (
+          {interview && (
             <>
-              <Title title={interviewTitle(interviewType)} type="section" />
+              <Title title={interviewTitle(interview.type)} type="section" />
               {/* Chat Messages */}
               <div>
-                {messages.map((message) => (
-                  <>
-                    <OpacityTransition
-                      key={`message-${message.id}`}
-                      show
-                      appear
-                    >
-                      <MessageBubble message={message} />
-                    </OpacityTransition>
-                  </>
+                {lastMessages.map((message, i) => (
+                  <OpacityTransition key={`message-${i}`} show appear>
+                    <MessageBubble message={message} />
+                  </OpacityTransition>
                 ))}
               </div>
-              <OpacityTransition show={isLoading} noFadeOut>
-                <div className="flex items-end gap-x-2">
-                  <UserCircleIcon className="h-14 w-14 text-secondary" />
-                  <div className="chat chat-start">
-                    <div className="chat-bubble chat-bubble-secondary">
-                      <LoadingText />
-                    </div>
-                  </div>
-                </div>
-              </OpacityTransition>
+              {/* <OpacityTransition
+                show={isLoadingMessage && lastMessageText === ""}
+                noFadeOut
+              >
+                <LoadingBubble />
+              </OpacityTransition> */}
+              {/* <OpacityTransition
+                show={isLoadingMessage && lastMessageText !== ""}
+                noFadeOut
+              >
+                <MessageBubble
+                  message={{
+                    content: lastMessageText,
+                    role: "assistant",
+                  }}
+                />
+              </OpacityTransition> */}
               <OpacityTransition show={isError} noFadeOut>
                 <div className="chat chat-start">
                   <div className="chat-bubble bg-error text-white">
@@ -234,7 +232,7 @@ const InterviewPage: NextPage = () => {
             </>
           )}
           {/* Chat Input */}
-          {interviewOpen && (
+          {interview && interview.isOpen && (
             <div className="mt-4 flex items-start justify-start gap-x-2">
               <textarea
                 value={chatText}
@@ -247,17 +245,17 @@ const InterviewPage: NextPage = () => {
                 className="btn-primary btn"
                 type="submit"
                 onClick={() => send()}
-                disabled={chatText.length === 0 || isLoading}
+                disabled={chatText.length === 0 || isLoadingMessage}
               >
                 <PaperAirplaneIcon className="h-6 w-6" />
                 <span className="ml-2 hidden sm:block">Send</span>
               </button>
             </div>
           )}
-          {!interviewOpen && interviewType && (
+          {interview && !interview.isOpen && (
             <div className="mt-4 text-center">
               <p className="mb-2">The interview is over.</p>
-              <button className="btn-primary btn" onClick={resetInterview}>
+              <button className="btn-primary btn" onClick={handleReset}>
                 Start new interview
               </button>
             </div>

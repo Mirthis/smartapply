@@ -38,6 +38,7 @@ type AppStore = AppStoreInitialState & {
   clearCoverLetters: () => void;
   initInterview: (type: InterviewType) => void;
   resetInterview: () => void;
+  closeInterview: () => void;
   addInterviewMessage: (message: ChatCompletionRequestMessage) => void;
   addTestMessage: (question: ChatCompletionResponseMessage) => void;
   addTestQuestion: (question: string) => void;
@@ -178,6 +179,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         messages: [],
         type,
         lastId: 0,
+        isOpen: true,
       },
     });
   },
@@ -200,6 +202,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
     });
   },
   resetInterview: () => set({ interview: undefined }),
+  closeInterview: () => {
+    const interview = get().interview;
+    if (!interview) return;
+    set({
+      interview: {
+        ...interview,
+        isOpen: false,
+      },
+    });
+  },
   addTestMessage: (message: ChatCompletionRequestMessage) => {
     const test = get().test;
     if (!test) return;

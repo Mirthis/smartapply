@@ -1,16 +1,15 @@
-import {  z } from "zod";
-
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { OpenAI } from "openai-streams";
+import { interviewRequestSchema } from "~/types/schemas";
+import { InterviewType, type ApplicantData, type JobData } from "~/types/types";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
 import { env } from "~/env.mjs";
-import { TRPCError } from "@trpc/server";
-import { InterviewType, type ApplicantData, type JobData } from "~/types/types";
-import { applicantSchema, jobSchema } from "~/types/schemas";
 import { getJobDetailsPrompt } from "~/utils/prompt";
-import { openaiClient } from "~/utils/openai";
+import { getFakeAiResponse } from "~/utils/misc";
+import { getAuth } from "@clerk/nextjs/server";
+import { type NextRequest } from "next/server";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -83,68 +82,37 @@ const getFirstInterviewMessage = (): ChatCompletionRequestMessage => {
   };
 };
 
-export const interviewRouter = createTRPCRouter({
-  sendMessage: protectedProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-        interviewType: z.nativeEnum(InterviewType),
-        interviewMessages: z.array(
-          z.object({
-            role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
-            content: z.string(),
-          })
-        ),
-      })
-    )
-    .mutation(async ({ input }) => {
-      if (env.SKIP_AI) {
-        await delay(1000);
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
-          content: "I'm sorry, I'm not feeling well today",
-        };
+export default async function handler(request: NextRequest) {
+  // const requestData = requestSchema.parse(await request.());
+  const { userId } = getAuth(request);
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
-        return message;
-      }
+  const requestData = interviewRequestSchema.parse(await request.json());
+  const { job, applicant, interviewType, messages } = requestData;
 
-      const messages = [
-        getInterviewSystemMessage(
-          input.interviewType,
-          input.job,
-          input.applicant
-        ),
-        getFirstInterviewMessage(),
-        ...input.interviewMessages,
-      ];
+  if (env.SKIP_AI) {
+    await delay(1000);
+    return new Response(
+      await getFakeAiResponse("test interview message\n\nanother line*END*")
+    );
+  }
 
-      const response = await openaiClient.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages,
-      });
-      const finishReason = response.data.choices[0]?.finish_reason;
-      // TODO: handle this exception and other finish reasons
-      if (finishReason === "lenght") {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Cover letter generation failed due to excessive length",
-        });
-      }
+  const requestMessages = [
+    getInterviewSystemMessage(interviewType, job, applicant),
+    getFirstInterviewMessage(),
+    ...messages,
+  ];
 
-      const responseText = response.data.choices[0]?.message?.content;
-      if (responseText) {
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
-          content: responseText,
-        };
+  const stream = await OpenAI("chat", {
+    model: "gpt-3.5-turbo",
+    messages: requestMessages,
+  });
 
-        return message;
-      } else {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "OpenAI API returned no response",
-        });
-      }
-    }),
-});
+  return new Response(stream);
+}
+
+export const config = {
+  runtime: "edge",
+};

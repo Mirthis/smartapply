@@ -1,11 +1,31 @@
-import { type InterviewMessage } from "~/types/types";
-import { useMemo } from "react";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { UserIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { formatApiMessage } from "~/utils/formatter";
+import { type ChatCompletionResponseMessage } from "openai";
+import LoadingText from "./utils/LoadingText";
 
-const MessageBubble = ({ message }: { message: InterviewMessage }) => {
-  const text = useMemo(() => message.content.split("\n\n"), [message.content]);
+const MessageBubbleText = ({ text }: { text: string }) => {
+  if (text === "") {
+    return <LoadingText />;
+  }
+
+  return (
+    <>
+      {formatApiMessage(text).map((t, i) => (
+        <p className="mb-2" key={`message-text-${i}`}>
+          {t}
+        </p>
+      ))}
+    </>
+  );
+};
+
+const MessageBubble = ({
+  message,
+}: {
+  message: ChatCompletionResponseMessage;
+}) => {
   const { user } = useUser();
 
   return (
@@ -25,25 +45,17 @@ const MessageBubble = ({ message }: { message: InterviewMessage }) => {
           )}
           <div className="chat chat-start w-full">
             <div className="chat-bubble chat-bubble-primary">
-              {text.map((t, i) => (
-                <p className="mb-2" key={`message-text-${message.id}-${i}`}>
-                  {t}
-                </p>
-              ))}
+              <MessageBubbleText text={message.content} />
             </div>
           </div>
         </div>
       )}
       {message.role === "assistant" && (
-        <div className="flex items-end gap-x-2">
-          <UserCircleIcon className="h-14 w-14 text-secondary" />
+        <div className="flex items-end">
+          <UserCircleIcon className="h-12 w-12 text-secondary" />
           <div className="chat chat-start w-full">
             <div className="chat-bubble chat-bubble-secondary">
-              {text.map((t, i) => (
-                <p className="mb-2" key={`message-text-${message.id}-${i}`}>
-                  {t}
-                </p>
-              ))}
+              <MessageBubbleText text={message.content} />
             </div>
           </div>
         </div>

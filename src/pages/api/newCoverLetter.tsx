@@ -17,6 +17,9 @@ const requestSchema = z.object({
   applicant: applicantSchema,
 });
 
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+
 const getCoverLetterSystemMessage = (
   job: JobData,
   applicant: ApplicantData
@@ -59,6 +62,8 @@ export default async function handler(request: NextRequest) {
   ];
 
   if (env.SKIP_AI) {
+    await delay(1000);
+
     return new Response(await getFakeAiResponse("test cover letter\n\n1"));
   }
 

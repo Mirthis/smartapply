@@ -93,6 +93,14 @@ const NewApplication: NextPage = () => {
       {
         refetchOnWindowFocus: false,
         enabled: !!userId,
+        onSuccess: (data) => {
+          if (!newApplicant && data.length) {
+            const mainApplicant = data.find((applicant) => applicant.isMain);
+            if (mainApplicant) {
+              setFormApplicant(mainApplicant);
+            }
+          }
+        },
       }
     );
 
@@ -211,13 +219,11 @@ const NewApplication: NextPage = () => {
                   </label>
                   <select
                     className="select-bordered select w-full md:w-fit"
-                    // value={profileApplicantId}
-                    defaultValue="N/A"
+                    value={formApplicant?.id ?? "N/A"}
+                    // defaultValue="N/A"
                     onChange={handleProfileApplicantChange}
                   >
-                    <option disabled value="N/A">
-                      -- Select an applicant --
-                    </option>
+                    <option value="N/A">-- Select an applicant --</option>
                     {applicants.map((applicant) => (
                       <option key={applicant.id} value={applicant.id}>
                         {applicant.jobTitle} - {applicant.firstName}{" "}

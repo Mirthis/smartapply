@@ -73,12 +73,15 @@ const CoverLetterPage: NextPage = () => {
   const { mutate: addLetterToDb } = api.coverLetters.create.useMutation({
     onSuccess: (data) => {
       addCoverLetter(data);
+      setDisplayedLetter(data);
     },
   });
 
   const { mutate: deleteAll } = api.coverLetters.deleteAll.useMutation({
     onSuccess: () => {
       clearCoverLetters();
+      setDisplayedLetter(undefined);
+      setDisplayedText("");
     },
   });
 
@@ -149,12 +152,14 @@ const CoverLetterPage: NextPage = () => {
   }, [router]);
 
   useEffect(() => {
+    if (displayedLetter) return;
     const currentCoverLetter = coverLetters[0];
 
     if (!currentCoverLetter) return;
 
     setDisplayedLetter(currentCoverLetter);
-  }, [coverLetters]);
+    setDisplayedText(currentCoverLetter.text);
+  }, [coverLetters, displayedLetter]);
 
   const handleLettersTabChange = (index: string) => {
     setDisplayedLetter(coverLetters.find((c) => c.id === index));
@@ -164,13 +169,23 @@ const CoverLetterPage: NextPage = () => {
     setIsOpenResetModal(true);
   };
 
-  const getDisplayedText = () => {
-    if (createLoading) return createResponseText;
-    if (refineLoading) return refineResponseText;
-    return displayedLetter?.text;
-  };
+  const [displayedText, setDisplayedText] = useState("");
 
-  const displayedText = getDisplayedText();
+  useEffect(() => {
+    if (createLoading && createResponseText !== "") {
+      setDisplayedText(createResponseText);
+    } else if (refineLoading && refineResponseText !== "") {
+      setDisplayedText(refineResponseText);
+    }
+  }, [createLoading, createResponseText, refineLoading, refineResponseText]);
+
+  // const getDisplayedText = () => {
+  //   if (createLoading && createResponseText !== "") return createResponseText;
+  //   if (refineLoading && refineResponseText !== "") return refineResponseText;
+  //   return displayedLetter?.text;
+  // };
+
+  // const displayedText = getDisplayedText();
   const isGenerating = createLoading || refineLoading;
   const isLoading = isLoadingApplication || isLoadingCoverLetters;
   const isError = createError || refineError;
@@ -269,15 +284,15 @@ const CoverLetterPage: NextPage = () => {
                 <div>
                   <div className="relative rounded-md bg-base-200 p-2">
                     {/* {displayedText} */}
-                    {formatApiMessage(displayedText).map((p, i) => (
-                      <OpacityTransition
-                        show
-                        appear
-                        key={`${displayedLetter?.id || 0}-${i}`}
-                      >
-                        <p className="mb-2">{p}</p>
+                    <div>
+                      <OpacityTransition show appear>
+                        {formatApiMessage(displayedText).map((p, i) => (
+                          <p className="mb-2" key={i}>
+                            {p}
+                          </p>
+                        ))}
                       </OpacityTransition>
-                    ))}
+                    </div>
                     <button
                       className="group absolute right-2 top-2"
                       title="Copy to clipboard"
