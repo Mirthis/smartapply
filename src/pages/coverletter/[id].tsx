@@ -73,6 +73,7 @@ const CoverLetterPage: NextPage = () => {
     onSuccess: (data) => {
       addCoverLetter(data);
       setDisplayedLetter(data);
+      setDisplayedText(data.text);
     },
   });
 
@@ -115,6 +116,7 @@ const CoverLetterPage: NextPage = () => {
           label: args.refineMode,
         });
       }
+      setRefineText("");
     },
   });
 
@@ -187,6 +189,12 @@ const CoverLetterPage: NextPage = () => {
   //   if (refineLoading && refineResponseText !== "") return refineResponseText;
   //   return displayedLetter?.text;
   // };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      refine(RefineMode.FreeInput);
+    }
+  };
 
   // const displayedText = getDisplayedText();
   const isGenerating = createLoading || refineLoading;
@@ -318,6 +326,7 @@ const CoverLetterPage: NextPage = () => {
                         minLength={5}
                         maxLength={100}
                         value={refineText}
+                        onKeyUp={handleKeyUp}
                         onChange={(e) => setRefineText(e.target.value)}
                       />
 

@@ -15,7 +15,7 @@ const JobForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting, isDirty },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<JobData>({
     resolver: zodResolver(jobSchema),
     mode: "onTouched",

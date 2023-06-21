@@ -26,6 +26,21 @@ const BetaPage: NextPage = () => {
         .
       </p>
       <Title title="Change Log" type="section" />
+      <Title title="2023-06-21" type="subsection" />
+      <p>New features and improvements:</p>
+      <ul className="list-inside list-disc">
+        <li>
+          Interview questions are now streamed from the server allowing faster
+          response time
+        </li>
+        <li>
+          The main applicant from the user profile is auto-selected when
+          creating a new application
+        </li>
+        <li>Remove duplicated options when starting a new interview</li>
+        <li>Multiple applicants can be stored in the user profile</li>
+      </ul>
+
       <Title title="2023-06-12" type="subsection" />
       <p>New features and improvements:</p>
       <ul className="list-inside list-disc">

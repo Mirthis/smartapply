@@ -129,6 +129,7 @@ const InterviewPage: NextPage = () => {
         content: chatText,
       };
 
+      console.log({ chatText });
       const messages: ChatCompletionRequestMessage[] = [
         ...(interview?.messages ?? []),
       ];
@@ -147,6 +148,12 @@ const InterviewPage: NextPage = () => {
       if (!retry) {
         addInterviewMessage(newMessage);
       }
+    }
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      send();
     }
   };
 
@@ -239,17 +246,23 @@ const InterviewPage: NextPage = () => {
                 onChange={(e) => setChatText(e.target.value)}
                 className="textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
                 placeholder="Type your message here"
+                onKeyUp={handleKeyUp}
                 rows={2}
               ></textarea>
-              <button
-                className="btn-primary btn"
-                type="submit"
-                onClick={() => send()}
-                disabled={chatText.length === 0 || isLoadingMessage}
-              >
-                <PaperAirplaneIcon className="h-6 w-6" />
-                <span className="ml-2 hidden sm:block">Send</span>
-              </button>
+              <div>
+                <button
+                  className="btn-primary btn w-28"
+                  type="submit"
+                  onClick={() => send()}
+                  disabled={chatText.length === 0 || isLoadingMessage}
+                >
+                  <PaperAirplaneIcon className="h-6 w-6" />
+                  <span className="ml-2 hidden sm:block">Send</span>
+                </button>
+                <p className="text-center text-xs">
+                  or <span className="font-semibold">Shift+Enter</span>
+                </p>
+              </div>
             </div>
           )}
           {interview && !interview.isOpen && (

@@ -95,7 +95,7 @@ export default async function handler(request: NextRequest) {
   if (env.SKIP_AI) {
     await delay(1000);
     return new Response(
-      await getFakeAiResponse("test interview message\n\nanother line*END*")
+      await getFakeAiResponse("test interview message\n\nanother line")
     );
   }
 
