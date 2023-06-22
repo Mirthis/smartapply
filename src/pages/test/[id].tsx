@@ -81,8 +81,7 @@ const InterviewPage: NextPage = () => {
 
     if (application) {
       newQuestion({
-        job: application.job,
-        applicant: application.applicant,
+        applicationId: application.id,
         pastQuestions: questionsText,
       });
     }
@@ -99,7 +98,7 @@ const InterviewPage: NextPage = () => {
         job: application.job,
         applicant: application.applicant,
         answer,
-        question: question.question,
+        question: question.question + ":\n" + question.answers.join("\n"),
       });
     }
     addTestAnswer(questionId, answerId);
@@ -109,8 +108,9 @@ const InterviewPage: NextPage = () => {
     setDisplayedQuestion(currentQuestion);
   }, [currentQuestion]);
 
-  const displayedExplanation =
-    answerExplanation || displayedQuestion?.explanation;
+  const displayedExplanation = isLoadingAnswer
+    ? answerExplanation
+    : displayedQuestion?.explanation;
 
   return (
     <>
@@ -178,19 +178,17 @@ const InterviewPage: NextPage = () => {
                   displayedQuestion.providedAnswer ===
                   displayedQuestion.correctAnswer
                 ) {
-                  classes += "btn-success";
+                  classes += "disabled:btn-success";
                 } else {
-                  classes += "btn-error";
+                  classes += "disabled:btn-error";
                 }
               }
               return (
                 <button
                   key={`q-${displayedQuestion.id}-${index}`}
                   disabled={
-                    (displayedQuestion.providedAnswer !== undefined &&
-                      !currentAnswer &&
-                      !isAnswerError) ||
-                    isLoadingAnswer
+                    displayedQuestion.providedAnswer !== undefined &&
+                    !isAnswerError
                   }
                   className={`${classes} btn-outline btn-primary btn justify-start text-left normal-case`}
                   onClick={() => {
@@ -202,9 +200,9 @@ const InterviewPage: NextPage = () => {
               );
             })}
           </div>
-          {isLoadingAnswer && (
+          {isLoadingAnswer && !displayedExplanation && (
             <div className="mt-4 flex gap-x-2">
-              <Spinner /> Verifying you answer...
+              <Spinner /> Loading answer explanation...
             </div>
           )}
           {displayedExplanation && (
@@ -223,17 +221,21 @@ const InterviewPage: NextPage = () => {
 
       {(!currentQuestion ||
         (currentQuestion.explanation &&
-          questions.length < MAX_TEST_QUESTIONS)) && (
-        <div className="text-center">
-          <button
-            disabled={isLoadingQuestion}
-            className="btn-primary btn w-full sm:w-96"
-            onClick={() => getQuestion()}
-          >
-            {questions.length == 0 ? "Get First Question" : "Get Next Question"}
-          </button>
-        </div>
-      )}
+          questions.length < MAX_TEST_QUESTIONS)) &&
+        !isLoadingQuestion &&
+        !isLoadingAnswer && (
+          <div className="text-center">
+            <button
+              disabled={isLoadingQuestion}
+              className="btn-primary btn w-full sm:w-96"
+              onClick={() => getQuestion()}
+            >
+              {questions.length == 0
+                ? "Get First Question"
+                : "Get Next Question"}
+            </button>
+          </div>
+        )}
       {isAnswerError && (
         <div className="mt-4 font-semibold text-error">
           There was an error while submitting your answer. Please try again

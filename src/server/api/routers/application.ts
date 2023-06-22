@@ -2,6 +2,8 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { TRPCError } from "@trpc/server";
+import { openaiClient } from "~/utils/openai";
+import { ChatCompletionRequestMessageRoleEnum } from "openai";
 
 export const applicationRouter = createTRPCRouter({
   createOrUpdate: protectedProcedure
@@ -95,12 +97,41 @@ export const applicationRouter = createTRPCRouter({
       }
       // if job id not provided create a new one
       else if (input.job) {
+        const response = await openaiClient.createChatCompletion({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              // content: `Suggest the top 5 skills that should be used to test a candidate for the following job:
+              // content: `Suggest the top skills that should be used to test a candidate for the following job:
+              content: `Provide a comma separated list of the top skills that should be used to test a candidate for the following job:
+          Job Title: ${input.job.title},
+          Job Description: ${input.job.description}`,
+              //     content: `Create a list of all the technical and non-technical skills required for the following job:
+              // Job Title: ${input.job.title},
+              // Job Description: ${input.job.description}`,
+              role: ChatCompletionRequestMessageRoleEnum.User,
+            },
+          ],
+        });
+
+        const skillsSummary = response.data.choices[0]?.message?.content;
+        if (!skillsSummary) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Unable to generate skills summary",
+          });
+        }
+
+        // console.log("GPT3 Skill summary");
+        // console.log(skillsSummary);
+
         const newJob = await ctx.prisma.job.create({
           data: {
             title: input.job.title,
             description: input.job.description,
             companyName: input.job.companyName,
             companyDetails: input.job.companyDetails,
+            skillsSummary,
             userId,
           },
         });

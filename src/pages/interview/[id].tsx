@@ -129,7 +129,6 @@ const InterviewPage: NextPage = () => {
         content: chatText,
       };
 
-      console.log({ chatText });
       const messages: ChatCompletionRequestMessage[] = [
         ...(interview?.messages ?? []),
       ];

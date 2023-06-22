@@ -97,9 +97,9 @@ const ApplicationsPage: NextPage = () => {
                     </div>
                   </Link>
                 </div>
-                <div className="card-actions mt-2 justify-center text-sm  ">
+                <div className="card-actions mt-2 justify-center text-sm ">
                   <button
-                    className="text-error hover:underline"
+                    className="font-bold uppercase text-error hover:underline"
                     onClick={() => handleDelete(application)}
                   >
                     Delete Application

@@ -64,31 +64,56 @@ const getInitalState = () => {
 
   if (!!env.NEXT_PUBLIC_INIT_STORE) {
     initialState.newApplication.job = {
-      title: "Sr Technical Program Manager",
-      description: `As a Senior Technical Program Manager at Ring, you will work with a focused team of product managers, engineers, and partner teams building and releasing new products and features. You will have an enormous opportunity to impact the customer experience, design, architecture, and implementation of a cutting edge product that will be used every day.
-      We are looking for entrepreneurial, innovative individuals who thrive on solving tough problems. Maturity, high judgment, negotiation skills, ability to influence, analytical talent, and leadership are essential to success in this role. 
-      You will anticipate bottlenecks, provide escalation management, anticipate and make tradeoffs, and balance customer and business needs versus technical constraints. An ability to take large, complex projects and break them down into manageable pieces, develop functional specifications, then deliver them in a successful and timely manner is expected.
-    
-      Key job responsibilities:
-      Collaborate with Business, Engineering, and other internal teams to solve business needs
-      Be expected to be familiar with system development cycle and key performance metrics
-      Communicate regularly with senior management on status, risks, and change control
-      Be expected to dive deep into the technical details of the program
+      title: "Full Stack JavaScript Developer ",
+      description: `The Role
+      We are currently seeking a passionate, highly motivated and organized Mid-Level Full Stack JavaScript Developer to join our dedicated team. The successful candidate will have a keen interest in educational technology and be ready to help us take our innovative product to the next level.
       
-      REFERRED QUALIFICATIONS:
-      Ability to communicate effectively with both technical and non-technical individuals
-      Excellent oral and written communication skills
-      Track record for being detail-oriented with a demonstrated ability to self-motivate and follow-through on projects
-      Ability to define scope, and solve problems creatively and practically
-      Strong track record of software project delivery for large, cross functional, projects
-      Fluency with Atlassian SCM Suite (Confluence/JIRA)
-      Experience in productization and shipping of software products (Services or Consumer Electronics)
-      Knowledge of Software Development Life Cycle (SDLC)
-      Tenacious, does not give up   
+      Key Responsibilities
+      Collaborate with our team to design, develop, and maintain our web applications.
+      Write clean, efficient, and reusable code that drives our innovative platform.
+      Ensure our software meets all requirements of quality, security, scalability, and usability.
+      Keep up-to-date with emerging technologies and industry trends.
+      Design and implementation of low-latency, high-availability, and performance applications.
+      
+      Key Qualifications
+      Minimum of 3+ years' experience in a SAAS environment.
+      Proficient in JavaScript, Node.js, MongoDB, and React.
+      Understanding of backend technologies with a demonstrated preference for backend development.
+      Strong understanding of security best practices.
+      Exceptional attention to detail.
+      Excellent problem-solving skills.
+      Solid understanding of the full web development life cycle.
+      
+      Nice to have
+      Experience with DevOps and Google Cloud Platform 
     `,
-      companyName: "Amazon",
-      // companyDetails: null,
-      companyDetails: `VIOOH's mission is to connect Out of Home (OOH) and digital advertising to create brand experiences and meaningful outcomes for advertisers. Their aim is to make it easy to trade, efficiently by delivering a premium OOH marketplace which connects buyers and sellers, simply.`,
+      companyName: "Night Zookeeper",
+      companyDetails: `At Night Zookeeper, we are passionate about fostering creativity and improving literacy for children aged 6-12 through our engaging online learning program. Our platform has been instrumental in developing reading, writing, and creative thinking skills for over a million children worldwide. Our offerings extend beyond online learning to story books, activity packs, and other learning resources.`,
+      //   title: "Sr Technical Program Manager",
+      //   description: `As a Senior Technical Program Manager at Ring, you will work with a focused team of product managers, engineers, and partner teams building and releasing new products and features. You will have an enormous opportunity to impact the customer experience, design, architecture, and implementation of a cutting edge product that will be used every day.
+      //   We are looking for entrepreneurial, innovative individuals who thrive on solving tough problems. Maturity, high judgment, negotiation skills, ability to influence, analytical talent, and leadership are essential to success in this role.
+      //   You will anticipate bottlenecks, provide escalation management, anticipate and make tradeoffs, and balance customer and business needs versus technical constraints. An ability to take large, complex projects and break them down into manageable pieces, develop functional specifications, then deliver them in a successful and timely manner is expected.
+
+      //   Key job responsibilities:
+      //   Collaborate with Business, Engineering, and other internal teams to solve business needs
+      //   Be expected to be familiar with system development cycle and key performance metrics
+      //   Communicate regularly with senior management on status, risks, and change control
+      //   Be expected to dive deep into the technical details of the program
+
+      //   REFERRED QUALIFICATIONS:
+      //   Ability to communicate effectively with both technical and non-technical individuals
+      //   Excellent oral and written communication skills
+      //   Track record for being detail-oriented with a demonstrated ability to self-motivate and follow-through on projects
+      //   Ability to define scope, and solve problems creatively and practically
+      //   Strong track record of software project delivery for large, cross functional, projects
+      //   Fluency with Atlassian SCM Suite (Confluence/JIRA)
+      //   Experience in productization and shipping of software products (Services or Consumer Electronics)
+      //   Knowledge of Software Development Life Cycle (SDLC)
+      //   Tenacious, does not give up
+      // `,
+      //   companyName: "Amazon",
+      //   // companyDetails: null,
+      //   companyDetails: `VIOOH's mission is to connect Out of Home (OOH) and digital advertising to create brand experiences and meaningful outcomes for advertisers. Their aim is to make it easy to trade, efficiently by delivering a premium OOH marketplace which connects buyers and sellers, simply.`,
     };
     initialState.newApplication.applicant = {
       firstName: "John",

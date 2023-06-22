@@ -7,27 +7,26 @@ import {
 } from "openai";
 import { env } from "~/env.mjs";
 import { TRPCError } from "@trpc/server";
-import { type JobData, type TestQuestion } from "~/types/types";
+import { type TestQuestion } from "~/types/types";
 import { applicantSchema, jobSchema } from "~/types/schemas";
-import { getJobDetailsPrompt } from "~/utils/prompt";
 import { addDelay } from "~/utils/misc";
 import { openaiClient } from "~/utils/openai";
+import { type Job } from "@prisma/client";
 
-const getSystemMessage = (job: JobData) => {
-  const content = `Your focus is to determine if the applicant is a good fit for the job.
-  You will ask multiple choice questi ons to test the applicant knoweldge of the technical skills required by the job.
+const getSystemMessage = (job: Job) => {
+  const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${job.skillsSummary}.
   You must not ask the same queston twice.
-  ${getJobDetailsPrompt(job)}
+  Questions should be medium to high complexity.
+  For technical skills, question can include code snippets.
   Each question should have 4 possible answers.
-  You will create 1 question at at time.
-  You will only provide questions in JSON with the following format:
+  You will only provide 1 question at at time in JSON format. For example:
   {
-    "question": "What is the answer to this question?",
+    "question": "What of the following React hooks can be used to manage global state?",
     "answers": [
-      "Answer 1",
-      "Answer 2",
-      "Answer 3",
-      "Answer 4"
+      "useContext",
+      "useEffect",
+      "useState",
+      "useRef"
     ],
     "correctAnswer": 0
   }
@@ -75,12 +74,11 @@ export const testRouter = createTRPCRouter({
   getQuestion: protectedProcedure
     .input(
       z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
+        applicationId: z.string(),
         pastQuestions: z.string().nullish(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       if (env.SKIP_AI) {
         await addDelay(1000);
         const responseText: TestQuestion = {
@@ -101,19 +99,27 @@ export const testRouter = createTRPCRouter({
         return message;
       }
 
+      const application = await ctx.prisma.application.findUniqueOrThrow({
+        where: { id: input.applicationId },
+        include: {
+          job: true,
+        },
+      });
+
       const messages: ChatCompletionRequestMessage[] = [
-        getSystemMessage(input.job),
+        getSystemMessage(application.job),
       ];
       if (input.pastQuestions) {
         messages.push(getPastQuestionsPrompt(input.pastQuestions));
       }
       messages.push(getQuestionPrompt());
 
+      // console.log({ messages });
+
       const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
       });
-      // ({ response });
       const finishReason = response.data.choices[0]?.finish_reason;
       // TODO: handle this exception and other finish reasons
       if (finishReason === "lenght") {
