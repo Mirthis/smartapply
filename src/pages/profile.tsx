@@ -18,13 +18,11 @@ import { api } from "~/utils/api";
 const ProfilePage: NextPage = () => {
   const utils = api.useContext();
 
-  const { isLoading, data: applicants } =
-    api.applicant.getForLoggedUser.useQuery(
-      { isInProfile: true },
-      {
-        refetchOnWindowFocus: false,
-      }
-    );
+  const {
+    isLoading,
+    data: applicants,
+    isError,
+  } = api.applicant.getForLoggedUser.useQuery({ isInProfile: true });
 
   const { mutate: setApplicantAsMain, isLoading: settingAsMain } =
     api.applicant.setAsMain.useMutation({
@@ -91,6 +89,11 @@ const ProfilePage: NextPage = () => {
           <p>Add new</p>
         </button>
       </div>
+      {isError && (
+        <p className="text-error">
+          An error occurred while fetching applicant data.
+        </p>
+      )}
       {/* TODO: add skeleton for loader */}
       {isLoading && <Spinner text="Loading applicant data..." />}
       {!isLoading && applicants?.length === 0 && (

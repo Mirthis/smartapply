@@ -4,6 +4,28 @@ import { applicantSchema, jobSchema } from "~/types/schemas";
 import { TRPCError } from "@trpc/server";
 import { openaiClient } from "~/utils/openai";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
+import { type PrismaClientType } from "~/server/db";
+
+const deleteOrphans = async (prisma: PrismaClientType, userId: string) => {
+  await prisma.applicant.deleteMany({
+    where: {
+      userId,
+      applications: {
+        none: {},
+      },
+      isInProfile: false,
+    },
+  });
+  // delete orphan jobs
+  await prisma.job.deleteMany({
+    where: {
+      userId,
+      applications: {
+        none: {},
+      },
+    },
+  });
+};
 
 export const applicationRouter = createTRPCRouter({
   createOrUpdate: protectedProcedure
@@ -179,25 +201,7 @@ export const applicationRouter = createTRPCRouter({
         },
       });
 
-      // delete orphan applicants
-      await ctx.prisma.applicant.deleteMany({
-        where: {
-          userId,
-          applications: {
-            none: {},
-          },
-          isInProfile: false,
-        },
-      });
-      // delete orphan jobs
-      await ctx.prisma.job.deleteMany({
-        where: {
-          userId,
-          applications: {
-            none: {},
-          },
-        },
-      });
+      await deleteOrphans(ctx.prisma, userId);
 
       return application;
     }),
@@ -260,6 +264,8 @@ export const applicationRouter = createTRPCRouter({
           id,
         },
       });
+      await deleteOrphans(ctx.prisma, userId);
+
       return true;
     }),
 });

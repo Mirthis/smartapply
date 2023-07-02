@@ -91,7 +91,6 @@ const NewApplication: NextPage = () => {
     api.applicant.getForLoggedUser.useQuery(
       { isInProfile: true },
       {
-        refetchOnWindowFocus: false,
         enabled: !!userId,
         onSuccess: (data) => {
           if (!newApplicant && data.length) {
