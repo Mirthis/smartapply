@@ -122,7 +122,10 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-baseline justify-start">
-            <Logo />
+            <Link href={`${isSignedIn ? "/applications" : "/"}`}>
+              <Logo />
+            </Link>
+
             <ul className={`hidden flex-1 flex-grow  md:flex ${linkColor}`}>
               {navBarLinks.map((l) => (
                 <Link
@@ -156,8 +159,9 @@ const Navbar = () => {
           <div>
             <div className="flex w-full  items-center justify-between">
               {/* Logo */}
-              <Logo />
-
+              <Link href={`${isSignedIn ? "/applications" : "/"}`}>
+                <Logo />
+              </Link>
               <button
                 onClick={hideNavBar}
                 className="  btn-accent btn-circle btn"

@@ -21,6 +21,8 @@ export default {
           primary: "#0ea5e9",
           secondary: "#67CBA0",
           accent: "#fb923c",
+          error: "#ef4444",
+          succcess: "#22c55e",
         },
       },
     ],

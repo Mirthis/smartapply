@@ -13,11 +13,12 @@ import OpacityTransition from "~/components/utils/OpacityTransition";
 import MessageBubble from "~/components/MessageBubble";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { PaperAirplaneIcon, ArrowPathIcon } from "@heroicons/react/24/solid";
 import { BasicCard } from "~/components/BasicCard";
 import { interviewTypeCardData } from "~/utils/constants";
 import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
 import { useInterview } from "~/utils/hooks";
+import { ResetInterview } from "~/components/modals/ResetInterview";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -34,6 +35,7 @@ const InterviewPage: NextPage = () => {
   // const [interviewType, setInterviewType] = useState<InterviewType>();
   const [chatText, setChatText] = useState("");
   const router = useRouter();
+  const [isOpenResetModal, setIsOpenResetModal] = useState(false);
 
   const {
     application,
@@ -166,6 +168,11 @@ const InterviewPage: NextPage = () => {
           key="title"
         />
       </Head>
+      <ResetInterview
+        onConfirm={handleReset}
+        onClose={() => setIsOpenResetModal(false)}
+        isOpen={isOpenResetModal}
+      />
       <Title title="Interview" />
       {isLoadingApplication || !application ? (
         <ApplicationDetailsSkeleton />
@@ -246,21 +253,31 @@ const InterviewPage: NextPage = () => {
                 className="textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
                 placeholder="Type your message here"
                 onKeyUp={handleKeyUp}
-                rows={2}
+                rows={3}
               ></textarea>
-              <div>
+              <div className="flex flex-col gap-x-2 gap-y-2">
+                <div>
+                  <button
+                    className="btn-primary btn flex w-14 flex-col sm:w-36"
+                    type="submit"
+                    onClick={() => send()}
+                    disabled={chatText.length === 0 || isLoadingMessage}
+                  >
+                    <PaperAirplaneIcon className="h-6 w-6" />
+                    <p className="hidden text-center  sm:block">
+                      Send
+                      <br />
+                      <span className="text-[8px]">Shift+Enter</span>
+                    </p>
+                  </button>
+                </div>
                 <button
-                  className="btn-primary btn w-28"
-                  type="submit"
-                  onClick={() => send()}
-                  disabled={chatText.length === 0 || isLoadingMessage}
+                  className="btn-secondary btn w-14 sm:w-36"
+                  onClick={() => setIsOpenResetModal(true)}
                 >
-                  <PaperAirplaneIcon className="h-6 w-6" />
-                  <span className="ml-2 hidden sm:block">Send</span>
+                  <ArrowPathIcon className="h-6 w-6" />
+                  <span className="ml-2 hidden sm:block">Reset</span>
                 </button>
-                <p className="text-center text-xs">
-                  or <span className="font-semibold">Shift+Enter</span>
-                </p>
               </div>
             </div>
           )}

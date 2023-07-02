@@ -48,7 +48,7 @@ export const DeleteProfileApplicantbModal = ({
       </p>
       <div className="mt-8 flex gap-x-4">
         <button
-          className="btn-outline btn-secondary btn w-36"
+          className="btn-outline btn-info btn w-36"
           disabled={isLoading}
           onClick={onClose}
         >
