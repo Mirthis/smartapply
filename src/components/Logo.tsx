@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 const Logo = () => {
   return (
     <div className="relative pb-2 pr-5">
