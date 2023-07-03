@@ -184,9 +184,14 @@ const InterviewPage: NextPage = () => {
 
       {(testStatus === "In Progress" || testStatus === "Completed") && (
         <div className="flex flex-col gap-y-4">
+          <Title
+            title={`Test on "${skill === "*ALL*" ? "All skills" : skill}"`}
+            className="mb-0"
+            type="section"
+          />
           {/* if more than one question show question selector */}
           {questions.length > 1 && (
-            <div className="btn-group gap-x-2">
+            <div className="btn-group flex-wrap gap-2">
               {questions.map((q, i) => {
                 let classes = "";
                 if (q.id === displayedQuestion?.id) {
@@ -200,7 +205,7 @@ const InterviewPage: NextPage = () => {
                 return (
                   <button
                     key={`select-q-${q.id}`}
-                    className={`${classes} btn rounded-md`}
+                    className={`${classes} btn w-10`}
                     onClick={() => setDisplayedQuestion(q)}
                   >
                     {i + 1}
@@ -303,10 +308,16 @@ const InterviewPage: NextPage = () => {
 
       {/* if finished display options to restart test */}
       {testStatus === "Completed" && (
-        <div>
-          <h2 className="mb-2 text-2xl font-bold">
-            You have completed the test!
-          </h2>
+        <div className="flex flex-col gap-y-2 text-primary">
+          <h3 className="text-xl font-bold">You have completed the test!</h3>
+          <p>
+            You got{" "}
+            {
+              questions.filter((q) => q.providedAnswer === q.correctAnswer)
+                .length
+            }{" "}
+            out of {questions.length} answers correct.
+          </p>
 
           <button
             className="btn-primary btn w-full sm:w-96"

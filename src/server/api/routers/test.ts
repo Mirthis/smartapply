@@ -83,7 +83,7 @@ export const testRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       if (env.SKIP_AI) {
-        await addDelay(1000);
+        // await addDelay(1000);
         const responseText: TestQuestion = {
           id: 0,
           question: `Skill: ${input.skill} - What is React?`,
