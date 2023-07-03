@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { InterviewType } from "~/types/types";
 
-export const MAX_TEST_QUESTIONS = 5;
+export const MAX_TEST_QUESTIONS = 10;
 export const MAX_COVER_LETTERS = 5;
 export const MAX_COVER_LETTERS_TABS = 5;
 

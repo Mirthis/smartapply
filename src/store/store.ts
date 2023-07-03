@@ -40,10 +40,13 @@ type AppStore = AppStoreInitialState & {
   resetInterview: () => void;
   closeInterview: () => void;
   addInterviewMessage: (message: ChatCompletionRequestMessage) => void;
+  initTest: (skill: string) => void;
+  // setTestStatus: (status: "Not Started" | "In Progress" | "Completed") => void;
   addTestMessage: (question: ChatCompletionResponseMessage) => void;
   addTestQuestion: (question: string) => void;
   addTestAnswer: (questionId: number, answer: number) => void;
   addTestExplanation: (questionId: number, explanation: string) => void;
+  setTestStatus: (status: "Not Started" | "In Progress" | "Completed") => void;
   resetTest: () => void;
   resetGenerated: () => void;
   reset: () => void;
@@ -237,6 +240,28 @@ export const useAppStore = create<AppStore>((set, get) => ({
       },
     });
   },
+  initTest: (skill) => {
+    set({
+      test: {
+        messages: [],
+        questions: [],
+        lastId: 0,
+        currentQuestion: undefined,
+        status: "In Progress",
+        skill,
+      },
+    });
+  },
+  setTestStatus: (status) => {
+    const test = get().test;
+    if (!test) return;
+    set({
+      test: {
+        ...test,
+        status,
+      },
+    });
+  },
   addTestMessage: (message: ChatCompletionRequestMessage) => {
     const test = get().test;
     if (!test) return;
@@ -253,6 +278,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   addTestQuestion: (question: string) => {
     const test = get().test;
+    if (!test) return;
     const nextId = (test?.lastId ?? 0) + 1;
     const questionObj: TestQuestion = JSON.parse(question) as TestQuestion;
     const newQuestion = {
@@ -261,6 +287,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     };
     set({
       test: {
+        ...test,
         messages: test?.messages ?? [],
         questions: [...(test?.questions ?? []), newQuestion],
         lastId: nextId,

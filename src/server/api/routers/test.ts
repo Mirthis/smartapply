@@ -13,8 +13,10 @@ import { addDelay } from "~/utils/misc";
 import { openaiClient } from "~/utils/openai";
 import { type Job } from "@prisma/client";
 
-const getSystemMessage = (job: Job) => {
-  const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${job.skillsSummary}.
+const getSystemMessage = (job: Job, skill: string) => {
+  const skills = skill === "*ALL*" ? job.skillsSummary : skill;
+
+  const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${skills}.
   You must not ask the same queston twice.
   Questions should be medium to high complexity.
   For technical skills, question can include code snippets.
@@ -75,6 +77,7 @@ export const testRouter = createTRPCRouter({
     .input(
       z.object({
         applicationId: z.string(),
+        skill: z.string(),
         pastQuestions: z.string().nullish(),
       })
     )
@@ -83,7 +86,7 @@ export const testRouter = createTRPCRouter({
         await addDelay(1000);
         const responseText: TestQuestion = {
           id: 0,
-          question: "What is React?",
+          question: `Skill: ${input.skill} - What is React?`,
           answers: [
             "A back-end framework",
             "A database technology",
@@ -107,7 +110,7 @@ export const testRouter = createTRPCRouter({
       });
 
       const messages: ChatCompletionRequestMessage[] = [
-        getSystemMessage(application.job),
+        getSystemMessage(application.job, input.skill),
       ];
       if (input.pastQuestions) {
         messages.push(getPastQuestionsPrompt(input.pastQuestions));

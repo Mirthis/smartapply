@@ -51,9 +51,11 @@ export type TestQuestion = {
 };
 
 export type TestData = {
+  skill: string;
+  status: "Not Started" | "In Progress" | "Completed";
   questions: TestQuestion[];
   lastId: number;
-  currentQuestion: TestQuestion;
+  currentQuestion: TestQuestion | undefined;
   messages: ChatCompletionRequestMessage[];
 };
 

@@ -127,7 +127,8 @@ export const applicationRouter = createTRPCRouter({
               // content: `Suggest the top skills that should be used to test a candidate for the following job:
               content: `Provide a comma separated list of the top skills that should be used to test a candidate for the following job:
           Job Title: ${input.job.title},
-          Job Description: ${input.job.description}`,
+          Job Description: ${input.job.description}
+          Only return the list no other text should be included.`,
               //     content: `Create a list of all the technical and non-technical skills required for the following job:
               // Job Title: ${input.job.title},
               // Job Description: ${input.job.description}`,

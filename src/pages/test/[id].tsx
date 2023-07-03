@@ -21,12 +21,16 @@ const InterviewPage: NextPage = () => {
     addTestAnswer,
     addTestMessage,
     addTestExplanation,
+    setTestStatus,
+    initTest,
     resetTest,
     setApplication,
   } = useAppStore((state) => state);
   const currentQuestion = test?.currentQuestion;
   const questions = test?.questions ?? [];
   const router = useRouter();
+
+  const [skill, setSkill] = useState<string>("*ALL*");
 
   const queryId =
     router.query.id && !Array.isArray(router.query.id)
@@ -71,6 +75,9 @@ const InterviewPage: NextPage = () => {
       const id = test?.lastId;
       if (!id) return;
       addTestExplanation(id, data);
+      if (questions.length === MAX_TEST_QUESTIONS) {
+        setTestStatus("Completed");
+      }
       // addTestMessage(data);
     },
   });
@@ -82,10 +89,11 @@ const InterviewPage: NextPage = () => {
     if (application) {
       newQuestion({
         applicationId: application.id,
+        skill,
         pastQuestions: questionsText,
       });
     }
-  }, [application, newQuestion, test]);
+  }, [application, newQuestion, test, skill]);
 
   const sendAnswer = (questionId: number, answerId: number) => {
     const question = test?.questions.find((q) => q.id === questionId);
@@ -112,6 +120,15 @@ const InterviewPage: NextPage = () => {
     ? answerExplanation
     : displayedQuestion?.explanation;
 
+  const jobSkills = application?.job.skillsSummary.split(",") ?? [];
+
+  const startTest = () => {
+    initTest(skill);
+    getQuestion();
+  };
+
+  const testStatus = test?.status ?? "Not Started";
+
   return (
     <>
       <Head>
@@ -128,100 +145,149 @@ const InterviewPage: NextPage = () => {
       ) : (
         <ApplicationDetails application={application} />
       )}
-      {questions.length > 1 && (
-        <div className="btn-group gap-x-2">
-          {questions.map((q, i) => {
-            let classes = "";
-            if (q.id === displayedQuestion?.id) {
-              classes += "btn-primary";
-            } else {
-              classes +=
-                q.providedAnswer === q.correctAnswer
-                  ? "btn-success btn-outline"
-                  : "btn-error btn-outline";
-            }
-            return (
-              <button
-                key={`select-q-${q.id}`}
-                className={`${classes} btn rounded-md`}
-                onClick={() => setDisplayedQuestion(q)}
+      <div className="mt-4" />
+      {/* if not started display options to start test */}
+      {testStatus === "Not Started" && (
+        <div className="flex flex-col gap-2">
+          {jobSkills.length > 0 && (
+            <div className="flex flex-col  gap-2 md:flex-row">
+              <label className="label">
+                <span className="label-text font-semibold text-primary">
+                  Select a skill to be tested on:
+                </span>
+              </label>
+              <select
+                className="select-bordered select w-full md:w-fit"
+                value={skill}
+                onChange={(e) => setSkill(e.target.value)}
               >
-                {i + 1}
-              </button>
-            );
-          })}
+                <option value="*ALL*">All skills</option>
+                {jobSkills.map((skill, i) => (
+                  <option key={`skill-${i}`} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="text-center">
+            <button
+              disabled={isLoadingQuestion}
+              className="btn-primary btn w-full sm:w-96"
+              onClick={startTest}
+            >
+              Start Test
+            </button>
+          </div>
         </div>
       )}
-      <div className="mb-4" />
-      {isLoadingQuestion && (
-        <>
-          <h2 className="mb-2 text-2xl font-bold">Loading new question...</h2>
-          <div className="flex flex-col space-y-2">
-            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
-            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
-            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
-            <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
-          </div>
-        </>
-      )}
-      {!isLoadingQuestion && displayedQuestion && (
-        <>
-          <h2 className="mb-2 text-2xl font-bold">
-            {displayedQuestion.question}
-          </h2>
-          <div className="flex flex-col space-y-2">
-            {displayedQuestion.answers.map((answer, index) => {
-              let classes = "";
-              const currentAnswer = displayedQuestion.providedAnswer === index;
-              if (currentAnswer && !isAnswerError) {
-                if (
-                  displayedQuestion.providedAnswer ===
-                  displayedQuestion.correctAnswer
-                ) {
-                  classes += "disabled:btn-success";
-                } else {
-                  classes += "disabled:btn-error";
-                }
-              }
-              return (
-                <button
-                  key={`q-${displayedQuestion.id}-${index}`}
-                  disabled={
-                    displayedQuestion.providedAnswer !== undefined &&
-                    !isAnswerError
-                  }
-                  className={`${classes} btn-outline btn-primary btn justify-start text-left normal-case`}
-                  onClick={() => {
-                    sendAnswer(displayedQuestion.id, index);
-                  }}
-                >
-                  {index + 1}. {answer}
-                </button>
-              );
-            })}
-          </div>
-          {isLoadingAnswer && !displayedExplanation && (
-            <div className="mt-4 flex gap-x-2">
-              <Spinner /> Loading answer explanation...
-            </div>
-          )}
-          {displayedExplanation && (
-            <div className="mt-4">
-              <h3 className="mb-2 text-xl font-bold">Explanation</h3>
-              {formatApiMessage(displayedExplanation).map((p, i) => (
-                <p key={i} className="mb-2">
-                  {p}
-                </p>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-      <div className="mb-4" />
 
-      {(!currentQuestion ||
-        (currentQuestion.explanation &&
-          questions.length < MAX_TEST_QUESTIONS)) &&
+      {(testStatus === "In Progress" || testStatus === "Completed") && (
+        <div className="flex flex-col gap-y-4">
+          {/* if more than one question show question selector */}
+          {questions.length > 1 && (
+            <div className="btn-group gap-x-2">
+              {questions.map((q, i) => {
+                let classes = "";
+                if (q.id === displayedQuestion?.id) {
+                  classes += "btn-primary";
+                } else {
+                  classes +=
+                    q.providedAnswer === q.correctAnswer
+                      ? "btn-success btn-outline"
+                      : "btn-error btn-outline";
+                }
+                return (
+                  <button
+                    key={`select-q-${q.id}`}
+                    className={`${classes} btn rounded-md`}
+                    onClick={() => setDisplayedQuestion(q)}
+                  >
+                    {i + 1}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {isLoadingQuestion && (
+            <>
+              <h2 className="mb-2 text-2xl font-bold">
+                Loading new question...
+              </h2>
+              <div className="flex flex-col space-y-2">
+                <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+                <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+                <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+                <div className="btn-outline btn-disabled btn-secondary btn animate-pulse" />
+              </div>
+            </>
+          )}
+          {!isLoadingQuestion && displayedQuestion && (
+            <>
+              <h2 className="mb-2 text-2xl font-bold">
+                {displayedQuestion.question}
+              </h2>
+              <div className="flex flex-col space-y-2">
+                {displayedQuestion.answers.map((answer, index) => {
+                  let classes = "";
+                  const currentAnswer =
+                    displayedQuestion.providedAnswer === index;
+                  if (currentAnswer && !isAnswerError) {
+                    if (
+                      displayedQuestion.providedAnswer ===
+                      displayedQuestion.correctAnswer
+                    ) {
+                      classes += "disabled:btn-success";
+                    } else {
+                      classes += "disabled:btn-error";
+                    }
+                  }
+                  return (
+                    <button
+                      key={`q-${displayedQuestion.id}-${index}`}
+                      disabled={
+                        displayedQuestion.providedAnswer !== undefined &&
+                        !isAnswerError
+                      }
+                      className={`${classes} btn-outline btn-primary btn justify-start text-left normal-case`}
+                      onClick={() => {
+                        sendAnswer(displayedQuestion.id, index);
+                      }}
+                    >
+                      {index + 1}. {answer}
+                    </button>
+                  );
+                })}
+              </div>
+              {isLoadingAnswer && !displayedExplanation && (
+                <div className="mt-4 flex gap-x-2">
+                  <Spinner /> Loading answer explanation...
+                </div>
+              )}
+              {displayedExplanation && (
+                <div className="mt-4">
+                  <h3 className="mb-2 text-xl font-bold">Explanation</h3>
+                  {formatApiMessage(displayedExplanation).map((p, i) => (
+                    <p key={i} className="mb-2">
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {isAnswerError && (
+            <div className="mt-4 font-semibold text-error">
+              There was an error while submitting your answer. Please try again
+              later.
+            </div>
+          )}
+        </div>
+      )}
+
+      {testStatus === "In Progress" &&
+        currentQuestion?.explanation &&
         !isLoadingQuestion &&
         !isLoadingAnswer && (
           <div className="text-center">
@@ -230,29 +296,28 @@ const InterviewPage: NextPage = () => {
               className="btn-primary btn w-full sm:w-96"
               onClick={() => getQuestion()}
             >
-              {questions.length == 0
-                ? "Get First Question"
-                : "Get Next Question"}
+              Get Next Question
             </button>
           </div>
         )}
-      {isAnswerError && (
-        <div className="mt-4 font-semibold text-error">
-          There was an error while submitting your answer. Please try again
-          later.
+
+      {/* if finished display options to restart test */}
+      {testStatus === "Completed" && (
+        <div>
+          <h2 className="mb-2 text-2xl font-bold">
+            You have completed the test!
+          </h2>
+
+          <button
+            className="btn-primary btn w-full sm:w-96"
+            onClick={resetTest}
+          >
+            Start a new test
+          </button>
         </div>
       )}
-      {currentQuestion?.explanation &&
-        questions.length === MAX_TEST_QUESTIONS && (
-          <div>
-            <h2 className="mb-2 text-2xl font-bold">
-              You have completed the test!
-            </h2>
-            <button className="btn-primary btn" onClick={resetTest}>
-              Start a new test
-            </button>
-          </div>
-        )}
+
+      <div className="mb-4" />
     </>
   );
 };

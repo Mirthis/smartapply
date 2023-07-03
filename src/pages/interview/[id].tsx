@@ -33,8 +33,8 @@ const interviewTitle = (type: InterviewType) => {
 
 const InterviewPage: NextPage = () => {
   // const [interviewType, setInterviewType] = useState<InterviewType>();
-  const [chatText, setChatText] = useState("");
   const router = useRouter();
+  const [chatText, setChatText] = useState("");
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
 
   const {
