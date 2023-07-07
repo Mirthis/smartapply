@@ -26,6 +26,24 @@ const BetaPage: NextPage = () => {
         .
       </p>
       <Title title="Change Log" type="section" />
+
+      <Title title="2023-07-07" type="subsection" />
+      <p>New features and improvements:</p>
+      <ul className="list-inside list-disc">
+        <li>Add ability to select which job skill to be tested on</li>
+        <li>Add test results summary after test completion</li>
+        <li>
+          Improve logic to terminate an interview after a certain number of
+          questions
+        </li>
+        <li>Add restart interview feature</li>
+        <li>
+          Clicking on the logo when logged in navigates to the saved application
+          pages
+        </li>
+        <li>Minor changes to the color scheme</li>
+      </ul>
+
       <Title title="2023-06-21" type="subsection" />
       <p>New features and improvements:</p>
       <ul className="list-inside list-disc">

@@ -108,8 +108,12 @@ export const useStreamingApi = <T>(
         return prevMessages.slice(0, -1).concat(newMessage);
       });
     }
-    // breaks text indent on refresh due to streaming
-    // localStorage.setItem('response', JSON.stringify(currentResponse));
+    if (newMessage.content.endsWith("*END*")) {
+      newMessage.content = newMessage.content.replace("*END*", "");
+      setMessages((prevMessages) => {
+        return prevMessages.slice(0, -1).concat(newMessage);
+      });
+    }
     setIsLoading(false);
 
     if (options?.onSuccess) options.onSuccess(currentResponse.join(""), args);

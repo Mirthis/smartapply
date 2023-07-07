@@ -10,18 +10,17 @@ import { getJobDetailsPrompt } from "~/utils/prompt";
 import { getFakeAiResponse } from "~/utils/misc";
 import { getAuth } from "@clerk/nextjs/server";
 import { type NextRequest } from "next/server";
+import { MAX_INTERVIEW_PHASE_1_MESSAGES } from "~/utils/constants";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getInterviewCommonPrompt = () => {
   return `
   Your focus will be to determine if the applicant is a good fit for the job
-  You should ask the applicant 5 different questions, one at a time.
-  After asking 5 questions You will close the interview by asking the applicant if they have any questions for you.
-  If the applicant ask questions before you ask him you should say that you will answer them at the end of the interview.
-  You will only answer 3 questions from the applicant.
-  After the applicant questions you'll provide a feedback to the applicant on how their interview went and tell them if they passed or failed.
-  The last message should have the *END* token.`;
+  You should ask the applicant one interview question at a time.
+  You should not ask the same question twice.
+  If the applicant ask questions you should say that you will answer them at the end of the interview.
+  `;
 };
 
 const getInterviewHRPrompt = () => {
@@ -43,6 +42,15 @@ const getInterviewLeadPrompt = () => {
     "I want you to act as a leadership team member and interview the applicant",
     "You will focus on the applicant leadership skills and how they will fit in the team",
   ];
+};
+
+const getInterviewClosedMessage = () => {
+  return {
+    role: ChatCompletionRequestMessageRoleEnum.System,
+    content: `Povide feedback on the last answer provided by the applicant.
+      Then close the interview by providing feedback to the applicant on the overall interview.
+      The message should end with the text '*END*'`,
+  };
 };
 
 const getInterviewSystemMessage = (
@@ -95,7 +103,7 @@ export default async function handler(request: NextRequest) {
   if (env.SKIP_AI) {
     await delay(1000);
     return new Response(
-      await getFakeAiResponse("test interview message\n\nanother line")
+      await getFakeAiResponse("test interview message\n\nanother line*END*")
     );
   }
 
@@ -104,6 +112,10 @@ export default async function handler(request: NextRequest) {
     getFirstInterviewMessage(),
     ...messages,
   ];
+
+  if (messages.length > MAX_INTERVIEW_PHASE_1_MESSAGES) {
+    requestMessages.push(getInterviewClosedMessage());
+  }
 
   const stream = await OpenAI("chat", {
     model: "gpt-3.5-turbo",
