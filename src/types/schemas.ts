@@ -5,11 +5,11 @@ import { ChatCompletionRequestMessageRoleEnum } from "openai";
 const COMPANY_NAME_MIN_LENGTH = 2;
 const COMPANY_NAME_MAX_LENGTH = 20;
 const COMPANY_DESC_MIN_LENGTH = 20;
-const COMPANY_DESC_MAX_LENGTH = 5000;
+export const COMPANY_DESC_MAX_LENGTH = 5000;
 const JOB_TITLE_MIN_LENGTH = 5;
 const JOB_TITLE_MAX_LENGTH = 50;
 const JD_MIN_LENGTH = 20;
-const JD_MAX_LENGTH = 5000;
+export const JD_MAX_LENGTH = 5000;
 
 export const jobSchema = z.object({
   id: z.string().nullish(),
@@ -62,11 +62,11 @@ const APPL_LAST_NAME_MAX_LENGTH = 20;
 const APPL_TITLE_MIN_LENGTH = 5;
 const APPL_TITLE_MAX_LENGTH = 50;
 const APPL_RESUME_MIN_LENGTH = 100;
-const APPL_RESUME_MAX_LENGTH = 2000;
+export const APPL_RESUME_MAX_LENGTH = 2000;
 const APPL_SKILLS_MIN_LENGTH = 10;
-const APPL_SKILLS_MAX_LENGTH = 1000;
+export const APPL_SKILLS_MAX_LENGTH = 1000;
 const APPL_EXP_MIN_LENGTH = 50;
-const APPL_EXP_MAX_LENGTH = 2000;
+export const APPL_EXP_MAX_LENGTH = 2000;
 
 export const applicantSchema = z.object({
   id: z.string().nullish(),

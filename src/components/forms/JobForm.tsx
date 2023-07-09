@@ -2,7 +2,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type JobData } from "~/types/types";
-import { jobSchema } from "~/types/schemas";
+import {
+  COMPANY_DESC_MAX_LENGTH,
+  JD_MAX_LENGTH,
+  jobSchema,
+} from "~/types/schemas";
 import Spinner from "../utils/Spinner";
 
 const JobForm = ({
@@ -15,6 +19,7 @@ const JobForm = ({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<JobData>({
     resolver: zodResolver(jobSchema),
@@ -26,6 +31,8 @@ const JobForm = ({
       companyDetails: job?.companyDetails ?? "",
     },
   });
+
+  const { description, companyDetails } = watch();
 
   return (
     <>
@@ -60,6 +67,9 @@ const JobForm = ({
                 {...register("description")}
                 rows={5}
               />
+              <p className="absolute bottom-2 right-5 text-xs text-opacity-75">
+                {description.length} of {JD_MAX_LENGTH}
+              </p>
               <label
                 htmlFor="description"
                 className="absolute left-1 top-1 z-10 origin-[0] -translate-y-4 scale-75 transform bg-base-100 px-2 duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-primary"
@@ -68,7 +78,13 @@ const JobForm = ({
               </label>
             </div>
             {errors.description && (
-              <p className="text-error">{errors.description.message}</p>
+              <p className="text-error">
+                {errors.description.message}
+
+                {description.length > JD_MAX_LENGTH && (
+                  <span> ({description.length} used)</span>
+                )}
+              </p>
             )}
           </div>
           <div>
@@ -108,7 +124,12 @@ const JobForm = ({
               </label>
             </div>
             {errors.companyDetails && (
-              <p className="text-error">{errors.companyDetails.message}</p>
+              <p className="text-error">
+                {errors.companyDetails.message}
+                {(companyDetails?.length ?? 0) > COMPANY_DESC_MAX_LENGTH && (
+                  <span> ({companyDetails?.length} used)</span>
+                )}
+              </p>
             )}
           </div>
           <button

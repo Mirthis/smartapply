@@ -10,6 +10,10 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>SmartApply - Homepage</title>
+        <meta
+          name="google-site-verification"
+          content="h8IMaJ7eZCVyj5If1lwGf7jSBi5eFMO6M999ClvxOyw"
+        />
         <meta property="og:title" content="SmartApply - Homepage" key="title" />
       </Head>
       <div className="flex flex-col items-center justify-center gap-y-8">

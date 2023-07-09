@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { applicantSchema } from "~/types/schemas";
+import {
+  APPL_EXP_MAX_LENGTH,
+  APPL_RESUME_MAX_LENGTH,
+  APPL_SKILLS_MAX_LENGTH,
+  applicantSchema,
+} from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
 import Spinner from "../utils/Spinner";
 import { useEffect } from "react";
@@ -19,6 +24,7 @@ const ApplicantForm = ({
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isValid, isSubmitting, isDirty },
   } = useForm<ApplicantData>({
     resolver: zodResolver(applicantSchema),
@@ -34,6 +40,8 @@ const ApplicantForm = ({
     data.id = forceNewOnEdit && isDirty ? undefined : data.id;
     onSubmit(data);
   };
+
+  const { resume, experience, skills } = watch();
 
   return (
     <>
@@ -121,7 +129,12 @@ const ApplicantForm = ({
               </label>
             </div>
             {errors.resume && (
-              <p className="text-error">{errors.resume.message}</p>
+              <p className="text-error">
+                {errors.resume.message}
+                {resume.length > APPL_RESUME_MAX_LENGTH && (
+                  <span> ({resume.length} used)</span>
+                )}
+              </p>
             )}
           </div>
           <div>
@@ -142,7 +155,13 @@ const ApplicantForm = ({
               </label>
             </div>
             {errors.skills && (
-              <p className="text-error">{errors.skills.message}</p>
+              <p className="text-error">
+                {errors.skills.message}
+
+                {(skills?.length ?? 0) > APPL_SKILLS_MAX_LENGTH && (
+                  <span> ({skills?.length} used)</span>
+                )}
+              </p>
             )}
           </div>
           <div>
@@ -163,7 +182,13 @@ const ApplicantForm = ({
               </label>
             </div>
             {errors.experience && (
-              <p className="text-error">{errors.experience.message}</p>
+              <p className="text-error">
+                {errors.experience.message}
+
+                {(experience?.length ?? 0) > APPL_EXP_MAX_LENGTH && (
+                  <span> ({experience?.length} used)</span>
+                )}
+              </p>
             )}
           </div>
 

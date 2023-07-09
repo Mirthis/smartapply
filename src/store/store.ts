@@ -67,7 +67,7 @@ const getInitalState = () => {
 
   if (!!env.NEXT_PUBLIC_INIT_STORE) {
     initialState.newApplication.job = {
-      title: "Full Stack JavaScript Developer ",
+      title: "Full Stack JavaScript Developer",
       description: `The Role
       We are currently seeking a passionate, highly motivated and organized Mid-Level Full Stack JavaScript Developer to join our dedicated team. The successful candidate will have a keen interest in educational technology and be ready to help us take our innovative product to the next level.
       
