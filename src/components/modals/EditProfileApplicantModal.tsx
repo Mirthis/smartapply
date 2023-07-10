@@ -1,9 +1,11 @@
-import Modal from "./Modal";
-import { type ApplicantData } from "~/types/types";
-import { api } from "~/utils/api";
 import ApplicantForm from "../forms/ApplicantForm";
+import Modal from "./Modal";
 
-export const EditProfileApplicantModal = ({
+import { api } from "~/utils/api";
+
+import { type ApplicantData } from "~/types/types";
+
+const EditProfileApplicantModal = ({
   isOpen,
   onClose,
   applicant,
@@ -38,3 +40,5 @@ export const EditProfileApplicantModal = ({
     </Modal>
   );
 };
+
+export default EditProfileApplicantModal;

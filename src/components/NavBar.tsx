@@ -1,11 +1,14 @@
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import UserWidget from "./UserWidget";
 import Logo from "./Logo";
-import { useAppStore } from "~/store/store";
+import UserWidget from "./UserWidget";
 import { useAuth } from "@clerk/nextjs";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
+
+import { useEffect, useMemo, useState } from "react";
+
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { useAppStore } from "~/store/store";
 
 // import ContactIcons from "./ContactIcons";
 

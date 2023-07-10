@@ -1,19 +1,24 @@
 import {
-  PencilSquareIcon,
   ArrowUpTrayIcon,
+  PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 
+import { useState } from "react";
+
 import { type NextPage } from "next";
-import Head from "next/head";
-import React, { useState } from "react";
-import Title from "~/components/Title";
-import { DeleteProfileApplicantbModal } from "~/components/modals/DeleteProfileApplicantModal";
-import { EditProfileApplicantModal } from "~/components/modals/EditProfileApplicantModal copy";
-import Spinner from "~/components/utils/Spinner";
-import { type ApplicantData } from "~/types/types";
+
 import { api } from "~/utils/api";
+
+import { Layout, Title } from "~/components";
+import {
+  DeleteProfileApplicantModal,
+  EditProfileApplicantModal,
+} from "~/components/modals";
+import Spinner from "~/components/utils/Spinner";
+
+import { type ApplicantData } from "~/types/types";
 
 const ProfilePage: NextPage = () => {
   const utils = api.useContext();
@@ -60,18 +65,14 @@ const ProfilePage: NextPage = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>SmartApply - Profile</title>
-        <meta property="og:title" content="SmartApply - Profile" key="title" />
-      </Head>
+    <Layout title="Profile">
       <EditProfileApplicantModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         applicant={modalApplicant}
       />
       {modalApplicant && (
-        <DeleteProfileApplicantbModal
+        <DeleteProfileApplicantModal
           isOpen={isRemoveOpen}
           onClose={() => setIsRemoveOpen(false)}
           applicant={modalApplicant}
@@ -181,7 +182,7 @@ const ProfilePage: NextPage = () => {
           </div>
         </>
       )}
-    </>
+    </Layout>
   );
 };
 

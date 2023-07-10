@@ -1,19 +1,16 @@
-import { type NextPage } from "next";
-import Link from "next/link";
-import Title from "~/components/Title";
 import {
   InboxArrowDownIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import Head from "next/head";
+
+import { type NextPage } from "next";
+import Link from "next/link";
+
+import { Layout, Title } from "~/components";
 
 const AboutPage: NextPage = () => {
   return (
-    <>
-      <Head>
-        <title>SmartApply - About</title>
-        <meta property="og:title" content="SmartApply - About" key="title" />
-      </Head>
+    <Layout title="About">
       <Title title="About" />
       <Title title="Dev Team" type="section" />
       <div className="flex flex-col gap-y-4">
@@ -43,7 +40,7 @@ const AboutPage: NextPage = () => {
           </Link>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

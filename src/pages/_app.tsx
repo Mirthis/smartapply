@@ -1,11 +1,11 @@
+import { ClerkProvider } from "@clerk/nextjs";
+
 import { type AppType } from "next/app";
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
-import Layout from "~/components/Layout";
-import { ClerkProvider } from "@clerk/nextjs";
-import { GoogleAnalytics } from "nextjs-google-analytics";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   // TODO: Add web vitals tracking into Google Analytics
@@ -18,9 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       }
     >
       <GoogleAnalytics trackPageViews />
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Component {...pageProps} />
     </ClerkProvider>
   );
 };

@@ -1,21 +1,26 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type NextPage } from "next";
-import Spinner from "~/components/utils/Spinner";
-import { formatApiMessage } from "~/utils/formatter";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
+
 import { useEffect, useState } from "react";
-import { useAppStore } from "~/store/store";
-import Title from "~/components/Title";
-import { ApplicationDetails } from "~/components/ApplicationDetails";
-import { type CoverLetter, RefineMode } from "~/types/types";
-import { ResetCoverLetters } from "~/components/modals/ResetCoverLetters";
-import Head from "next/head";
+
+import { type NextPage } from "next";
 import { useRouter } from "next/router";
-import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
+
 import { api } from "~/utils/api";
 import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/utils/constants";
-import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
-import CoverLettersSkeleton from "~/components/skeletons/CoverLettersSkeleton";
+import { formatApiMessage } from "~/utils/formatter";
+import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
+
+import { ApplicationDetails, Layout, Title } from "~/components";
+import { ResetCoverLettersModal } from "~/components/modals";
+import {
+  ApplicationDetailsSkeleton,
+  CoverLettersSkeleton,
+} from "~/components/skeletons";
+import Spinner from "~/components/utils/Spinner";
+
+import { useAppStore } from "~/store/store";
+import { type CoverLetter, RefineMode } from "~/types/types";
 
 const CoverLetterPage: NextPage = () => {
   const router = useRouter();
@@ -203,16 +208,8 @@ const CoverLetterPage: NextPage = () => {
   const isMaxLetters = coverLetters.length >= MAX_COVER_LETTERS;
 
   return (
-    <>
-      <Head>
-        <title>SmartApply - Cover Letter Generator</title>
-        <meta
-          property="og:title"
-          content="SmartApply - Cover Letter Generator"
-          key="title"
-        />
-      </Head>
-      <ResetCoverLetters
+    <Layout title="Generate Cover Letter">
+      <ResetCoverLettersModal
         isOpen={isOpenResetModal}
         onClose={() => setIsOpenResetModal(false)}
         onConfirm={reset}
@@ -394,7 +391,7 @@ const CoverLetterPage: NextPage = () => {
           )}
         </>
       )}
-    </>
+    </Layout>
   );
 };
 

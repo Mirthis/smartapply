@@ -1,5 +1,5 @@
-import { UserCircleIcon } from "@heroicons/react/24/solid";
 import LoadingText from "../utils/LoadingText";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 const LoadingBubble = () => {
   return (

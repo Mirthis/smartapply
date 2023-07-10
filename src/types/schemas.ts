@@ -1,6 +1,6 @@
-import { z } from "zod";
 import { InterviewType } from "./types";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
+import { z } from "zod";
 
 const COMPANY_NAME_MIN_LENGTH = 2;
 const COMPANY_NAME_MAX_LENGTH = 20;

@@ -1,8 +1,9 @@
-import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
 import { applicantSchema } from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
-import { TRPCError } from "@trpc/server";
 
 export const applicantRouter = createTRPCRouter({
   createOrUpdate: protectedProcedure

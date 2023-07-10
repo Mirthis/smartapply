@@ -1,10 +1,12 @@
 import { type NextPage } from "next";
 import Link from "next/link";
+
+import { Layout } from "~/components";
 import Title from "~/components/Title";
 
 const PrivacyPage: NextPage = () => {
   return (
-    <>
+    <Layout title="Privacy Policy">
       <Title title="Privacy Policy" />
       <p className="mb-4 font-semibold">
         <em>Last Updated: 13/05/2023</em>
@@ -544,7 +546,7 @@ const PrivacyPage: NextPage = () => {
           </Link>
         </li>
       </ul>
-    </>
+    </Layout>
   );
 };
 

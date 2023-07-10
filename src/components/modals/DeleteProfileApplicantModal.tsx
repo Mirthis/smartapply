@@ -1,9 +1,11 @@
-import { type ApplicantData } from "~/types/types";
-import Modal from "./Modal";
-import { api } from "~/utils/api";
 import Spinner from "../utils/Spinner";
+import Modal from "./Modal";
 
-export const DeleteProfileApplicantbModal = ({
+import { api } from "~/utils/api";
+
+import { type ApplicantData } from "~/types/types";
+
+const DeleteProfileApplicantbModal = ({
   isOpen,
   onClose,
   applicant,
@@ -70,3 +72,5 @@ export const DeleteProfileApplicantbModal = ({
     </Modal>
   );
 };
+
+export default DeleteProfileApplicantbModal;

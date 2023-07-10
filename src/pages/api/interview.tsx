@@ -1,16 +1,19 @@
-import { OpenAI } from "openai-streams";
-import { interviewRequestSchema } from "~/types/schemas";
-import { InterviewType, type ApplicantData, type JobData } from "~/types/types";
+import { getAuth } from "@clerk/nextjs/server";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
-import { env } from "~/env.mjs";
-import { getJobDetailsPrompt } from "~/utils/prompt";
-import { getFakeAiResponse } from "~/utils/misc";
-import { getAuth } from "@clerk/nextjs/server";
+import { OpenAI } from "openai-streams";
+
 import { type NextRequest } from "next/server";
+
 import { MAX_INTERVIEW_PHASE_1_MESSAGES } from "~/utils/constants";
+import { getFakeAiResponse } from "~/utils/misc";
+import { getJobDetailsPrompt } from "~/utils/prompt";
+
+import { env } from "~/env.mjs";
+import { interviewRequestSchema } from "~/types/schemas";
+import { type ApplicantData, InterviewType, type JobData } from "~/types/types";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 

@@ -1,12 +1,13 @@
-import { type z } from "zod";
 import {
-  type contactFormSchema,
   type applicantSchema,
-  type jobSchema,
+  type contactFormSchema,
   type interviewRequestSchema,
+  type jobSchema,
 } from "./schemas";
-import { type ChatCompletionRequestMessage } from "openai";
 import { type inferRouterOutputs } from "@trpc/server";
+import { type ChatCompletionRequestMessage } from "openai";
+import { type z } from "zod";
+
 import { type AppRouter } from "~/server/api/root";
 
 export type JobData = z.infer<typeof jobSchema>;

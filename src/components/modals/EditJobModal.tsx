@@ -1,16 +1,20 @@
-import { useAppStore } from "~/store/store";
-import Modal from "./Modal";
-import { ResetContent } from "./ConfirmApplicationChange";
-import { useState } from "react";
-import { type ApplicationData, type JobData } from "~/types/types";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { jobSchema } from "~/types/schemas";
 import Spinner from "../utils/Spinner";
-import { api } from "~/utils/api";
+import ConfirmApplicationChangeModal from "./ConfirmApplicationChangeModal";
+import Modal from "./Modal";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+
 import { useRouter } from "next/router";
 
-export const EditJobModal = ({
+import { api } from "~/utils/api";
+
+import { useAppStore } from "~/store/store";
+import { jobSchema } from "~/types/schemas";
+import { type ApplicationData, type JobData } from "~/types/types";
+
+const EditJobModal = ({
   isOpen,
   onClose,
   application,
@@ -85,7 +89,7 @@ export const EditJobModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Job Details">
-      <ResetContent
+      <ConfirmApplicationChangeModal
         isOpen={isOpenConfirm}
         onClose={() => setIsOpenConfirm(false)}
         onConfirm={confirmChange}
@@ -190,3 +194,5 @@ export const EditJobModal = ({
     </Modal>
   );
 };
+
+export default EditJobModal;

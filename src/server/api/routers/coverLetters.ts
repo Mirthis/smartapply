@@ -1,8 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { addDelay } from "~/utils/misc";
+
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 // const getCoverLetterSystemMessage = (
 //   job: JobData,
