@@ -16,6 +16,10 @@ const server = z.object({
   SMTP_PASSWORD: z.string().min(1),
   EMAIL_RECIPIENT: z.string().min(1),
   SKIP_AI: z.string().min(1).optional(),
+  WEBSITE_URL: z.string().min(1),
+  STRIPE_SECRET_KEY: z.string().min(1),
+  STRIPE_PRICE_ID: z.string().min(1),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1),
 });
 
 /**
@@ -28,6 +32,7 @@ const client = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1),
   NEXT_PUBLIC_INIT_STORE: z.string().min(1).optional(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
 });
 
 /**
@@ -48,11 +53,17 @@ const processEnv = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   EMAIL_RECIPIENT: process.env.EMAIL_RECIPIENT,
   SKIP_AI: process.env.SKIP_AI,
+  WEBSITE_URL: process.env.WEBSITE_URL,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   NEXT_PUBLIC_INIT_STORE: process.env.NEXT_PUBLIC_INIT_STORE,
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
 };
 
 // Don't touch the part below
