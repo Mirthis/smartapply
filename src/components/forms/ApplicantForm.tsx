@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useForm } from "react-hook-form";
+import Spinner from "../utils/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+
 import {
   APPL_EXP_MAX_LENGTH,
   APPL_RESUME_MAX_LENGTH,
@@ -8,8 +12,6 @@ import {
   applicantSchema,
 } from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
-import Spinner from "../utils/Spinner";
-import { useEffect } from "react";
 
 const ApplicantForm = ({
   applicant,

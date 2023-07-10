@@ -1,6 +1,6 @@
 import Modal from "./Modal";
 
-export const ResetContent = ({
+const ConfirmApplicationChangeModal = ({
   isOpen,
   onClose,
   onConfirm,
@@ -53,3 +53,5 @@ export const ResetContent = ({
     </Modal>
   );
 };
+
+export default ConfirmApplicationChangeModal;

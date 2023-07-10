@@ -1,10 +1,12 @@
-import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { applicantSchema, jobSchema } from "~/types/schemas";
 import { TRPCError } from "@trpc/server";
-import { openaiClient } from "~/utils/openai";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
+import { z } from "zod";
+
+import { openaiClient } from "~/utils/openai";
+
 import { type PrismaClientType } from "~/server/db";
+import { applicantSchema, jobSchema } from "~/types/schemas";
 
 const deleteOrphans = async (prisma: PrismaClientType, userId: string) => {
   await prisma.applicant.deleteMany({

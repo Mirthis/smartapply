@@ -1,10 +1,11 @@
 import { type NextPage } from "next";
 import Link from "next/link";
-import Title from "~/components/Title";
+
+import { Layout, Title } from "~/components";
 
 const TermsPage: NextPage = () => {
   return (
-    <>
+    <Layout title="Terms of Service">
       <Title title="Terms of Service" />
       <p className="font-semibold">
         <em>Last Updated: 13/05/2023</em>
@@ -103,7 +104,7 @@ const TermsPage: NextPage = () => {
         </Link>
         .
       </p>
-    </>
+    </Layout>
   );
 };
 

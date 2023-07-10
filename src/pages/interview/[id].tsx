@@ -1,24 +1,26 @@
-import { type NextPage } from "next";
-import React, { useState } from "react";
-import Title from "~/components/Title";
-import { ApplicationDetails } from "~/components/ApplicationDetails";
-import { InterviewType } from "~/types/types";
-import { api } from "~/utils/api";
-import { useAppStore } from "~/store/store";
+import { ArrowPathIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
-import OpacityTransition from "~/components/utils/OpacityTransition";
-import MessageBubble from "~/components/MessageBubble";
-import Head from "next/head";
+
+import React, { useState } from "react";
+
+import { type NextPage } from "next";
 import { useRouter } from "next/router";
-import { PaperAirplaneIcon, ArrowPathIcon } from "@heroicons/react/24/solid";
-import { BasicCard } from "~/components/BasicCard";
+
+import { api } from "~/utils/api";
 import { interviewTypeCardData } from "~/utils/constants";
-import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
 import { useInterview } from "~/utils/hooks";
-import { ResetInterview } from "~/components/modals/ResetInterview";
+
+import { ApplicationDetails, BasicCard, Layout, Title } from "~/components";
+import MessageBubble from "~/components/MessageBubble";
+import { ResetInterviewModal } from "~/components/modals";
+import { ApplicationDetailsSkeleton } from "~/components/skeletons";
+import OpacityTransition from "~/components/utils/OpacityTransition";
+
+import { useAppStore } from "~/store/store";
+import { InterviewType } from "~/types/types";
 
 const interviewTitle = (type: InterviewType) => {
   switch (type) {
@@ -159,16 +161,8 @@ const InterviewPage: NextPage = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>SmartApply - Interview Simulation</title>
-        <meta
-          property="og:title"
-          content="SmartApply - Interview Simulation"
-          key="title"
-        />
-      </Head>
-      <ResetInterview
+    <Layout title="Interview Simulation">
+      <ResetInterviewModal
         onConfirm={handleReset}
         onClose={() => setIsOpenResetModal(false)}
         isOpen={isOpenResetModal}
@@ -291,7 +285,7 @@ const InterviewPage: NextPage = () => {
           )}
         </>
       )}
-    </>
+    </Layout>
   );
 };
 

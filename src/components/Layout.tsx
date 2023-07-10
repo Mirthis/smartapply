@@ -1,13 +1,28 @@
-import Head from "next/head";
-import NavBar from "./NavBar";
 import Footer from "./Footer";
+import NavBar from "./NavBar";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+import Head from "next/head";
+
+const defaultTitle = "SmartApply";
+
+const Layout = ({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title?: string;
+}) => {
+  const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
+
   return (
     <>
       <Head>
         <title>SmartApply</title>
-        <meta property="og:title" content="SmartApply" key="title" />
+
+        <title>{pageTitle}</title>
+        <meta charSet="utf-8" />
+        <meta property="og:title" content="SmartApply" key={pageTitle} />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
           name="description"
           content="AI power tools to make your job application succesfull"

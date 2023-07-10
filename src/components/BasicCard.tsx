@@ -1,7 +1,8 @@
-import { useRouter } from "next/router";
 import { type ComponentType } from "react";
 
-export const BasicCard = ({
+import { useRouter } from "next/router";
+
+const BasicCard = ({
   url = "",
   title,
   description,
@@ -28,3 +29,5 @@ export const BasicCard = ({
     </button>
   );
 };
+
+export default BasicCard;

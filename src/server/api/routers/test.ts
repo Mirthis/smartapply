@@ -1,17 +1,18 @@
-import { z } from "zod";
-
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { type Job } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
-import { env } from "~/env.mjs";
-import { TRPCError } from "@trpc/server";
-import { type TestQuestion } from "~/types/types";
-import { applicantSchema, jobSchema } from "~/types/schemas";
+import { z } from "zod";
+
 import { addDelay } from "~/utils/misc";
 import { openaiClient } from "~/utils/openai";
-import { type Job } from "@prisma/client";
+
+import { env } from "~/env.mjs";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { applicantSchema, jobSchema } from "~/types/schemas";
+import { type TestQuestion } from "~/types/types";
 
 const getSystemMessage = (job: Job, skill: string) => {
   const skills = skill === "*ALL*" ? job.skillsSummary : skill;

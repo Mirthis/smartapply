@@ -1,8 +1,10 @@
 import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
 import { Menu, Transition } from "@headlessui/react";
+
+import { Fragment } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment } from "react";
 
 export default function UserWidget() {
   const { user } = useUser();

@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useForm } from "react-hook-form";
+import Spinner from "../utils/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type JobData } from "~/types/types";
+
+import { useForm } from "react-hook-form";
+
 import {
   COMPANY_DESC_MAX_LENGTH,
   JD_MAX_LENGTH,
   jobSchema,
 } from "~/types/schemas";
-import Spinner from "../utils/Spinner";
+import { type JobData } from "~/types/types";
 
 const JobForm = ({
   job,

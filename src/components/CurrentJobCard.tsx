@@ -1,7 +1,10 @@
 import { BriefcaseIcon } from "@heroicons/react/24/outline";
-import { EditJobModal } from "./modals/EditJobModal";
+
 import { useState } from "react";
+
 import { type ApplicationData } from "~/types/types";
+
+import EditJobModal from "./modals/EditJobModal";
 
 const CurrentJobCard = ({ application }: { application: ApplicationData }) => {
   const [isOpen, setIsOpen] = useState(false);

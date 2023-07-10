@@ -1,18 +1,19 @@
 import {
-  type ChatCompletionResponseMessage,
   type ChatCompletionRequestMessage,
+  type ChatCompletionResponseMessage,
 } from "openai";
 import { create } from "zustand";
+
 import { env } from "~/env.mjs";
 import {
   type ApplicantData,
-  type JobData,
-  type InterviewType,
+  type ApplicationData,
+  type CoverLetter,
   type InterviewData,
+  type InterviewType,
+  type JobData,
   type TestData,
   type TestQuestion,
-  type CoverLetter,
-  type ApplicationData,
 } from "~/types/types";
 
 type AppStoreInitialState = {

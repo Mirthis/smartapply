@@ -1,6 +1,6 @@
 import Modal from "./Modal";
 
-export const ResetInterview = ({
+const ResetCoverLettersModal = ({
   isOpen,
   onClose,
   onConfirm,
@@ -17,8 +17,8 @@ export const ResetInterview = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Clear Cover Letters">
       <p>
-        This will clear the current interview history and allow to start a new
-        interview.
+        This will clear all the cover letters and restart the process by
+        creating the first version.
       </p>
       <div className="mt-8 flex gap-x-4">
         <button className="btn-outline btn-info btn w-36" onClick={onClose}>
@@ -33,3 +33,5 @@ export const ResetInterview = ({
     </Modal>
   );
 };
+
+export default ResetCoverLettersModal;
