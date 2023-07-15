@@ -37,14 +37,8 @@ async function generateSitemap() {
   const pages = await globby([
     // "src/pages/**/*{.ts,.tsx}",
     "src/pages/*{.ts,.tsx}",
-<<<<<<< HEAD
-    "!src/pages/applications.tsx",
-    "!src/pages/accounts.tsx",
-    "!src/pages/profile.tsx",
-    "!src/pages/_*.tsx",
-=======
     ...exclude,
->>>>>>> main
+    "!src/pages/_*.tsx",
     "!src/pages/api",
   ]);
   const sitemap = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
