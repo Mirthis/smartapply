@@ -1,8 +1,9 @@
-import { type NextApiRequest, type NextApiResponse } from "next";
-
+import { buffer } from "micro";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { buffer } from "micro";
+
+import { type NextApiRequest, type NextApiResponse } from "next";
+
 import { env } from "~/env.mjs";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
