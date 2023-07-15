@@ -1,15 +1,12 @@
 import { SignIn } from "@clerk/nextjs";
-import Head from "next/head";
+
+import { Layout } from "~/components";
 
 const SignInPage = () => (
-  <>
-    <Head>
-      <title>SmartApply - Sign-in</title>
-      <meta property="og:title" content="SmartApply - Sign-in" key="title" />
-    </Head>
+  <Layout title="Sign-in" description="Sign-in to your SmartApply account.">
     <div className="flex justify-center">
       <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
     </div>
-  </>
+  </Layout>
 );
 export default SignInPage;

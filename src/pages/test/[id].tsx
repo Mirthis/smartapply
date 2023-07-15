@@ -1,17 +1,19 @@
-import { type NextPage } from "next";
-import Title from "~/components/Title";
-import { ApplicationDetails } from "~/components/ApplicationDetails";
-import { api } from "~/utils/api";
 import { useCallback, useEffect, useState } from "react";
-import { useAppStore } from "~/store/store";
-import { type TestQuestion } from "~/types/types";
+
+import { type NextPage } from "next";
+import { useRouter } from "next/router";
+
+import { api } from "~/utils/api";
 import { MAX_TEST_QUESTIONS } from "~/utils/constants";
 import { formatApiMessage } from "~/utils/formatter";
-import Spinner from "~/components/utils/Spinner";
-import Head from "next/head";
-import { useRouter } from "next/router";
 import { useValidateTestResponse } from "~/utils/hooks";
-import { ApplicationDetailsSkeleton } from "~/components/skeletons/ApplicationDetailsSkeleton";
+
+import { ApplicationDetails, Layout, Title } from "~/components";
+import { ApplicationDetailsSkeleton } from "~/components/skeletons";
+import Spinner from "~/components/utils/Spinner";
+
+import { useAppStore } from "~/store/store";
+import { type TestQuestion } from "~/types/types";
 
 const InterviewPage: NextPage = () => {
   const {
@@ -130,15 +132,10 @@ const InterviewPage: NextPage = () => {
   const testStatus = test?.status ?? "Not Started";
 
   return (
-    <>
-      <Head>
-        <title>SmartApply - Knowledge Test</title>
-        <meta
-          property="og:title"
-          content="SmartApply - Knowledge Test"
-          key="title"
-        />
-      </Head>
+    <Layout
+      title="Skill Test"
+      description="Simulate a job interview based on the job description and skills required."
+    >
       <Title title="Test your knowledge" type="page" />
       {isLoadingApplication || !application ? (
         <ApplicationDetailsSkeleton />
@@ -329,7 +326,7 @@ const InterviewPage: NextPage = () => {
       )}
 
       <div className="mb-4" />
-    </>
+    </Layout>
   );
 };
 

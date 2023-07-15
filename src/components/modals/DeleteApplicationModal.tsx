@@ -1,9 +1,11 @@
-import { type ApplicationData } from "~/types/types";
-import Modal from "./Modal";
-import { api } from "~/utils/api";
 import Spinner from "../utils/Spinner";
+import Modal from "./Modal";
 
-export const DeleteApplictionbModal = ({
+import { api } from "~/utils/api";
+
+import { type ApplicationData } from "~/types/types";
+
+const DeleteApplictionbModal = ({
   isOpen,
   onClose,
   application,
@@ -67,3 +69,5 @@ export const DeleteApplictionbModal = ({
     </Modal>
   );
 };
+
+export default DeleteApplictionbModal;

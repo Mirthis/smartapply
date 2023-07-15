@@ -1,16 +1,17 @@
-import {  z } from "zod";
-
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
-import { env } from "~/env.mjs";
-import { TRPCError } from "@trpc/server";
-import { InterviewType, type ApplicantData, type JobData } from "~/types/types";
-import { applicantSchema, jobSchema } from "~/types/schemas";
-import { getJobDetailsPrompt } from "~/utils/prompt";
+import { z } from "zod";
+
 import { openaiClient } from "~/utils/openai";
+import { getJobDetailsPrompt } from "~/utils/prompt";
+
+import { env } from "~/env.mjs";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { applicantSchema, jobSchema } from "~/types/schemas";
+import { type ApplicantData, InterviewType, type JobData } from "~/types/types";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 

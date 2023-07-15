@@ -1,17 +1,33 @@
 import Head from "next/head";
-import NavBar from "./NavBar";
-import Footer from "./Footer";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+import Footer from "./Footer";
+import NavBar from "./NavBar";
+
+const defaultTitle = "SmartApply";
+const defaultDesc =
+  "AI powered tools to make your job application succesfull. Cover letter generation, interview simulation, multiple choice tests";
+const Layout = ({
+  children,
+  title,
+  description,
+}: {
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+}) => {
+  const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
+  const pageDesc = description ? description : defaultDesc;
+
   return (
     <>
       <Head>
         <title>SmartApply</title>
-        <meta property="og:title" content="SmartApply" key="title" />
-        <meta
-          name="description"
-          content="AI power tools to make your job application succesfull"
-        />
+
+        <title>{pageTitle}</title>
+        <meta charSet="utf-8" />
+        <meta property="og:title" content="SmartApply" key={pageTitle} />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="description" content={pageDesc} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

@@ -1,10 +1,14 @@
 import { type NextPage } from "next";
 import Link from "next/link";
-import Title from "~/components/Title";
+
+import { Layout, Title } from "~/components";
 
 const BetaPage: NextPage = () => {
   return (
-    <>
+    <Layout
+      title="Beta"
+      description="Beta explained, and change log of latest releases."
+    >
       <Title title="About the Beta" />
       <p>
         The app is under current development and substantial changes may be
@@ -12,6 +16,7 @@ const BetaPage: NextPage = () => {
         profile data and generated content is going to be mantained as the app
         evovle.
       </p>
+
       <p className="mt-2">
         Some features as the test generation are in early stage and may not
         always produced the expected content.
@@ -106,7 +111,7 @@ const BetaPage: NextPage = () => {
         <li>Job Interview simulation (HR, Technical, Leadership)</li>
         <li>Knowledge test</li>
       </ul>
-    </>
+    </Layout>
   );
 };
 

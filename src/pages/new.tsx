@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type NextPage } from "next";
-
-import ApplicantForm from "~/components/forms/ApplicantForm";
-import JobForm from "~/components/forms/JobForm";
-import { type ApplicantData, FormStep, type JobData } from "~/types/types";
-import { useEffect, useState } from "react";
-import Head from "next/head";
-import { serviceCardData } from "~/utils/constants";
-import { api } from "~/utils/api";
-import { useAppStore } from "~/store/store";
 import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/router";
+
+import { useEffect, useState } from "react";
+
+import { type NextPage } from "next";
 import Link from "next/link";
-import { SignInModal } from "~/components/modals/SignInModal";
-import { BasicCard } from "~/components/BasicCard";
+import { useRouter } from "next/router";
+
+import { api } from "~/utils/api";
+import { serviceCardData } from "~/utils/constants";
+
+import { BasicCard, Layout, Title } from "~/components";
+import { ApplicantForm, JobForm } from "~/components/forms";
+import { SignInModal } from "~/components/modals";
 import Spinner from "~/components/utils/Spinner";
-import Title from "~/components/Title";
+
+import { useAppStore } from "~/store/store";
+import { type ApplicantData, FormStep, type JobData } from "~/types/types";
 
 const NewApplication: NextPage = () => {
   // state for application form
@@ -152,15 +153,10 @@ const NewApplication: NextPage = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>SmartApply - New Job Application</title>
-        <meta
-          property="og:title"
-          content="SmartApply - New Job Application"
-          key="title"
-        />
-      </Head>
+    <Layout
+      title="New Job Application"
+      description="Create a new job application."
+    >
       {/* Login Modal */}
       <SignInModal
         isOpen={modalState.isOpen}
@@ -277,7 +273,7 @@ const NewApplication: NextPage = () => {
           </div>
         )}
       </div>
-    </>
+    </Layout>
   );
 };
 

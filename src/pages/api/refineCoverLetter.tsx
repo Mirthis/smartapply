@@ -1,16 +1,19 @@
-import { OpenAI } from "openai-streams";
-import { applicantSchema, jobSchema } from "~/types/schemas";
-import { type ApplicantData, type JobData } from "~/types/types";
+import { getAuth } from "@clerk/nextjs/server";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
-import { env } from "~/env.mjs";
-import { getJobDetailsPrompt } from "~/utils/prompt";
-import { getFakeAiResponse } from "~/utils/misc";
+import { OpenAI } from "openai-streams";
 import { z } from "zod";
-import { getAuth } from "@clerk/nextjs/server";
+
 import { type NextRequest } from "next/server";
+
+import { getFakeAiResponse } from "~/utils/misc";
+import { getJobDetailsPrompt } from "~/utils/prompt";
+
+import { env } from "~/env.mjs";
+import { applicantSchema, jobSchema } from "~/types/schemas";
+import { type ApplicantData, type JobData } from "~/types/types";
 
 const requestSchema = z.object({
   job: jobSchema,

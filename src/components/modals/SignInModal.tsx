@@ -1,7 +1,7 @@
-import { SignIn } from "@clerk/nextjs";
 import Modal from "./Modal";
+import { SignIn } from "@clerk/nextjs";
 
-export const SignInModal = ({
+const SignInModal = ({
   isOpen,
   onClose,
   redirectUrl,
@@ -21,3 +21,5 @@ export const SignInModal = ({
     </Modal>
   );
 };
+
+export default SignInModal;

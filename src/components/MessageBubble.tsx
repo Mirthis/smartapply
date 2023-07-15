@@ -1,9 +1,11 @@
-import Image from "next/image";
-import { useUser } from "@clerk/nextjs";
-import { UserIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { formatApiMessage } from "~/utils/formatter";
-import { type ChatCompletionResponseMessage } from "openai";
 import LoadingText from "./utils/LoadingText";
+import { useUser } from "@clerk/nextjs";
+import { UserCircleIcon, UserIcon } from "@heroicons/react/24/solid";
+import { type ChatCompletionResponseMessage } from "openai";
+
+import Image from "next/image";
+
+import { formatApiMessage } from "~/utils/formatter";
 
 const MessageBubbleText = ({ text }: { text: string }) => {
   if (text === "") {

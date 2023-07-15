@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import EditApplicantModal from "./modals/EditApplicantModal";
 import { UserIcon } from "@heroicons/react/24/outline";
-import { EditApplicantModal } from "./modals/EditApplicantModal";
+
+import React, { useState } from "react";
+
 import { type ApplicationData } from "~/types/types";
 
 const ApplicantCard = ({ application }: { application: ApplicationData }) => {

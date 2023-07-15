@@ -1,10 +1,11 @@
 import {
-  DocumentTextIcon,
   ChatBubbleLeftRightIcon,
   ClipboardDocumentCheckIcon,
-  UserIcon,
   CodeBracketIcon,
+  DocumentTextIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
+
 import { InterviewType } from "~/types/types";
 
 export const MAX_TEST_QUESTIONS = 10;

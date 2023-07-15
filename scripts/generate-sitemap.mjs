@@ -2,6 +2,17 @@
 import { writeFileSync } from "fs";
 import { globby } from "globby";
 
+const exclude = [
+  "!src/pages/applications.tsx",
+  "!src/pages/accounts.tsx",
+  "!src/pages/profile.tsx",
+  "!src/pages/404.tsx",
+  "!src/pages/terms.tsx",
+  "!src/pages/privacy.tsx",
+  "!src/pages/contact.tsx",
+  "!src/pages/_app.tsx",
+];
+
 const priorities = [];
 priorities[""] = "1.0";
 priorities["/new"] = "0.8";
@@ -26,10 +37,14 @@ async function generateSitemap() {
   const pages = await globby([
     // "src/pages/**/*{.ts,.tsx}",
     "src/pages/*{.ts,.tsx}",
+<<<<<<< HEAD
     "!src/pages/applications.tsx",
     "!src/pages/accounts.tsx",
     "!src/pages/profile.tsx",
     "!src/pages/_*.tsx",
+=======
+    ...exclude,
+>>>>>>> main
     "!src/pages/api",
   ]);
   const sitemap = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

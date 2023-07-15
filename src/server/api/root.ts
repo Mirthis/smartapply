@@ -1,12 +1,13 @@
 import { createTRPCRouter } from "~/server/api/trpc";
+
+import { applicantRouter } from "./routers/applicant";
+import { applicationRouter } from "./routers/application";
+import { contactRouter } from "./routers/contact";
 import { coverLettersRouter } from "./routers/coverLetters";
 import { interviewRouter } from "./routers/interview";
-import { testRouter } from "./routers/test";
-import { applicantRouter } from "./routers/applicant";
 import { profileRouter } from "./routers/profile";
-import { contactRouter } from "./routers/contact";
-import { applicationRouter } from "./routers/application";
 import { stripeRouter } from "./routers/stripe";
+import { testRouter } from "./routers/test";
 
 /**
  * This is the primary router for your server.

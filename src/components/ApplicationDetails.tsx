@@ -1,10 +1,12 @@
-import React from "react";
-import CurrentJobCard from "./CurrentJobCard";
 import ApplicantCard from "./ApplicantCard";
+import CurrentJobCard from "./CurrentJobCard";
 import Title from "./Title";
+
+import React from "react";
+
 import { type ApplicationData } from "~/types/types";
 
-export const ApplicationDetails = ({
+const ApplicationDetails = ({
   application,
 }: {
   application: ApplicationData;
@@ -19,3 +21,5 @@ export const ApplicationDetails = ({
     </>
   );
 };
+
+export default ApplicationDetails;

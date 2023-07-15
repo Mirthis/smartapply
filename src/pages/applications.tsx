@@ -1,18 +1,22 @@
-import { PlusIcon, UserIcon } from "@heroicons/react/24/solid";
 import {
-  DocumentTextIcon,
   ChatBubbleLeftRightIcon,
   ClipboardDocumentCheckIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
-import { type NextPage } from "next";
-import { api } from "~/utils/api";
-import Link from "next/link";
-import { DeleteApplictionbModal } from "~/components/modals/DeleteApplicationModal";
+import { PlusIcon, UserIcon } from "@heroicons/react/24/solid";
+
 import { useState } from "react";
-import { type ApplicationData } from "~/types/types";
-import Head from "next/head";
-import Title from "~/components/Title";
+
+import { type NextPage } from "next";
+import Link from "next/link";
+
+import { api } from "~/utils/api";
+
+import { Layout, Title } from "~/components";
+import { DeleteApplicationModal } from "~/components/modals";
 import Spinner from "~/components/utils/Spinner";
+
+import { type ApplicationData } from "~/types/types";
 
 const ApplicationsPage: NextPage = () => {
   const {
@@ -30,17 +34,12 @@ const ApplicationsPage: NextPage = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>SmartApply - Cover Letter Generator</title>
-        <meta
-          property="og:title"
-          content="SmartApply - Saved Applications"
-          key="title"
-        />
-      </Head>
+    <Layout
+      title="Saved Applications"
+      description="Visit and manage saved applications for your account"
+    >
       {selectedApplication && (
-        <DeleteApplictionbModal
+        <DeleteApplicationModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           application={selectedApplication}
@@ -119,7 +118,7 @@ const ApplicationsPage: NextPage = () => {
           )}
         </>
       )}
-    </>
+    </Layout>
   );
 };
 

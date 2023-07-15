@@ -1,7 +1,8 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import Title from "../Title";
+import { Dialog, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+
+import { Fragment } from "react";
 
 const Modal = ({
   isOpen,

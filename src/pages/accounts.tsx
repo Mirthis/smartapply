@@ -1,16 +1,17 @@
 import { UserProfile } from "@clerk/nextjs";
+
 import { type NextPage } from "next";
-import Head from "next/head";
+
+import { Layout } from "~/components";
 
 const AccountsPage: NextPage = () => {
   return (
-    <>
-      <Head>
-        <title>SmartApply - Account</title>
-        <meta property="og:title" content="SmartApply - Account" key="title" />
-      </Head>
+    <Layout
+      title="User Account"
+      description="Manage your account on SmartApply.app"
+    >
       <UserProfile />
-    </>
+    </Layout>
   );
 };
 

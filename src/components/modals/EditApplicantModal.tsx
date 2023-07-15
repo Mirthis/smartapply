@@ -1,16 +1,20 @@
-import { useAppStore } from "~/store/store";
-import Modal from "./Modal";
-import { ResetContent } from "./ConfirmApplicationChange";
-import { useState } from "react";
-import { type ApplicationData, type ApplicantData } from "~/types/types";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { applicantSchema } from "~/types/schemas";
 import Spinner from "../utils/Spinner";
-import { api } from "~/utils/api";
+import ConfirmApplicationChangeModal from "./ConfirmApplicationChangeModal";
+import Modal from "./Modal";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+
 import { useRouter } from "next/router";
 
-export const EditApplicantModal = ({
+import { api } from "~/utils/api";
+
+import { useAppStore } from "~/store/store";
+import { applicantSchema } from "~/types/schemas";
+import { type ApplicantData, type ApplicationData } from "~/types/types";
+
+const EditApplicantModal = ({
   isOpen,
   onClose,
   application,
@@ -90,7 +94,7 @@ export const EditApplicantModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Applicant Details">
-      <ResetContent
+      <ConfirmApplicationChangeModal
         isOpen={isOpenConfirm}
         onClose={() => setIsOpenConfirm(false)}
         onConfirm={confirmChange}
@@ -243,3 +247,5 @@ export const EditApplicantModal = ({
     </Modal>
   );
 };
+
+export default EditApplicantModal;
