@@ -7,7 +7,7 @@ const BetaPage: NextPage = () => {
   return (
     <Layout
       title="Beta"
-      description="Some details on why the app is in beta, and change log of latest releases."
+      description="Beta explained, and change log of latest releases."
     >
       <Title title="About the Beta" />
       <p>

@@ -153,7 +153,10 @@ const NewApplication: NextPage = () => {
   };
 
   return (
-    <Layout title="New Job Application">
+    <Layout
+      title="New Job Application"
+      description="Create a new job application."
+    >
       {/* Login Modal */}
       <SignInModal
         isOpen={modalState.isOpen}
