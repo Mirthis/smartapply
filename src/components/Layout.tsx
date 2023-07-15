@@ -5,8 +5,7 @@ import NavBar from "./NavBar";
 
 const defaultTitle = "SmartApply";
 const defaultDesc =
-  "AI powered tools to make your job application succesfull. Cover letter generation, interview similuation, multiple choice test";
-
+  "AI powered tools to make your job application succesfull. Cover letter generation, interview simulation, multiple choice tests";
 const Layout = ({
   children,
   title,
