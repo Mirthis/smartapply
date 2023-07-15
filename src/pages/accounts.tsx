@@ -6,7 +6,10 @@ import { Layout } from "~/components";
 
 const AccountsPage: NextPage = () => {
   return (
-    <Layout title="User Account">
+    <Layout
+      title="User Account"
+      description="Manage your account on SmartApply.app"
+    >
       <UserProfile />
     </Layout>
   );

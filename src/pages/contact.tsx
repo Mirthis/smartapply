@@ -10,7 +10,10 @@ import { env } from "~/env.mjs";
 
 const ContactPage: NextPage = () => {
   return (
-    <Layout title="Contact Us">
+    <Layout
+      title="Contact Us"
+      description="Contact us for any feedback, question and (hopefully not) issue you face using the app."
+    >
       <Title title="Contact" />
       <GoogleReCaptchaProvider
         reCaptchaKey={env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}

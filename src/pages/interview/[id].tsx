@@ -161,7 +161,10 @@ const InterviewPage: NextPage = () => {
   };
 
   return (
-    <Layout title="Interview Simulation">
+    <Layout
+      title="Interview Simulation"
+      description="Simulate a job interview based on the job description and the applicant's resume."
+    >
       <ResetInterviewModal
         onConfirm={handleReset}
         onClose={() => setIsOpenResetModal(false)}

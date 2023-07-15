@@ -1,18 +1,23 @@
+import Head from "next/head";
+
 import Footer from "./Footer";
 import NavBar from "./NavBar";
 
-import Head from "next/head";
-
 const defaultTitle = "SmartApply";
+const defaultDesc =
+  "AI powered tools to make your job application succesfull. Cover letter generation, interview similuation, multiple choice test";
 
 const Layout = ({
   children,
   title,
+  description,
 }: {
   children: React.ReactNode;
   title?: string;
+  description?: string;
 }) => {
   const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
+  const pageDesc = description ? description : defaultDesc;
 
   return (
     <>
@@ -23,10 +28,7 @@ const Layout = ({
         <meta charSet="utf-8" />
         <meta property="og:title" content="SmartApply" key={pageTitle} />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta
-          name="description"
-          content="AI power tools to make your job application succesfull"
-        />
+        <meta name="description" content={pageDesc} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

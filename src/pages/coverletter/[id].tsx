@@ -208,7 +208,10 @@ const CoverLetterPage: NextPage = () => {
   const isMaxLetters = coverLetters.length >= MAX_COVER_LETTERS;
 
   return (
-    <Layout title="Generate Cover Letter">
+    <Layout
+      title="Generate Cover Letter"
+      description="Geenerate cover letters for a job application and job applicant."
+    >
       <ResetCoverLettersModal
         isOpen={isOpenResetModal}
         onClose={() => setIsOpenResetModal(false)}

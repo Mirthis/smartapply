@@ -34,7 +34,10 @@ const ApplicationsPage: NextPage = () => {
   };
 
   return (
-    <Layout title="Saved Applications">
+    <Layout
+      title="Saved Applications"
+      description="Visit and manage saved applications for your account"
+    >
       {selectedApplication && (
         <DeleteApplicationModal
           isOpen={isOpen}

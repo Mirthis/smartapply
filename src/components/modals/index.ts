@@ -4,6 +4,7 @@ export { default as DeleteProfileApplicantModal } from "./DeleteProfileApplicant
 export { default as EditApplicantModal } from "./EditApplicantModal";
 export { default as EditJobModal } from "./EditJobModal";
 export { default as EditProfileApplicantModal } from "./EditProfileApplicantModal";
+export { default as Modal } from "./Modal";
 export { default as ResetCoverLettersModal } from "./ResetCoverLettersModal";
 export { default as ResetInterviewModal } from "./ResetInterviewModal";
 export { default as SignInModal } from "./SignInModal";

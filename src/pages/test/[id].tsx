@@ -132,7 +132,10 @@ const InterviewPage: NextPage = () => {
   const testStatus = test?.status ?? "Not Started";
 
   return (
-    <Layout title="Skill Test">
+    <Layout
+      title="Skill Test"
+      description="Simulate a job interview based on the job description and skills required."
+    >
       <Title title="Test your knowledge" type="page" />
       {isLoadingApplication || !application ? (
         <ApplicationDetailsSkeleton />

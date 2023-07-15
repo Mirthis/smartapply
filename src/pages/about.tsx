@@ -10,7 +10,7 @@ import { Layout, Title } from "~/components";
 
 const AboutPage: NextPage = () => {
   return (
-    <Layout title="About">
+    <Layout title="About" description="Find out how SmartApply came to life.">
       <Title title="About" />
       <Title title="Dev Team" type="section" />
       <div className="flex flex-col gap-y-4">

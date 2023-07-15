@@ -5,7 +5,10 @@ import { Layout, Title } from "~/components";
 
 const BetaPage: NextPage = () => {
   return (
-    <Layout title="Beta">
+    <Layout
+      title="Beta"
+      description="Some details on why the app is in beta, and change log of latest releases."
+    >
       <Title title="About the Beta" />
       <p>
         The app is under current development and substantial changes may be
