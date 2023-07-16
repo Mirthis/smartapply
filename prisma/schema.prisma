@@ -12,21 +12,9 @@ datasource db {
   // If you want to use Prisma Migrate, you will need to manually create a shadow database
   // https://neon.tech/docs/guides/prisma-migrate#configure-a-shadow-database-for-prisma-migrate
   // make sure to append ?connect_timeout=10 to the connection string
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model Profile {
-  id          String     @id @default(cuid())
-  userId      String
-  applicantId String?
-  applicant   Applicant? @relation(fields: [applicantId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([applicantId])
-  @@unique([userId])
-}
 
 model Applicant {
   id         String   @id @default(cuid())
@@ -41,7 +29,6 @@ model Applicant {
   isInProfile Boolean @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  profile    Profile?
   applications Application[]
 
   @@unique([id, userId])
