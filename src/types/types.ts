@@ -1,14 +1,15 @@
+import { type inferRouterOutputs } from "@trpc/server";
+import { type ChatCompletionRequestMessage } from "openai";
+import { type z } from "zod";
+
+import { type AppRouter } from "~/server/api/root";
+
 import {
   type applicantSchema,
   type contactFormSchema,
   type interviewRequestSchema,
   type jobSchema,
 } from "./schemas";
-import { type inferRouterOutputs } from "@trpc/server";
-import { type ChatCompletionRequestMessage } from "openai";
-import { type z } from "zod";
-
-import { type AppRouter } from "~/server/api/root";
 
 export type JobData = z.infer<typeof jobSchema>;
 export type ApplicantData = z.infer<typeof applicantSchema>;
@@ -72,6 +73,13 @@ export enum RefineMode {
   FreeInput = "freeinput",
   Shorten = "shorten",
   Extend = "extend",
+}
+
+export enum Plan {
+  Free = "Free",
+  Monthly = "Monthly",
+  Yearly = "Yearly",
+  Lifetime = "Lifetime",
 }
 
 type RouterOutput = inferRouterOutputs<AppRouter>;

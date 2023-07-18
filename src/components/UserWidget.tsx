@@ -55,6 +55,21 @@ export default function UserWidget() {
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
+                    <Link href="/subscription">
+                      <button
+                        className={`${
+                          active
+                            ? "bg-primary text-primary-content"
+                            : "text-base-content"
+                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                      >
+                        Manage Pro Subscription
+                      </button>
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
                     <Link href="/accounts">
                       <button
                         className={`${
@@ -63,7 +78,7 @@ export default function UserWidget() {
                             : "text-base-content"
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
-                        Manage Accounts
+                        Manage Account
                       </button>
                     </Link>
                   )}

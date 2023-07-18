@@ -1,10 +1,14 @@
+import React, { useEffect } from "react";
+
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+
+import { api } from "~/utils/api";
+
+import { Layout } from "~/components";
 import Title from "~/components/Title";
 import Spinner from "~/components/utils/Spinner";
-import { api } from "~/utils/api";
 
 const CheckoutResultPage: NextPage = () => {
   const router = useRouter();
@@ -27,9 +31,8 @@ const CheckoutResultPage: NextPage = () => {
     }
   }, [router, sessionId]);
 
-  console.log({ checkoutSession });
   return (
-    <>
+    <Layout title="Upgrade Checkout Summary">
       <Title type="page" title="Checkout Status" />
       {isLoading && <Spinner text="Retrieving status..." />}
       {isError && (
@@ -52,9 +55,10 @@ const CheckoutResultPage: NextPage = () => {
             <div className="flex  flex-col gap-y-2 text-2xl">
               <p className="text-success">Thank you for upgrading to Pro.</p>
               <p>You can now use all the features of SmartApply.</p>
+              <p>You can manage your subscription from your profile page.</p>
             </div>
           )}
-          {checkoutSession.payment_status === "paid" && (
+          {checkoutSession.payment_status === "unpaid" && (
             <div className="flex flex-col gap-y-2 text-2xl">
               <p className=" text-error">
                 Your payment has not been processed.
@@ -70,7 +74,7 @@ const CheckoutResultPage: NextPage = () => {
           )}
         </div>
       )}
-    </>
+    </Layout>
   );
 };
 

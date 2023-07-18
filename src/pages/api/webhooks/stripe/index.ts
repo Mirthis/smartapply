@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { type NextApiRequest, type NextApiResponse } from "next";
 
 import { env } from "~/env.mjs";
+import { prisma } from "~/server/db";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   // https://github.com/stripe/stripe-node#configuration
@@ -23,6 +24,63 @@ export const config = {
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
 });
+
+const toDateTime = (secs: number) => {
+  const t = new Date("1970-01-01T00:30:00Z"); // Unix epoch start.
+  t.setSeconds(secs);
+  return t;
+};
+
+const manageSubscriptionStatusChange = async (
+  subscriptionId: string,
+  customerId: string
+) => {
+  // retrieve user based on stripe user id
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      stripeId: customerId,
+    },
+  });
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ["default_payment_method"],
+  });
+
+  // create or update subscription
+  const data = {
+    id: subscription.id,
+    userId: user.id,
+    status: subscription.status,
+    priceId: subscription.items?.data[0]?.price.id ?? null,
+    cancelAt: subscription.cancel_at
+      ? toDateTime(subscription.cancel_at).toISOString()
+      : null,
+    canceledAt: subscription.canceled_at
+      ? toDateTime(subscription.canceled_at).toISOString()
+      : null,
+    currentPeriodStart: toDateTime(
+      subscription.current_period_start
+    ).toISOString(),
+    currentPeriodEnd: toDateTime(subscription.current_period_end).toISOString(),
+    created: toDateTime(subscription.created).toISOString(),
+    endedAt: subscription.ended_at
+      ? toDateTime(subscription.ended_at).toISOString()
+      : null,
+  };
+
+  const dbSubscription = await prisma.subscription.upsert({
+    where: {
+      id: subscription.id,
+    },
+    update: {
+      ...data,
+    },
+    create: {
+      ...data,
+    },
+  });
+  return dbSubscription;
+};
 
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
@@ -49,25 +107,36 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Successfully constructed event.
-    console.log("✅ Success:", event.id);
+    console.log("✅ Success:", event.id, event.type);
 
     // Cast event data to Stripe object.
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.log(`💰 PaymentIntent status: ${paymentIntent.status}`);
-    } else if (event.type === "payment_intent.payment_failed") {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.log(
-        `❌ Payment failed: ${paymentIntent.last_payment_error?.message ?? ""}`
-      );
-    } else if (event.type === "charge.succeeded") {
-      const charge = event.data.object as Stripe.Charge;
-      console.log(`💵 Charge id: ${charge.id}`);
-    } else {
-      console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
-    }
 
-    // Return a response to acknowledge receipt of the event.
+    switch (event.type) {
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted":
+        console.log("subscription event", event.type);
+        const subscription = event.data.object as Stripe.Subscription;
+
+        await manageSubscriptionStatusChange(
+          subscription.id,
+          subscription.customer as string
+        );
+        break;
+      case "checkout.session.completed":
+        console.log("checkout.session.completed");
+        const checkoutSession = event.data.object as Stripe.Checkout.Session;
+        if (checkoutSession.mode === "subscription") {
+          const subscriptionId = checkoutSession.subscription;
+          await manageSubscriptionStatusChange(
+            subscriptionId as string,
+            checkoutSession.customer as string
+          );
+        }
+        break;
+      default:
+        console.log("Unmanaged event");
+    }
     res.json({ received: true });
   } else {
     res.setHeader("Allow", "POST");

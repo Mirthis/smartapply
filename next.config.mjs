@@ -35,6 +35,12 @@ const config = {
       },
       {
         protocol: "https",
+        hostname: "www.gravatar.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "media.licdn.com",
         port: "",
         pathname: "/**",

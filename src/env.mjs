@@ -18,8 +18,10 @@ const server = z.object({
   SKIP_AI: z.string().min(1).optional(),
   WEBSITE_URL: z.string().min(1),
   STRIPE_SECRET_KEY: z.string().min(1),
-  STRIPE_PRICE_ID: z.string().min(1),
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
+  STRIPE_PRICE_ID_MONTHLY: z.string().min(1),
+  STRIPE_PRICE_ID_YEARLY: z.string().min(1),
+  STRIPE_PRICE_ID_LIFETIME: z.string().min(1),
 });
 
 /**
@@ -55,8 +57,10 @@ const processEnv = {
   SKIP_AI: process.env.SKIP_AI,
   WEBSITE_URL: process.env.WEBSITE_URL,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-  STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_PRICE_ID_MONTHLY: process.env.STRIPE_PRICE_ID_MONTHLY,
+  STRIPE_PRICE_ID_YEARLY: process.env.STRIPE_PRICE_ID_YEARLY,
+  STRIPE_PRICE_ID_LIFETIME: process.env.STRIPE_PRICE_ID_LIFETIME,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

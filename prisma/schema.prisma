@@ -15,6 +15,29 @@ datasource db {
   // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model User {
+  id   String  @unique // This is going to be set to the clerk user id
+  stripeId  String?  @unique  
+  email    String?   @unique
+  subscriptions Subscription[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Subscription {
+      id         String   @id
+      userId   String
+      user       User     @relation(fields: [userId], references: [id])
+      // metadata: subscription.metadata,
+      status    String
+      priceId  String?
+      currentPeriodStart DateTime
+      currentPeriodEnd DateTime
+      cancelAt DateTime?
+      canceledAt DateTime?
+      endedAt DateTime?
+      created DateTime
+}
 
 model Applicant {
   id         String   @id @default(cuid())
