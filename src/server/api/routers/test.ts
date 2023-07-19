@@ -118,8 +118,6 @@ export const testRouter = createTRPCRouter({
       }
       messages.push(getQuestionPrompt());
 
-      // console.log({ messages });
-
       const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,

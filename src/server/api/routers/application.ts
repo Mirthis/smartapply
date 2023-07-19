@@ -1,4 +1,3 @@
-import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { z } from "zod";
@@ -7,6 +6,8 @@ import { openaiClient } from "~/utils/openai";
 
 import { type PrismaClientType } from "~/server/db";
 import { applicantSchema, jobSchema } from "~/types/schemas";
+
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const deleteOrphans = async (prisma: PrismaClientType, userId: string) => {
   await prisma.applicant.deleteMany({
@@ -146,9 +147,6 @@ export const applicationRouter = createTRPCRouter({
             message: "Unable to generate skills summary",
           });
         }
-
-        // console.log("GPT3 Skill summary");
-        // console.log(skillsSummary);
 
         const newJob = await ctx.prisma.job.create({
           data: {

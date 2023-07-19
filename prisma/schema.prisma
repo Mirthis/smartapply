@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url  	= env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
   // If you want to use Prisma Migrate, you will need to manually create a shadow database
   // https://neon.tech/docs/guides/prisma-migrate#configure-a-shadow-database-for-prisma-migrate
@@ -16,86 +16,122 @@ datasource db {
 }
 
 model User {
-  id   String  @unique // This is going to be set to the clerk user id
-  stripeId  String?  @unique  
-  email    String?   @unique
+  id            String         @unique // This is going to be set to the clerk user id
+  stripeId      String?        @unique
+  email         String?        @unique
   subscriptions Subscription[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Subscription {
-      id         String   @id
-      userId   String
-      user       User     @relation(fields: [userId], references: [id])
-      // metadata: subscription.metadata,
-      status    String
-      priceId  String?
-      currentPeriodStart DateTime
-      currentPeriodEnd DateTime
-      cancelAt DateTime?
-      canceledAt DateTime?
-      endedAt DateTime?
-      created DateTime
+  id                 String    @id
+  userId             String
+  user               User      @relation(fields: [userId], references: [id])
+  status             String
+  priceId            String?
+  Price              Price?    @relation(fields: [priceId], references: [id])
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  trialStart         DateTime?
+  trialEnd           DateTime?
+  cancelAt           DateTime?
+  canceledAt         DateTime?
+  endedAt            DateTime?
+  created            DateTime
+  metadata           Json
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
+model Price {
+  id              String  @id
+  productId       String?
+  product         Product? @relation(fields: [productId], references: [id])
+  active          Boolean
+  currency        String
+  description     String?
+  type            String
+  unitAmount      Int?
+  interval        String?
+  intervalCount   Int?
+  trialPeriodDays Int?
+  metadata        Json
+  subscriptions   Subscription[]
+    createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id
+  active      Boolean
+  name        String
+  description String?
+  image       String?
+  metadata    Json
+  prices      Price[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+
 model Applicant {
-  id         String   @id @default(cuid())
-  userId     String
-  firstName  String
-  lastName   String
-  jobTitle   String
-  resume     String
-  skills     String?
-  experience String?
-  isMain      Boolean @default(false)
-  isInProfile Boolean @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String        @id @default(cuid())
+  userId       String
+  firstName    String
+  lastName     String
+  jobTitle     String
+  resume       String
+  skills       String?
+  experience   String?
+  isMain       Boolean       @default(false)
+  isInProfile  Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   applications Application[]
 
   @@unique([id, userId])
-  @@index ([userId])
+  @@index([userId])
 }
 
 model Application {
-  id          String   @id @default(cuid())
-  userId     String
-  applicantId String
-  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  jobId       String
-  job         Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id           String        @id @default(cuid())
+  userId       String
+  applicantId  String
+  applicant    Applicant     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  jobId        String
+  job          Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
   coverLetters CoverLetter[]
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Job {
-  id          String   @id @default(cuid())
-  userId     String
-  title    String
-  description String
-  skillsSummary String
-  companyName String?
+  id             String        @id @default(cuid())
+  userId         String
+  title          String
+  description    String
+  skillsSummary  String
+  companyName    String?
   companyDetails String?
-  applications Application[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  applications   Application[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@unique([id, userId])
 }
 
 model CoverLetter {
-  id          String   @id @default(cuid())
-  userId     String
+  id            String      @id @default(cuid())
+  userId        String
   applicationId String
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  text String
-  label String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  text          String
+  label         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([applicationId])
 }

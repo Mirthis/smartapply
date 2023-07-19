@@ -6,9 +6,23 @@ import { Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { api } from "~/utils/api";
+
 export default function UserWidget() {
   const { user } = useUser();
   const { signOut } = useClerk();
+
+  const {
+    data: subscription,
+    isLoading,
+    isError,
+  } = api.subscription.getActiveByUser.useQuery(
+    { userId: user?.id || "N/A" },
+    {
+      enabled: !!user?.id,
+      onSuccess: () => console.log("User Widget - subscription loaded"),
+    }
+  );
 
   return (
     <>

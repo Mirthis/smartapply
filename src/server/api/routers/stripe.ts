@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { z } from "zod";
 
 import { env } from "~/env.mjs";
-import { Plan } from "~/types/types";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -12,29 +11,11 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2022-11-15",
 });
 
-const getPlanPriceId = (plan: Plan) => {
-  switch (plan) {
-    case Plan.Monthly:
-      return env.STRIPE_PRICE_ID_MONTHLY;
-    case Plan.Yearly:
-      return env.STRIPE_PRICE_ID_YEARLY;
-    case Plan.Lifetime:
-      return env.STRIPE_PRICE_ID_LIFETIME;
-    default:
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Incorrect plan.",
-      });
-  }
-};
-
 export const stripeRouter = createTRPCRouter({
   createCheckout: protectedProcedure
     // .input(z.object({ id: z.string() }))
-    .input(z.object({ plan: z.nativeEnum(Plan) }))
+    .input(z.object({ priceId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const price = getPlanPriceId(input.plan);
-
       const user = await ctx.prisma.user.findUniqueOrThrow({
         where: {
           id: ctx.auth.userId,
@@ -60,17 +41,16 @@ export const stripeRouter = createTRPCRouter({
           },
         });
       }
-      console.log("Stripe customer ID: ", stripeId);
 
       try {
         // Create Checkout Sessions from body params.
         const params: Stripe.Checkout.SessionCreateParams = {
-          mode: input.plan == Plan.Lifetime ? "payment" : "subscription",
+          mode: "subscription",
           payment_method_types: ["card"],
           customer: stripeId,
           line_items: [
             {
-              price,
+              price: input.priceId,
               quantity: 1,
             },
           ],

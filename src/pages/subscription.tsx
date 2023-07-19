@@ -17,7 +17,10 @@ const ManageSubscriptionPage: NextPage = () => {
     isError,
   } = api.subscription.getActiveByUser.useQuery(
     { userId: userId || "N/A" },
-    { enabled: !!userId }
+    {
+      enabled: !!userId,
+      onSuccess: () => console.log("Page - subscription loaded"),
+    }
   );
 
   const { data: portalLink, isLoading: creatingLink } =

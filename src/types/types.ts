@@ -75,13 +75,6 @@ export enum RefineMode {
   Extend = "extend",
 }
 
-export enum Plan {
-  Free = "Free",
-  Monthly = "Monthly",
-  Yearly = "Yearly",
-  Lifetime = "Lifetime",
-}
-
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export type ApplicationData = RouterOutput["application"]["getAllForUser"][0];

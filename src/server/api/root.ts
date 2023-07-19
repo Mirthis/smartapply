@@ -5,6 +5,7 @@ import { applicationRouter } from "./routers/application";
 import { contactRouter } from "./routers/contact";
 import { coverLettersRouter } from "./routers/coverLetters";
 import { interviewRouter } from "./routers/interview";
+import { productRouter } from "./routers/product";
 import { stripeRouter } from "./routers/stripe";
 import { subscriptionRouter } from "./routers/subscription";
 import { testRouter } from "./routers/test";
@@ -25,6 +26,7 @@ export const appRouter = createTRPCRouter({
   application: applicationRouter,
   stripe: stripeRouter,
   subscription: subscriptionRouter,
+  product: productRouter,
 });
 
 // export type definition of API

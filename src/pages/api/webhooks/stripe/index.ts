@@ -66,6 +66,13 @@ const manageSubscriptionStatusChange = async (
     endedAt: subscription.ended_at
       ? toDateTime(subscription.ended_at).toISOString()
       : null,
+    trialStart: subscription.trial_start
+      ? toDateTime(subscription.trial_start).toISOString()
+      : null,
+    trialEnd: subscription.trial_end
+      ? toDateTime(subscription.trial_end).toISOString()
+      : null,
+    metadata: subscription.metadata,
   };
 
   const dbSubscription = await prisma.subscription.upsert({
@@ -79,7 +86,64 @@ const manageSubscriptionStatusChange = async (
       ...data,
     },
   });
+  console.log(`Subscription inserted/updated: ${subscription.id}`);
   return dbSubscription;
+};
+
+const upsertProductRecord = async (product: Stripe.Product) => {
+  const productData = {
+    id: product.id,
+    active: product.active,
+    name: product.name,
+    description: product.description ?? null,
+    image: product.images?.[0] ?? null,
+    metadata: product.metadata,
+  };
+
+  const dbProduct = await prisma.product.upsert({
+    where: {
+      id: product.id,
+    },
+    update: {
+      ...productData,
+    },
+    create: {
+      ...productData,
+    },
+  });
+  console.log(`Product inserted/updated: ${product.id}`);
+  return dbProduct;
+};
+
+const upsertPriceRecord = async (price: Stripe.Price) => {
+  const priceData = {
+    id: price.id,
+    productId: typeof price.product === "string" ? price.product : null,
+    active: price.active,
+    currency: price.currency,
+    description: price.nickname ?? null,
+    type: price.type,
+    unitAmount: price.unit_amount ?? null,
+    interval: price.recurring?.interval ?? null,
+    intervalCount: price.recurring?.interval_count ?? null,
+    trialPeriodDays: price.recurring?.trial_period_days ?? null,
+    metadata: price.metadata,
+  };
+
+  const dbPrice = await prisma.price.upsert({
+    where: {
+      id: price.id,
+    },
+    update: {
+      ...priceData,
+    },
+    create: {
+      ...priceData,
+    },
+  });
+
+  console.log(`Price inserted/updated: ${price.id}`);
+  return dbPrice;
 };
 
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -100,18 +164,22 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       // On error, log and return the error message.
-      if (err instanceof Error) console.log(err);
-      console.log(`❌ Error message: ${errorMessage}`);
+      if (err instanceof Error) console.error(err);
+      console.error(`❌ Error message: ${errorMessage}`);
       res.status(400).send(`Webhook Error: ${errorMessage}`);
       return;
     }
 
-    // Successfully constructed event.
-    console.log("✅ Success:", event.id, event.type);
-
-    // Cast event data to Stripe object.
-
     switch (event.type) {
+      case "product.created":
+      case "product.updated":
+        await upsertProductRecord(event.data.object as Stripe.Product);
+        break;
+      case "price.created":
+      case "price.updated":
+        await upsertPriceRecord(event.data.object as Stripe.Price);
+        break;
+
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted":
@@ -135,7 +203,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         break;
       default:
-        console.log("Unmanaged event");
+        console.warn("Unmanaged event: ", event.type);
     }
     res.json({ received: true });
   } else {
