@@ -4,12 +4,13 @@ import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import { MAX_TEST_QUESTIONS } from "~/utils/constants";
+import { MAX_TEST_QUESTIONS, TEST_ALL_SKILLS_KEY } from "~/utils/constants";
 import { formatApiMessage } from "~/utils/formatter";
 import { useValidateTestResponse } from "~/utils/hooks";
 
 import { ApplicationDetails, Layout, Title } from "~/components";
 import { ApplicationDetailsSkeleton } from "~/components/skeletons";
+import { ProMarker } from "~/components/utils";
 import Spinner from "~/components/utils/Spinner";
 
 import { useAppStore } from "~/store/store";
@@ -32,7 +33,7 @@ const InterviewPage: NextPage = () => {
   const questions = test?.questions ?? [];
   const router = useRouter();
 
-  const [skill, setSkill] = useState<string>("*ALL*");
+  const [skill, setSkill] = useState<string>(TEST_ALL_SKILLS_KEY);
 
   const queryId =
     router.query.id && !Array.isArray(router.query.id)
@@ -56,6 +57,10 @@ const InterviewPage: NextPage = () => {
       },
     }
   );
+
+  const { data: dbUser } = api.user.get.useQuery();
+  // const hasPro = (dbUser?._count?.subscriptions ?? 0) > 0;
+  const hasPro = true;
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
   // TODO: add captcha check
@@ -145,20 +150,22 @@ const InterviewPage: NextPage = () => {
       <div className="mt-4" />
       {/* if not started display options to start test */}
       {testStatus === "Not Started" && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 justify-center items-center">
           {jobSkills.length > 0 && (
-            <div className="flex flex-col  gap-2 md:flex-row">
-              <label className="label">
-                <span className="label-text font-semibold text-primary">
-                  Select a skill to be tested on:
+            <div className="flex flex-col  gap-2 md:flex-row items-center">
+              <label className="flex justify-start gap-x-2 md:flex-col ">
+                <span className="font-semibold text-primary">
+                  Select a skill to be tested on
                 </span>
+                {!hasPro && <ProMarker />}
               </label>
               <select
                 className="select-bordered select w-full md:w-fit"
                 value={skill}
+                disabled={!hasPro}
                 onChange={(e) => setSkill(e.target.value)}
               >
-                <option value="*ALL*">All skills</option>
+                <option value={TEST_ALL_SKILLS_KEY}>All skills</option>
                 {jobSkills.map((skill, i) => (
                   <option key={`skill-${i}`} value={skill}>
                     {skill}
@@ -182,7 +189,9 @@ const InterviewPage: NextPage = () => {
       {(testStatus === "In Progress" || testStatus === "Completed") && (
         <div className="flex flex-col gap-y-4">
           <Title
-            title={`Test on "${skill === "*ALL*" ? "All skills" : skill}"`}
+            title={`Test on "${
+              skill === TEST_ALL_SKILLS_KEY ? "All skills" : skill
+            }"`}
             className="mb-0"
             type="section"
           />

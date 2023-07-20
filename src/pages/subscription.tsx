@@ -4,6 +4,7 @@ import { type NextPage } from "next";
 import Link from "next/link";
 
 import { api } from "~/utils/api";
+import { formatCurrency } from "~/utils/formatter";
 
 import { Layout, Title } from "~/components";
 import { Spinner } from "~/components/utils";
@@ -28,6 +29,8 @@ const ManageSubscriptionPage: NextPage = () => {
       enabled: !!subscription,
     });
 
+  const price = subscription?.price;
+
   return (
     <Layout title="Manage Subscription">
       <Title type="page" title="Manage Your Pro Subscription" />
@@ -35,8 +38,41 @@ const ManageSubscriptionPage: NextPage = () => {
       {!isLoading && (
         <>
           {subscription ? (
-            <div className="flex flex-col gap-y-2 text-2xl">
-              <p className="text-success">Your subscription is active.</p>
+            <div className="flex flex-col gap-y-2">
+              <div>
+                <p className="text-success">You have an active subscription:</p>
+                {price && (
+                  <div>
+                    {price.product?.name && <p>{price.product.name}</p>}
+                    {price.description && <p>{price.description}</p>}
+                    {price.unitAmount && (
+                      <p>
+                        {formatCurrency(price.unitAmount / 100, price.currency)}
+                        /{price.interval}
+                      </p>
+                    )}
+                    {subscription.cancelAt ? (
+                      <span>
+                        Cancel on{" "}
+                        {new Date(subscription.cancelAt).toLocaleString()}
+                      </span>
+                    ) : (
+                      <span>
+                        Renews on{" "}
+                        {new Date(subscription.currentPeriodEnd).toLocaleString(
+                          undefined,
+                          {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
               <p>
                 You can manage your subscription from Stripe customer portal.
               </p>
@@ -44,17 +80,19 @@ const ManageSubscriptionPage: NextPage = () => {
                 <Spinner text="Creating customer portal link..." />
               )}
               {portalLink && (
-                <Link href={portalLink}>
-                  <button>Open customer portal</button>
+                <Link href={portalLink} className="link-primary link">
+                  Open Striple Customer Portal
                 </Link>
               )}
             </div>
           ) : (
-            <div className="flex flex-col gap-y-2 text-2xl">
-              <p className="text-error">
+            <div className="flex flex-col gap-y-2">
+              <p className="text-warning">
                 You do not have any active subscription.
               </p>
-              <p>Upgrade to Pro</p>
+              <Link href="/upgrade" className="link-primary link">
+                Upgrade to Pro
+              </Link>
             </div>
           )}
         </>

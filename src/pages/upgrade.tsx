@@ -4,7 +4,6 @@ import type Stripe from "stripe";
 import { useState } from "react";
 
 import { type NextPage } from "next";
-import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { formatCurrency } from "~/utils/formatter";

@@ -7,6 +7,7 @@ const createExport = (file, folder) => {
     .replace(folder, "")
     .replace(".tsx", "")
     .replace(".ts", "");
+  const name = relativePath.split("/").pop();
   return `export { default as ${name} } from ".${relativePath}";`;
 };
 

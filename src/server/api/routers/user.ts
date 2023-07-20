@@ -1,20 +1,20 @@
-import { z } from "zod";
-
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const userRouter = createTRPCRouter({
-  get: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      // return profile by id
-      const user = await ctx.prisma.user.findUniqueOrThrow({
-        where: {
-          id: input.id,
+  get: protectedProcedure.query(async ({ ctx }) => {
+    // return profile by id
+    const user = await ctx.prisma.user.findUniqueOrThrow({
+      where: {
+        id: ctx.auth.userId,
+      },
+      select: {
+        _count: {
+          select: {
+            subscriptions: { where: { status: "active" } },
+          },
         },
-        include: {
-          subscriptions: true,
-        },
-      });
-      return user;
-    }),
+      },
+    });
+    return user;
+  }),
 });

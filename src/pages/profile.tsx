@@ -16,6 +16,7 @@ import {
   DeleteProfileApplicantModal,
   EditProfileApplicantModal,
 } from "~/components/modals";
+// import { ProMarker } from "~/components/utils";
 import Spinner from "~/components/utils/Spinner";
 
 import { type ApplicantData } from "~/types/types";
@@ -64,6 +65,9 @@ const ProfilePage: NextPage = () => {
     }
   };
 
+  // const { data: dbUser } = api.user.get.useQuery();
+  // const hasPro = (dbUser?._count?.subscriptions ?? 0) > 0;
+
   return (
     <Layout title="Profile">
       <EditProfileApplicantModal
@@ -85,10 +89,15 @@ const ProfilePage: NextPage = () => {
         <button
           className="btn-ghost btn flex gap-x-2 text-accent underline"
           onClick={handleNewApplicant}
+          disabled={
+            isLoading
+            // || (!hasPro && applicants && applicants.length > 0)
+          }
         >
           <PlusIcon className="h-6 w-6 " />
           <p>Add new</p>
         </button>
+        {/* {!hasPro && <ProMarker />} */}
       </div>
       {isError && (
         <p className="text-error">

@@ -95,6 +95,27 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   });
 });
 
+const isPro = t.middleware(async ({ next, ctx }) => {
+  if (!ctx.auth.userId) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authenticated" });
+  }
+  const hasPro = await ctx.prisma.subscription.count({
+    where: {
+      userId: ctx.auth.userId,
+      status: "active",
+    },
+  });
+  if (!hasPro) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authorized" });
+  }
+
+  return next({
+    ctx: {
+      auth: ctx.auth,
+    },
+  });
+});
+
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
  *
@@ -118,3 +139,4 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
+export const proOnlyProcedure = t.procedure.use(isPro);

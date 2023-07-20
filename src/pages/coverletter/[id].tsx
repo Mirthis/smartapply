@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { ClipboardIcon } from "@heroicons/react/24/outline";
+import { LockClosedIcon } from "@heroicons/react/24/solid";
 
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,7 @@ import {
   ApplicationDetailsSkeleton,
   CoverLettersSkeleton,
 } from "~/components/skeletons";
+import { ProMarker } from "~/components/utils";
 import Spinner from "~/components/utils/Spinner";
 
 import { useAppStore } from "~/store/store";
@@ -37,6 +39,10 @@ const CoverLetterPage: NextPage = () => {
     setCoverLetters,
     clearCoverLetters,
   } = useAppStore((state) => state);
+
+  const { data: dbUser } = api.user.get.useQuery();
+  const hasPro = (dbUser?._count?.subscriptions ?? 0) > 0;
+  // const hasPro = true;
 
   const queryId =
     router.query.id && !Array.isArray(router.query.id)
@@ -338,29 +344,39 @@ const CoverLetterPage: NextPage = () => {
                           refineText.length < 5 ||
                           !displayedLetter ||
                           refineText.length > 100 ||
-                          isMaxLetters
+                          isMaxLetters ||
+                          !hasPro
                         }
                       >
+                        {!hasPro && <LockClosedIcon className="w-4 h-4 " />}
                         Refine
                       </button>
                     </div>
-                    <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:w-fit">
+                    <div className="grid w-full grid-cols-3 items-center gap-x-2 ">
                       <button
-                        className="btn-secondary btn"
+                        className="btn-secondary btn "
                         onClick={() => refine(RefineMode.Shorten)}
                         disabled={
-                          isGenerating || !displayedLetter || isMaxLetters
+                          isGenerating ||
+                          !displayedLetter ||
+                          isMaxLetters ||
+                          !hasPro
                         }
                       >
+                        {!hasPro && <LockClosedIcon className="w-4 h-4 " />}
                         Shorten
                       </button>
                       <button
                         className="btn-secondary btn"
                         onClick={() => refine(RefineMode.Extend)}
                         disabled={
-                          isGenerating || !displayedLetter || isMaxLetters
+                          isGenerating ||
+                          !displayedLetter ||
+                          isMaxLetters ||
+                          !hasPro
                         }
                       >
+                        {!hasPro && <LockClosedIcon className="w-4 h-4 " />}
                         Extend
                       </button>
                       <button
@@ -371,6 +387,7 @@ const CoverLetterPage: NextPage = () => {
                         Reset
                       </button>
                     </div>
+                    {!hasPro && <ProMarker />}
                     <Spinner
                       className={`${
                         isGenerating ? "visible" : "invisible"

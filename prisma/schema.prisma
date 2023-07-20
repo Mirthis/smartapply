@@ -30,7 +30,7 @@ model Subscription {
   user               User      @relation(fields: [userId], references: [id])
   status             String
   priceId            String?
-  Price              Price?    @relation(fields: [priceId], references: [id])
+  price              Price?    @relation(fields: [priceId], references: [id])
   currentPeriodStart DateTime
   currentPeriodEnd   DateTime
   trialStart         DateTime?

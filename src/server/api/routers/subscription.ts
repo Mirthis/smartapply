@@ -23,6 +23,13 @@ export const subscriptionRouter = createTRPCRouter({
           userId: input.userId,
           status: "active",
         },
+        include: {
+          price: {
+            include: {
+              product: true,
+            },
+          },
+        },
         orderBy: {
           currentPeriodEnd: "desc",
         },
