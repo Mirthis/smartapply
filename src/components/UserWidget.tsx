@@ -12,18 +12,22 @@ export default function UserWidget() {
   const { user } = useUser();
   const { signOut } = useClerk();
 
-  const { data: dbUser } = api.user.get.useQuery();
+  const { data: proStatus } = api.user.getProState.useQuery();
 
   return (
     <>
       <SignedIn>
         <div className="flex gap-x-2 items-center">
-          {dbUser && dbUser._count.subscriptions === 0 && (
+          {proStatus && !proStatus.hasPro && (
             <Link
               href="/upgrade"
               className="font-semibold link-accent hidden sm:block"
             >
-              <p>Upgrade to Pro</p>
+              {proStatus.hasTrialSubscription ? (
+                <p>Trialing Pro</p>
+              ) : (
+                <p>Upgrade to Pro</p>
+              )}
             </Link>
           )}
           <Menu as="div" className="relative inline-block text-left">
@@ -70,7 +74,7 @@ export default function UserWidget() {
                   <Menu.Item>
                     {({ active }) => (
                       <div>
-                        {dbUser && dbUser._count.subscriptions === 0 ? (
+                        {proStatus && !proStatus.hasPro ? (
                           <Link href="/upgrade">
                             <button
                               className={`${

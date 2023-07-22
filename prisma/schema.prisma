@@ -20,6 +20,7 @@ model User {
   stripeId      String?        @unique
   email         String?        @unique
   subscriptions Subscription[]
+  lifetimePro   Boolean        @default(false)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -70,6 +71,7 @@ model Product {
   image       String?
   metadata    Json
   prices      Price[]
+  defaultPriceId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

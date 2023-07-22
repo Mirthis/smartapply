@@ -78,3 +78,10 @@ export enum RefineMode {
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export type ApplicationData = RouterOutput["application"]["getAllForUser"][0];
+
+export type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};

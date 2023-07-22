@@ -97,6 +97,8 @@ const upsertProductRecord = async (product: Stripe.Product) => {
     name: product.name,
     description: product.description ?? null,
     image: product.images?.[0] ?? null,
+    defaultPriceId:
+      typeof product.default_price === "string" ? product.default_price : null,
     metadata: product.metadata,
   };
 
@@ -144,6 +146,24 @@ const upsertPriceRecord = async (price: Stripe.Price) => {
 
   console.log(`Price inserted/updated: ${price.id}`);
   return dbPrice;
+};
+
+const cancelTrial = async (customerId: string) => {
+  const trialSub = await prisma.user.findUniqueOrThrow({
+    where: {
+      stripeId: customerId,
+    },
+    include: {
+      subscriptions: {
+        where: {
+          status: "trialing",
+        },
+      },
+    },
+  });
+
+  if (!trialSub.subscriptions[0]) return;
+  await stripe.subscriptions.cancel(trialSub.subscriptions[0].id);
 };
 
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -195,11 +215,25 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         console.log("checkout.session.completed");
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
         if (checkoutSession.mode === "subscription") {
+          console.log("subscription checkout");
           const subscriptionId = checkoutSession.subscription;
           await manageSubscriptionStatusChange(
             subscriptionId as string,
             checkoutSession.customer as string
           );
+          await cancelTrial(checkoutSession.customer as string);
+        } else if (checkoutSession.mode === "payment") {
+          console.log("payment checkout");
+          if (checkoutSession.payment_status === "paid") {
+            await prisma.user.updateMany({
+              where: {
+                stripeId: checkoutSession.customer as string,
+              },
+              data: {
+                lifetimePro: true,
+              },
+            });
+          }
         }
         break;
       default:

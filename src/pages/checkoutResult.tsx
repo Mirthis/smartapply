@@ -55,7 +55,13 @@ const CheckoutResultPage: NextPage = () => {
             <div className="flex  flex-col gap-y-2 text-2xl">
               <p className="text-success">Thank you for upgrading to Pro.</p>
               <p>You can now use all the features of SmartApply.</p>
-              <p>You can manage your subscription from your profile page.</p>
+              <p>
+                You can manage your subscription from your{" "}
+                <Link href="/subscription" className="link-primary link">
+                  profile page
+                </Link>
+                .
+              </p>
             </div>
           )}
           {checkoutSession.payment_status === "unpaid" && (

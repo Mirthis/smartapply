@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { MAX_TEST_QUESTIONS, TEST_ALL_SKILLS_KEY } from "~/utils/constants";
 import { formatApiMessage } from "~/utils/formatter";
-import { useValidateTestResponse } from "~/utils/hooks";
+import { useProFeatures, useValidateTestResponse } from "~/utils/hooks";
 
 import { ApplicationDetails, Layout, Title } from "~/components";
 import { ApplicationDetailsSkeleton } from "~/components/skeletons";
@@ -58,9 +58,7 @@ const InterviewPage: NextPage = () => {
     }
   );
 
-  const { data: dbUser } = api.user.get.useQuery();
-  // const hasPro = (dbUser?._count?.subscriptions ?? 0) > 0;
-  const hasPro = true;
+  const { hasPro } = useProFeatures();
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
   // TODO: add captcha check

@@ -42,10 +42,16 @@ export const stripeRouter = createTRPCRouter({
         });
       }
 
+      const price = await ctx.prisma.price.findUniqueOrThrow({
+        where: {
+          id: input.priceId,
+        },
+      });
+
       try {
         // Create Checkout Sessions from body params.
         const params: Stripe.Checkout.SessionCreateParams = {
-          mode: "subscription",
+          mode: price.type === "recurring" ? "subscription" : "payment",
           payment_method_types: ["card"],
           customer: stripeId,
           line_items: [
@@ -54,6 +60,7 @@ export const stripeRouter = createTRPCRouter({
               quantity: 1,
             },
           ],
+
           success_url: `${env.WEBSITE_URL}/checkoutResult?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${env.WEBSITE_URL}/upgrade`,
           client_reference_id: ctx.auth.userId,

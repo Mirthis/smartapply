@@ -1,5 +1,3 @@
-import { useAuth } from "@clerk/nextjs";
-
 import { type NextPage } from "next";
 import Link from "next/link";
 
@@ -10,26 +8,18 @@ import { Layout, Title } from "~/components";
 import { Spinner } from "~/components/utils";
 
 const ManageSubscriptionPage: NextPage = () => {
-  const userId = useAuth().userId;
-
   const {
-    data: subscription,
+    data: proStatus,
     isLoading,
     isError,
-  } = api.subscription.getActiveByUser.useQuery(
-    { userId: userId || "N/A" },
-    {
-      enabled: !!userId,
-      onSuccess: () => console.log("Page - subscription loaded"),
-    }
-  );
+  } = api.user.getProState.useQuery();
 
   const { data: portalLink, isLoading: creatingLink } =
     api.stripe.createPortalLink.useQuery(undefined, {
-      enabled: !!subscription,
+      enabled: !!proStatus?.activeSubscription,
     });
 
-  const price = subscription?.price;
+  const price = proStatus?.activeSubscription?.price;
 
   return (
     <Layout title="Manage Subscription">
@@ -37,60 +27,67 @@ const ManageSubscriptionPage: NextPage = () => {
 
       {!isLoading && (
         <>
-          {subscription ? (
+          {proStatus?.activeSubscription ? (
             <div className="flex flex-col gap-y-2">
-              <div>
-                <p className="text-success">You have an active subscription:</p>
-                {price && (
-                  <div>
-                    {price.product?.name && <p>{price.product.name}</p>}
-                    {price.description && <p>{price.description}</p>}
-                    {price.unitAmount && (
-                      <p>
-                        {formatCurrency(price.unitAmount / 100, price.currency)}
-                        /{price.interval}
-                      </p>
-                    )}
-                    {subscription.cancelAt ? (
-                      <span>
-                        Cancel on{" "}
-                        {new Date(subscription.cancelAt).toLocaleString()}
-                      </span>
-                    ) : (
-                      <span>
-                        Renews on{" "}
-                        {new Date(subscription.currentPeriodEnd).toLocaleString(
-                          undefined,
-                          {
+              <div className="card-bordered border-primary rounded-md">
+                <div className="card-body">
+                  <p className="text-primary card-title">
+                    Your active subscription
+                  </p>
+                  {price && (
+                    <div>
+                      {price.product?.name && <p>{price.product.name}</p>}
+                      {price.description && <p>{price.description}</p>}
+                      {price.unitAmount && (
+                        <p>
+                          {formatCurrency(
+                            price.unitAmount / 100,
+                            price.currency
+                          )}
+                          /{price.interval}
+                        </p>
+                      )}
+                      {proStatus?.activeSubscription.cancelAt ? (
+                        <span>
+                          Cancel on{" "}
+                          {new Date(
+                            proStatus?.activeSubscription.cancelAt
+                          ).toLocaleString()}
+                        </span>
+                      ) : (
+                        <span>
+                          Renews on{" "}
+                          {new Date(
+                            proStatus?.activeSubscription.currentPeriodEnd
+                          ).toLocaleString(undefined, {
                             weekday: "long",
                             year: "numeric",
                             month: "long",
                             day: "numeric",
-                          }
-                        )}
-                      </span>
+                          })}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <div className="card-actions">
+                    {creatingLink && (
+                      <Spinner text="Creating customer portal link..." />
+                    )}
+                    {portalLink && (
+                      <Link href={portalLink} className="btn btn-primary">
+                        Manage Subscription
+                      </Link>
                     )}
                   </div>
-                )}
+                </div>
               </div>
-              <p>
-                You can manage your subscription from Stripe customer portal.
-              </p>
-              {creatingLink && (
-                <Spinner text="Creating customer portal link..." />
-              )}
-              {portalLink && (
-                <Link href={portalLink} className="link-primary link">
-                  Open Striple Customer Portal
-                </Link>
-              )}
             </div>
           ) : (
             <div className="flex flex-col gap-y-2">
-              <p className="text-warning">
+              <p className="font-semibold">
                 You do not have any active subscription.
               </p>
-              <Link href="/upgrade" className="link-primary link">
+              <Link href="/upgrade" className="btn btn-primary">
                 Upgrade to Pro
               </Link>
             </div>

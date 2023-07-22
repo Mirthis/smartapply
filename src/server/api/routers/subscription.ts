@@ -7,7 +7,7 @@ export const subscriptionRouter = createTRPCRouter({
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
       // return profile by id
-      const subscriptions = ctx.prisma.subscription.findMany({
+      const subscriptions = await ctx.prisma.subscription.findMany({
         where: {
           userId: input.userId,
         },
@@ -18,7 +18,7 @@ export const subscriptionRouter = createTRPCRouter({
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
       // return profile by id
-      const subscription = ctx.prisma.subscription.findFirst({
+      const subscription = await ctx.prisma.subscription.findFirst({
         where: {
           userId: input.userId,
           status: "active",
