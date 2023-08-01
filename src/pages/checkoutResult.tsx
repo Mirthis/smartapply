@@ -52,7 +52,7 @@ const CheckoutResultPage: NextPage = () => {
       {checkoutSession && (
         <div>
           {checkoutSession.payment_status === "paid" && (
-            <div className="flex  flex-col gap-y-2 text-2xl">
+            <div className="space-y-2 text-2xl">
               <p className="text-success">Thank you for upgrading to Pro.</p>
               <p>You can now use all the features of SmartApply.</p>
               <p>

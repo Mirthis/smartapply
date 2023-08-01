@@ -10,11 +10,7 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/utils/constants";
 import { formatApiMessage } from "~/utils/formatter";
-import {
-  useGenerateCoverLetter,
-  useProFeatures,
-  useRefineCoverLetter,
-} from "~/utils/hooks";
+import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
 
 import { ApplicationDetails, Layout, Title } from "~/components";
 import { ResetCoverLettersModal } from "~/components/modals";
@@ -46,8 +42,11 @@ const CoverLetterPage: NextPage = () => {
 
   // const { data: dbUser } = api.user.get.useQuery();
   // const hasPro = (dbUser?._count?.subscriptions ?? 0) > 0;
-  const { hasPro } = useProFeatures();
+  // const { hasPro } = useProFeatures();
   // const hasPro = true;
+
+  const { data: proStatus } = api.user.getProState.useQuery();
+  const hasPro = proStatus?.hasPro ?? false;
 
   const queryId =
     router.query.id && !Array.isArray(router.query.id)
