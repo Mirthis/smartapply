@@ -28,6 +28,10 @@ const Layout = ({
         <meta property="og:title" content="SmartApply" key={pageTitle} />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content={pageDesc} />
+        <meta
+          name="google-site-verification"
+          content="h8IMaJ7eZCVyj5If1lwGf7jSBi5eFMO6M999ClvxOyw"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
