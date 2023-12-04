@@ -1,22 +1,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.smartapply.app/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2023-12-01</lastmod>
   </url>
   <url>
     <loc>https://www.smartapply.app/new</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2023-12-01</lastmod>
+
   </url>
   <url>
     <loc>https://www.smartapply.app/sign-in/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <lastmod>2023-12-01</lastmod>
   </url>
   <url>
     <loc>https://www.smartapply.app/sign-up/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <lastmod>2023-12-01</lastmod>
   </url>
 </urlset>
