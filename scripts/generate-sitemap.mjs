@@ -11,7 +11,7 @@ const exclude = [
   "!src/pages/privacy.tsx",
   "!src/pages/contact.tsx",
   "!src/pages/about.tsx",
-  "!src/pages/new.tsx",
+  // "!src/pages/new.tsx",
   "!src/pages/beta.tsx",
   "!src/pages/_app.tsx",
 ];
@@ -38,7 +38,7 @@ function addPage(page) {
 async function generateSitemap() {
   // Ignore Next.js specific files (e.g., _app.js) and API routes.
   const pages = await globby([
-    // "src/pages/**/*{.ts,.tsx}",
+    "src/pages/**/*{.ts,.tsx}",
     "src/pages/*{.ts,.tsx}",
     ...exclude,
     "!src/pages/api",

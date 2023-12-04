@@ -155,7 +155,7 @@ const NewApplication: NextPage = () => {
   return (
     <Layout
       title="New Job Application"
-      description="Create a new job application."
+      description="Create a new job application, select the service you want to use and get started."
     >
       {/* Login Modal */}
       <SignInModal
