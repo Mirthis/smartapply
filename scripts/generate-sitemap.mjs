@@ -13,7 +13,11 @@ const exclude = [
   "!src/pages/about.tsx",
   // "!src/pages/new.tsx",
   "!src/pages/beta.tsx",
+  "!src/pages/beta.tsx",
   "!src/pages/_app.tsx",
+  "!src/pages/coverletter/[id].tsx",
+  "!src/pages/interview/[id].tsx",
+  "!src/pages/test/[id].tsx",
 ];
 
 const priorities = [];
@@ -24,6 +28,7 @@ function addPage(page) {
   const path = page
     .replace("src/pages", "")
     // .replace(".ts", "")
+    .replace("[[...index]]", "")
     .replace(".tsx", "");
   const route = path === "/index" ? "/" : path;
   const priority = priorities[route] || "0.5";
