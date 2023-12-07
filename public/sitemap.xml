@@ -1,7 +1,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.smartapply.app/</loc>
-    <lastmod>2023-12-01</lastmod>
+    <lastmod>2023-12-01</last       mod>
   </url>
   <url>
     <loc>https://www.smartapply.app/new</loc>
@@ -9,11 +9,11 @@
 
   </url>
   <url>
-    <loc>https://www.smartapply.app/sign-in/</loc>
+    <loc>https://www.smartapply.app/sign-in</loc>
     <lastmod>2023-12-01</lastmod>
   </url>
   <url>
-    <loc>https://www.smartapply.app/sign-up/</loc>
+    <loc>https://www.smartapply.app/sign-up</loc>
     <lastmod>2023-12-01</lastmod>
   </url>
 </urlset>
