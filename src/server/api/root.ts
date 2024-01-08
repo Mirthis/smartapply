@@ -5,11 +5,10 @@ import { applicationRouter } from "./routers/application";
 import { contactRouter } from "./routers/contact";
 import { coverLettersRouter } from "./routers/coverLetters";
 import { interviewRouter } from "./routers/interview";
-import { productRouter } from "./routers/product";
-import { stripeRouter } from "./routers/stripe";
-import { subscriptionRouter } from "./routers/subscription";
+import { profileRouter } from "./routers/profile";
 import { testRouter } from "./routers/test";
-import { userRouter } from "./routers/user";
+
+import { createTRPCRouter } from "~/server/api/trpc";
 
 /**
  * This is the primary router for your server.
@@ -27,7 +26,10 @@ export const appRouter = createTRPCRouter({
   stripe: stripeRouter,
   subscription: subscriptionRouter,
   test: testRouter,
-  user: userRouter,
+  applicant: applicantRouter,
+  profile: profileRouter,
+  contact: contactRouter,
+  application: applicationRouter,
 });
 
 // export type definition of API

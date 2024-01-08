@@ -10,19 +10,27 @@ const exclude = [
   "!src/pages/terms.tsx",
   "!src/pages/privacy.tsx",
   "!src/pages/contact.tsx",
+  "!src/pages/about.tsx",
+  // "!src/pages/new.tsx",
+  "!src/pages/beta.tsx",
+  "!src/pages/beta.tsx",
   "!src/pages/_app.tsx",
+  "!src/pages/coverletter/[id].tsx",
+  "!src/pages/interview/[id].tsx",
+  "!src/pages/test/[id].tsx",
 ];
 
 const priorities = [];
-priorities[""] = "1.0";
+priorities["/"] = "1.0";
 priorities["/new"] = "0.8";
 
 function addPage(page) {
   const path = page
     .replace("src/pages", "")
     // .replace(".ts", "")
+    .replace("[[...index]]", "")
     .replace(".tsx", "");
-  const route = path === "/index" ? "" : path;
+  const route = path === "/index" ? "/" : path;
   const priority = priorities[route] || "0.5";
 
   return `  <url>
@@ -35,7 +43,7 @@ function addPage(page) {
 async function generateSitemap() {
   // Ignore Next.js specific files (e.g., _app.js) and API routes.
   const pages = await globby([
-    // "src/pages/**/*{.ts,.tsx}",
+    "src/pages/**/*{.ts,.tsx}",
     "src/pages/*{.ts,.tsx}",
     ...exclude,
     "!src/pages/_*.tsx",

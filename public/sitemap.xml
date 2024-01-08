@@ -5,32 +5,15 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/beta</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://www.smartapply.app/sign-in</loc>
+    <lastmod>2023-12-01</lastmod>
   </url>
   <url>
-    <loc>http://localhost:3000/checkoutResult</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/new</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://www.smartapply.app/sign-up</loc>
+    <lastmod>2023-12-01</lastmod>
   </url>
   <url>
     <loc>http://localhost:3000/subscription</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/upgrade</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

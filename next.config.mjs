@@ -7,13 +7,6 @@
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      import("./scripts/generate-sitemap.mjs");
-    }
-
-    return config;
-  },
 
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you
