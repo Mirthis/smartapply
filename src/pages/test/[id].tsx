@@ -58,7 +58,7 @@ const InterviewPage: NextPage = () => {
     }
   );
 
-  const { data: proStatus } = api.user.getProState.useQuery();cd ~
+  const { data: proStatus } = api.user.getProState.useQuery();
   const hasPro = proStatus?.hasPro ?? false;
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
