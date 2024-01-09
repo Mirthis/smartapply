@@ -1,5 +1,3 @@
-import Logo from "./Logo";
-import UserWidget from "./UserWidget";
 import { useAuth } from "@clerk/nextjs";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 
@@ -9,6 +7,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useAppStore } from "~/store/store";
+
+import Logo from "./Logo";
+import UserWidget from "./UserWidget";
 
 // import ContactIcons from "./ContactIcons";
 
@@ -160,9 +161,12 @@ const Navbar = () => {
           }`}
         >
           <div>
-            <div className="flex w-full  items-center justify-between">
+            <div className="relative flex w-full items-center justify-between">
               {/* Logo */}
-              <Link href={`${isSignedIn ? "/applications" : "/"}`}>
+              <Link
+                className="absolute left-[50%] translate-x-[-50%]"
+                href={`${isSignedIn ? "/applications" : "/"}`}
+              >
                 <Logo />
               </Link>
               <button

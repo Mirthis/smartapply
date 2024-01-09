@@ -10,8 +10,8 @@ const FeatureCard = ({
   imgName: string;
 }) => {
   return (
-    <div className="card bg-base-200 shadow-xl">
-      <figure>
+    <div className="card bg-base-200 shadow-xl flex md:flex-row lg:flex-col">
+      <figure className="md:flex-1 lg:flex-none">
         <Image
           src={`/images/${imgName}`}
           alt="Feature Image"
@@ -19,7 +19,7 @@ const FeatureCard = ({
           height={364}
         />
       </figure>
-      <div className="card-body">
+      <div className="card-body md:flex-1 lg:flex-none">
         <h2 className="card-title">{title}</h2>
         <p>{description}</p>
       </div>

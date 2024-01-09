@@ -14,7 +14,7 @@ const Title = ({
       {type === "page" && (
         <h1
           className={classNames(
-            "mb-6 mt-2 text-3xl font-bold text-primary sm:text-4xl",
+            "mb-6 mt-2 text-2xl font-bold text-primary sm:text-3xl md:text-4xl",
             className
           )}
         >
@@ -24,7 +24,7 @@ const Title = ({
       {type === "section" && (
         <h2
           className={classNames(
-            "mb-4 mt-2 text-2xl font-semibold text-primary sm:text-3xl",
+            "mb-4 mt-2 text-xl font-semibold text-primary sm:text-2xl md:text-3xl",
             className
           )}
         >
@@ -34,7 +34,7 @@ const Title = ({
       {type === "subsection" && (
         <h3
           className={classNames(
-            "xl mb-2 mt-2 text-xl text-primary sm:text-2xl",
+            "xl mb-2 mt-2 text-lg text-primary sm:text-xl md:text-2xl",
             className
           )}
         >

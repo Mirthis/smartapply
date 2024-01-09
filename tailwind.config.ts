@@ -23,6 +23,7 @@ export default {
           accent: "#fb923c",
           error: "#ef4444",
           succcess: "#22c55e",
+          // "base-100": "#ffffff",
         },
       },
     ],

@@ -187,11 +187,16 @@ const NewApplication: NextPage = () => {
         </ul>
       </div>
       <Title title="New Application" />
-      <div className="flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-4 max-w-4xl">
         {/* First step Job Form */}
         {step === FormStep.Job && (
           <>
-            <Title title="Job Details" type="section" />
+            <div className="mb-4">
+              <Title title="Job Details" type="section" />
+              <p className="font-semibold">
+                Fill in the details of the job you are applying for.
+              </p>
+            </div>
             <JobForm job={newJob} onSubmit={onJobFormSubmit} />
           </>
         )}
