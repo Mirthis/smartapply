@@ -1,9 +1,8 @@
+import { api } from "~/lib/api";
+import { type ApplicantData } from "~/types/types";
+
 import ApplicantForm from "../forms/ApplicantForm";
 import Modal from "./Modal";
-
-import { api } from "~/utils/api";
-
-import { type ApplicantData } from "~/types/types";
 
 const EditProfileApplicantModal = ({
   isOpen,

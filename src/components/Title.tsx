@@ -1,5 +1,7 @@
 import classNames from "classnames";
 
+import { cn } from "~/lib/utils";
+
 const Title = ({
   title,
   type = "page",
@@ -13,7 +15,7 @@ const Title = ({
     <>
       {type === "page" && (
         <h1
-          className={classNames(
+          className={cn(
             "mb-6 mt-2 text-2xl font-bold text-primary sm:text-3xl md:text-4xl",
             className
           )}
@@ -23,7 +25,7 @@ const Title = ({
       )}
       {type === "section" && (
         <h2
-          className={classNames(
+          className={cn(
             "mb-4 mt-2 text-xl font-semibold text-primary sm:text-2xl md:text-3xl",
             className
           )}
@@ -33,7 +35,7 @@ const Title = ({
       )}
       {type === "subsection" && (
         <h3
-          className={classNames(
+          className={cn(
             "xl mb-2 mt-2 text-lg text-primary sm:text-xl md:text-2xl",
             className
           )}

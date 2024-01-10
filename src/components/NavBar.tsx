@@ -32,7 +32,7 @@ const publicLinks: NavBarLinkData[] = [
 const protectedLinks: NavBarLinkData[] = [
   {
     label: "Saved Application",
-    url: "/applications",
+    url: "/dashboard",
   },
 ];
 
@@ -113,12 +113,12 @@ const Navbar = () => {
 
   return (
     <div
-      className={`${
+      className={`backdrop-blur-lg bg-white/75 ${
         shadow ? "shadow-sm shadow-secondary" : ""
       }  ${navBg} fixed z-30  h-16 w-full `}
     >
       {/* Desktop version */}
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-2 2xl:px-4">
+      <div className="mx-auto flex h-full max-w-7xl items-center  justify-between px-2 2xl:px-4">
         <div className="flex w-full flex-row items-center justify-between">
           {/* Burger icon, show on small displays */}
           <div onClick={showNavBar} className=" md:hidden">
@@ -126,7 +126,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-baseline justify-start">
-            <Link href={`${isSignedIn ? "/applications" : "/"}`}>
+            <Link href={`${isSignedIn ? "/dashboard" : "/"}`}>
               <Logo />
             </Link>
 
@@ -165,7 +165,7 @@ const Navbar = () => {
               {/* Logo */}
               <Link
                 className="absolute left-[50%] translate-x-[-50%]"
-                href={`${isSignedIn ? "/applications" : "/"}`}
+                href={`${isSignedIn ? "/dashboard" : "/"}`}
               >
                 <Logo />
               </Link>

@@ -6,11 +6,6 @@ import { useEffect, useState } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/utils/constants";
-import { formatApiMessage } from "~/utils/formatter";
-import { useGenerateCoverLetter, useRefineCoverLetter } from "~/utils/hooks";
-
 import { ApplicationDetails, Layout, Title } from "~/components";
 import { ResetCoverLettersModal } from "~/components/modals";
 import {
@@ -19,6 +14,10 @@ import {
 } from "~/components/skeletons";
 import Spinner from "~/components/utils/Spinner";
 
+import { api } from "~/lib/api";
+import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/lib/constants";
+import { formatApiMessage } from "~/lib/formatter";
+import { useGenerateCoverLetter, useRefineCoverLetter } from "~/lib/hooks";
 import { useAppStore } from "~/store/store";
 import { type CoverLetter, RefineMode } from "~/types/types";
 

@@ -3,15 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { MAX_TEST_QUESTIONS } from "~/utils/constants";
-import { formatApiMessage } from "~/utils/formatter";
-import { useValidateTestResponse } from "~/utils/hooks";
-
 import { ApplicationDetails, Layout, Title } from "~/components";
 import { ApplicationDetailsSkeleton } from "~/components/skeletons";
 import Spinner from "~/components/utils/Spinner";
 
+import { api } from "~/lib/api";
+import { MAX_TEST_QUESTIONS } from "~/lib/constants";
+import { formatApiMessage } from "~/lib/formatter";
+import { useValidateTestResponse } from "~/lib/hooks";
 import { useAppStore } from "~/store/store";
 import { type TestQuestion } from "~/types/types";
 

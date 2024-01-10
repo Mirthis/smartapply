@@ -10,7 +10,6 @@ export default authMiddleware({
     "/sign-up",
     "/about",
     "/contact",
-    "/testStreaming",
     "/beta",
     "/api/(.*)",
   ],

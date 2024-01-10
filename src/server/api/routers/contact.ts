@@ -1,13 +1,13 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import nodemailer from "nodemailer";
 import { z } from "zod";
 
-import { addDelay, validateRecaptcha } from "~/utils/misc";
-
 // import nodemailer from "nodemailer";
 import { env } from "~/env.mjs";
+import { addDelay, validateRecaptcha } from "~/lib/utils";
 import { contactFormSchema } from "~/types/schemas";
+
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const contactRouter = createTRPCRouter({
   sendMail: publicProcedure

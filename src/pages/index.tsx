@@ -1,9 +1,9 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 
-import { featureCardsData } from "~/utils/constants";
-
 import { FeatureCard, Layout, Title } from "~/components";
+
+import { featureCardsData } from "~/lib/constants";
 
 const Home: NextPage = () => {
   return (

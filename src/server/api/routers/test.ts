@@ -6,10 +6,9 @@ import {
 } from "openai";
 import { z } from "zod";
 
-import { addDelay } from "~/utils/misc";
-import { openaiClient } from "~/utils/openai";
-
 import { env } from "~/env.mjs";
+import { openaiClient } from "~/lib/openai";
+import { addDelay } from "~/lib/utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type TestQuestion } from "~/types/types";

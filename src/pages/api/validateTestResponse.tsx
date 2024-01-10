@@ -8,9 +8,8 @@ import { z } from "zod";
 
 import { type NextRequest } from "next/server";
 
-import { addDelay } from "~/utils/misc";
-
 import { env } from "~/env.mjs";
+import { addDelay } from "~/lib/utils";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 
 const requestSchema = z.object({

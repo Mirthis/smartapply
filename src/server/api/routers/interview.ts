@@ -5,10 +5,9 @@ import {
 } from "openai";
 import { z } from "zod";
 
-import { openaiClient } from "~/utils/openai";
-import { getJobDetailsPrompt } from "~/utils/prompt";
-
 import { env } from "~/env.mjs";
+import { openaiClient } from "~/lib/openai";
+import { getJobDetailsPrompt } from "~/lib/prompt";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type ApplicantData, InterviewType, type JobData } from "~/types/types";

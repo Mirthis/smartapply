@@ -10,7 +10,7 @@ const FeatureCard = ({
   imgName: string;
 }) => {
   return (
-    <div className="card bg-base-200 shadow-xl flex md:flex-row lg:flex-col">
+    <div className="card border border-primary/50 flex md:flex-row lg:flex-col">
       <figure className="md:flex-1 lg:flex-none">
         <Image
           src={`/images/${imgName}`}

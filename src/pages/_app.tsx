@@ -3,8 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { type AppType } from "next/app";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 
-import { api } from "~/utils/api";
-
+import { api } from "~/lib/api";
 import "~/styles/globals.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {

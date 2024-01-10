@@ -9,8 +9,6 @@ import { useState } from "react";
 
 import { type NextPage } from "next";
 
-import { api } from "~/utils/api";
-
 import { Layout, Title } from "~/components";
 import {
   DeleteProfileApplicantModal,
@@ -18,6 +16,7 @@ import {
 } from "~/components/modals";
 import Spinner from "~/components/utils/Spinner";
 
+import { api } from "~/lib/api";
 import { type ApplicantData } from "~/types/types";
 
 const ProfilePage: NextPage = () => {

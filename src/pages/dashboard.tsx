@@ -10,12 +10,11 @@ import { useState } from "react";
 import { type NextPage } from "next";
 import Link from "next/link";
 
-import { api } from "~/utils/api";
-
 import { Layout, Title } from "~/components";
 import { DeleteApplicationModal } from "~/components/modals";
 import Spinner from "~/components/utils/Spinner";
 
+import { api } from "~/lib/api";
 import { type ApplicationData } from "~/types/types";
 
 const ApplicationsPage: NextPage = () => {

@@ -7,14 +7,13 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { serviceCardData } from "~/utils/constants";
-
 import { BasicCard, Layout, Title } from "~/components";
 import { ApplicantForm, JobForm } from "~/components/forms";
 import { SignInModal } from "~/components/modals";
 import Spinner from "~/components/utils/Spinner";
 
+import { api } from "~/lib/api";
+import { serviceCardData } from "~/lib/constants";
 import { useAppStore } from "~/store/store";
 import { type ApplicantData, FormStep, type JobData } from "~/types/types";
 

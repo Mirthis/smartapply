@@ -2,11 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 
-import { api } from "~/utils/api";
-import { useRecaptcha } from "~/utils/hooks";
-
 import Spinner from "~/components/utils/Spinner";
 
+import { api } from "~/lib/api";
+import { useRecaptcha } from "~/lib/hooks";
 import { contactFormSchema } from "~/types/schemas";
 import { type ContactFormData } from "~/types/types";
 

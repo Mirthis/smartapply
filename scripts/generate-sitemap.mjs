@@ -3,7 +3,7 @@ import { writeFileSync } from "fs";
 import { globby } from "globby";
 
 const exclude = [
-  "!src/pages/applications.tsx",
+  "!src/pages/dashboard.tsx",
   "!src/pages/accounts.tsx",
   "!src/pages/profile.tsx",
   "!src/pages/404.tsx",

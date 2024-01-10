@@ -1,9 +1,8 @@
+import { api } from "~/lib/api";
+import { type ApplicationData } from "~/types/types";
+
 import Spinner from "../utils/Spinner";
 import Modal from "./Modal";
-
-import { api } from "~/utils/api";
-
-import { type ApplicationData } from "~/types/types";
 
 const DeleteApplictionbModal = ({
   isOpen,

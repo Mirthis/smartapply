@@ -1,6 +1,3 @@
-import Spinner from "../utils/Spinner";
-import ConfirmApplicationChangeModal from "./ConfirmApplicationChangeModal";
-import Modal from "./Modal";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useState } from "react";
@@ -8,11 +5,14 @@ import { useForm } from "react-hook-form";
 
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-
+import { api } from "~/lib/api";
 import { useAppStore } from "~/store/store";
 import { applicantSchema } from "~/types/schemas";
 import { type ApplicantData, type ApplicationData } from "~/types/types";
+
+import Spinner from "../utils/Spinner";
+import ConfirmApplicationChangeModal from "./ConfirmApplicationChangeModal";
+import Modal from "./Modal";
 
 const EditApplicantModal = ({
   isOpen,

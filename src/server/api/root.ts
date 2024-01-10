@@ -1,3 +1,5 @@
+import { use } from "react";
+
 import { createTRPCRouter } from "~/server/api/trpc";
 
 import { applicantRouter } from "./routers/applicant";
@@ -6,6 +8,7 @@ import { contactRouter } from "./routers/contact";
 import { coverLettersRouter } from "./routers/coverLetters";
 import { interviewRouter } from "./routers/interview";
 import { testRouter } from "./routers/test";
+import { usersRouter } from "./routers/user";
 
 /**
  * This is the primary router for your server.
@@ -19,6 +22,7 @@ export const appRouter = createTRPCRouter({
   applicant: applicantRouter,
   contact: contactRouter,
   application: applicationRouter,
+  user: usersRouter,
 });
 
 // export type definition of API

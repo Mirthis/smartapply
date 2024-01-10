@@ -1,6 +1,7 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 
 import { Layout } from "~/components";
+import RedirectToApp from "~/components/utils/RedirectToApp";
 
 const SignInPage = () => (
   <Layout
@@ -8,7 +9,15 @@ const SignInPage = () => (
     description="Sign-in to your SmartApply account to access your profile, past generated content and all the features."
   >
     <div className="flex justify-center">
-      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+      <div className="flex justify-center">
+        <SignedOut>
+          <SignIn />
+        </SignedOut>
+        <SignedIn>
+          <RedirectToApp />
+        </SignedIn>
+      </div>
+      );
     </div>
   </Layout>
 );

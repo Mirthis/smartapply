@@ -8,10 +8,9 @@ import { z } from "zod";
 
 import { type NextRequest } from "next/server";
 
-import { getFakeAiResponse } from "~/utils/misc";
-import { getJobDetailsPrompt } from "~/utils/prompt";
-
 import { env } from "~/env.mjs";
+import { getJobDetailsPrompt } from "~/lib/prompt";
+import { getFakeAiResponse } from "~/lib/utils";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type ApplicantData, type JobData } from "~/types/types";
 

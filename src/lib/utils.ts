@@ -1,4 +1,6 @@
 import { TRPCError } from "@trpc/server";
+import clsx, { type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 import { env } from "~/env.mjs";
 
@@ -44,3 +46,7 @@ export const getFakeAiResponse = async (text: string): Promise<string> => {
   await addDelay(1000);
   return text;
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
