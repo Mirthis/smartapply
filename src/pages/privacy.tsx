@@ -533,19 +533,9 @@ const PrivacyPage: NextPage = () => {
       </p>
       <Title type="section" title="Contact Us" />
       <p>
-        If you have any questions about this Privacy Policy, You can contact us:
+        If you have any questions about this Privacy Policy, You can contact us
+        by using the contact form in the footer of this site.
       </p>
-      <ul>
-        <li>
-          By visiting this page on our website:{" "}
-          <Link
-            className="link-hover link-primary link"
-            href="https://www.smartapply.app/contact"
-          >
-            https://www.smartapply.app/contact
-          </Link>
-        </li>
-      </ul>
     </Layout>
   );
 };

@@ -4,7 +4,7 @@ import { z } from "zod";
 
 // import nodemailer from "nodemailer";
 import { env } from "~/env.mjs";
-import { addDelay, validateRecaptcha } from "~/lib/utils";
+import { validateRecaptcha } from "~/lib/utils";
 import { contactFormSchema } from "~/types/schemas";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
@@ -53,19 +53,6 @@ export const contactRouter = createTRPCRouter({
           code: "BAD_REQUEST",
         });
       }
-      return true;
-    }),
-
-  sendMailFake: publicProcedure
-    .input(contactFormSchema.extend({ captchaToken: z.string() }))
-    .mutation(async ({ input }) => {
-      await validateRecaptcha(input.captchaToken);
-
-      await addDelay(2000);
-      // throw new TRPCError({
-      //   message: "Mail delivery failed",
-      //   code: "BAD_REQUEST",
-      // });
       return true;
     }),
 });

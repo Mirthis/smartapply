@@ -28,6 +28,8 @@ const client = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1),
   NEXT_PUBLIC_INIT_STORE: z.string().min(1).optional(),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1).optional(),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1).optional(),
 });
 
 /**
@@ -53,6 +55,10 @@ const processEnv = {
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   NEXT_PUBLIC_INIT_STORE: process.env.NEXT_PUBLIC_INIT_STORE,
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
+    process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
+    process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
 };
 
 // Don't touch the part below

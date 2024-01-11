@@ -1,6 +1,7 @@
-import { InterviewType } from "./types";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { z } from "zod";
+
+import { InterviewType } from "./types";
 
 const COMPANY_NAME_MIN_LENGTH = 2;
 const COMPANY_NAME_MAX_LENGTH = 20;
@@ -41,6 +42,7 @@ export const jobSchema = z.object({
     z.string().length(0),
     z.null(),
   ]),
+
   companyDetails: z.union([
     z
       .string()
@@ -53,6 +55,52 @@ export const jobSchema = z.object({
     z.string().length(0),
     z.null(),
   ]),
+});
+
+export const appplicationSchema = z.object({
+  id: z.string().nullish(),
+  title: z
+    .string()
+    .min(JOB_TITLE_MIN_LENGTH, {
+      message: `Job title must be at least ${JOB_TITLE_MIN_LENGTH} characters`,
+    })
+    .max(JOB_TITLE_MAX_LENGTH, {
+      message: `Job title can be maximum ${JOB_TITLE_MAX_LENGTH} characters`,
+    }),
+  description: z
+    .string()
+    .min(JD_MIN_LENGTH, {
+      message: `Job description must be at least ${JD_MIN_LENGTH} characters`,
+    })
+    .max(JD_MAX_LENGTH, {
+      message: `Job description can be maximum ${JD_MAX_LENGTH} characters`,
+    }),
+  companyName: z.union([
+    z
+      .string()
+      .min(COMPANY_NAME_MIN_LENGTH, {
+        message: `Company name must be at least ${COMPANY_NAME_MIN_LENGTH} characters`,
+      })
+      .max(COMPANY_NAME_MAX_LENGTH, {
+        message: `Company name can be maximum ${COMPANY_NAME_MAX_LENGTH} characters`,
+      }),
+    z.string().length(0),
+    z.null(),
+  ]),
+
+  companyDetails: z.union([
+    z
+      .string()
+      .min(COMPANY_DESC_MIN_LENGTH, {
+        message: `Company description must be at least ${COMPANY_DESC_MIN_LENGTH} characters`,
+      })
+      .max(COMPANY_DESC_MAX_LENGTH, {
+        message: `Company description can be maximum ${COMPANY_DESC_MAX_LENGTH} characters`,
+      }),
+    z.string().length(0),
+    z.null(),
+  ]),
+  applicantId: z.string().min(1),
 });
 
 const APPL_FIRST_NAME_MIN_LENGTH = 2;

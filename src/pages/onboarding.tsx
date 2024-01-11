@@ -6,7 +6,12 @@ import {
 
 import React, { useState } from "react";
 
+import Link from "next/link";
+
 import { Layout, Title } from "~/components";
+import { EditProfileApplicantModal } from "~/components/modals";
+import EditApplicationModal from "~/components/modals/EditApplicationModal";
+import { Spinner } from "~/components/utils";
 
 import { api } from "~/lib/api";
 import { cn } from "~/lib/utils";
@@ -16,11 +21,24 @@ const WelcomePage = () => {
     data: onboardingState,
     isLoading,
     isError,
-  } = api.user.getOnboardingState.useQuery();
+  } = api.user.getOnboardingState.useQuery(undefined, {
+    keepPreviousData: true,
+  });
+
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isEditApplicationOpen, setIsEditApplicationOpen] = useState(false);
 
   return (
     <Layout title="Welcome to SmartApply">
-      <div className="flex flex-col gap-4">
+      <EditProfileApplicantModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+      />
+      <EditApplicationModal
+        isOpen={isEditApplicationOpen}
+        onClose={() => setIsEditApplicationOpen(false)}
+      />
+      <div className="flex flex-col gap-4 max-w-3xl mx-auto">
         <div>
           <Title className="text-center mb-0" title="Welcome to SmartApply!" />
           <p className="text-primary text-center text-lg">
@@ -28,13 +46,23 @@ const WelcomePage = () => {
           </p>
         </div>
 
+        {isError && (
+          <div className="alert alert-error">
+            Something went wrong while loading your data. Please try again
+            later.
+          </div>
+        )}
+        {isLoading && !onboardingState && (
+          <div className="flex justify-center">
+            <Spinner text="Loading onboarding state" />
+          </div>
+        )}
         {!!onboardingState && (
           <>
             <div
-              className={cn(
-                "card border border-primary max-w-3xl w-full mx-auto",
-                { "border-success": onboardingState.hasApplicant }
-              )}
+              className={cn("card border border-primary  w-full", {
+                "border-success": onboardingState.hasApplicant,
+              })}
             >
               <div className=" flex gap-x-2">
                 <UserIcon
@@ -55,6 +83,7 @@ const WelcomePage = () => {
                         "btn-outline btn-success pointer-events-none":
                           onboardingState.hasApplicant,
                       })}
+                      onClick={() => setIsEditProfileOpen(true)}
                     >
                       {onboardingState.hasApplicant ? (
                         <CheckIcon className="h-6 w-6 font-bold" />
@@ -69,14 +98,10 @@ const WelcomePage = () => {
 
             {/* Create Application */}
             <div
-              className={cn(
-                "card border border-primary max-w-3xl w-full mx-auto",
-                {
-                  "pointer-events-none opacity-50":
-                    !onboardingState.hasApplicant,
-                  "border-success": onboardingState.hasApplication,
-                }
-              )}
+              className={cn("card border border-primary w-full", {
+                "pointer-events-none opacity-50": !onboardingState.hasApplicant,
+                "border-success": onboardingState.hasApplication,
+              })}
             >
               <div className=" flex gap-x-2">
                 <BriefcaseIcon
@@ -99,11 +124,12 @@ const WelcomePage = () => {
                         "btn-outline btn-success pointer-events-none":
                           onboardingState.hasApplication,
                       })}
+                      onClick={() => setIsEditApplicationOpen(true)}
                     >
                       {onboardingState.hasApplication ? (
                         <CheckIcon className="h-6 w-6 font-bold" />
                       ) : (
-                        "Create Job"
+                        "Create Application"
                       )}
                     </button>
                   </div>
@@ -113,14 +139,11 @@ const WelcomePage = () => {
 
             {/* Chose your service */}
             <div
-              className={cn(
-                "card border border-primary max-w-3xl w-full mx-auto",
-                {
-                  "pointer-events-none opacity-50":
-                    !onboardingState.hasApplicant ||
-                    !onboardingState.hasApplication,
-                }
-              )}
+              className={cn("card border border-primary max-w-3xl w-full", {
+                "pointer-events-none opacity-50":
+                  !onboardingState.hasApplicant ||
+                  !onboardingState.hasApplication,
+              })}
             >
               <div className="flex gap-x-2">
                 <CheckIcon className="p-4 h-36 w-36 text-primary shrink-0" />
@@ -132,9 +155,9 @@ const WelcomePage = () => {
                     you can start using the service you ned.
                   </div>
                   <div className="card-actions justify-end">
-                    <button className="btn btn-primary w-48">
+                    <Link className="btn btn-primary w-48" href="/dashboard">
                       View Dashboard
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -98,11 +98,8 @@ const TermsPage: NextPage = () => {
       <div className="divider" />
 
       <p>
-        If you have any questions or concerns regarding these Terms, please{" "}
-        <Link className="link-hover link-primary link" href="/contact">
-          contact us
-        </Link>
-        .
+        If you have any questions or concerns regarding these Terms, please
+        contact us via the contact form you can find in the footer.
       </p>
     </Layout>
   );

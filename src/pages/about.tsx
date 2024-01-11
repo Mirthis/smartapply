@@ -1,8 +1,3 @@
-import {
-  InboxArrowDownIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
-
 import { type NextPage } from "next";
 import Link from "next/link";
 
@@ -19,23 +14,16 @@ const AboutPage: NextPage = () => {
           Cardinale.
         </p>
         <p>
-          You can visit my portfolio site for some more info about me and my
-          projects or contact me via the contact form on this site.
+          You can visit my portfolio site for more information about me and my
+          projects and to get in touch with me.
         </p>
         <div className="flex gap-x-4">
           <Link
             href="https://www.andreacardinale.me/"
             className="w-full sm:w-48"
           >
-            <button className="flex space-x-2 btn-outline btn-primary  btn w-full ">
-              <UserCircleIcon className="h-6 w-6" />
-              <p>Portfolio</p>
-            </button>
-          </Link>
-          <Link href="/contact" className="w-full sm:w-48">
-            <button className="flex space-x-2  btn-outline btn-primary  btn w-full">
-              <InboxArrowDownIcon className="h-6 w-6" />
-              <p>Contact Me</p>
+            <button className="flex space-x-2  btn-primary btn w-full ">
+              <p>Visit My Portfolio</p>
             </button>
           </Link>
         </div>

@@ -5,10 +5,12 @@ import { Fragment } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function UserWidget() {
   const { user } = useUser();
   const { signOut } = useClerk();
+  const router = useRouter();
 
   return (
     <>
@@ -73,7 +75,7 @@ export default function UserWidget() {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => void signOut({})}
+                      onClick={() => void signOut(() => router.push("/"))}
                       className={`${
                         active
                           ? "bg-primary text-primary-content"
@@ -90,9 +92,17 @@ export default function UserWidget() {
         </Menu>
       </SignedIn>
       <SignedOut>
-        <Link className="btn-primary btn" href="/sign-in">
-          Sign In
-        </Link>
+        <div className="space-x-2">
+          <Link
+            className="btn-link btn-primary btn no-underline"
+            href="/sign-in"
+          >
+            Log In
+          </Link>
+          <Link className="btn-primary btn" href="/sign-up">
+            Sign Up
+          </Link>
+        </div>
       </SignedOut>
     </>
   );

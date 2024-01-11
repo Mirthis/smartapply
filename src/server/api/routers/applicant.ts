@@ -1,9 +1,10 @@
-import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { applicantSchema } from "~/types/schemas";
 import { type ApplicantData } from "~/types/types";
+
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const applicantRouter = createTRPCRouter({
   createOrUpdate: protectedProcedure
@@ -134,7 +135,7 @@ export const applicantRouter = createTRPCRouter({
   getForLoggedUser: protectedProcedure
     .input(z.object({ isInProfile: z.boolean() }).optional())
     .query(async ({ ctx, input }) => {
-      const isInProfile = input?.isInProfile ?? false;
+      const isInProfile = input?.isInProfile ?? true;
       // return applicant with id
       const userId = ctx.auth.userId;
       const applicant = await ctx.prisma.applicant.findMany({

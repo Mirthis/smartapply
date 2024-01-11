@@ -5,9 +5,6 @@ const Logo = () => {
         <span className=" text-primary">Smart</span>
         <span className="text-secondary">Apply</span>
       </p>
-      <div className="absolute bottom-0 right-0 rounded-md text-xs font-semibold text-red-600">
-        Beta
-      </div>
     </div>
   );
 };

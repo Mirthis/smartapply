@@ -1,14 +1,16 @@
-import {
-  type applicantSchema,
-  type contactFormSchema,
-  type interviewRequestSchema,
-  type jobSchema,
-} from "./schemas";
 import { type inferRouterOutputs } from "@trpc/server";
 import { type ChatCompletionRequestMessage } from "openai";
 import { type z } from "zod";
 
 import { type AppRouter } from "~/server/api/root";
+
+import {
+  type applicantSchema,
+  type appplicationSchema,
+  type contactFormSchema,
+  type interviewRequestSchema,
+  type jobSchema,
+} from "./schemas";
 
 export type JobData = z.infer<typeof jobSchema>;
 export type ApplicantData = z.infer<typeof applicantSchema>;
@@ -18,6 +20,8 @@ export type InterviewHookRequest = Omit<
   z.infer<typeof interviewRequestSchema>,
   "messages"
 >;
+
+export type EditApplicationData = z.infer<typeof appplicationSchema>;
 
 export enum InterviewType {
   tech = "Technology",

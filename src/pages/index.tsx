@@ -21,7 +21,7 @@ const Home: NextPage = () => {
           </p>
           <div className="flex w-full flex-col items-center justify-center gap-x-4 gap-y-2 sm:flex-row">
             {/* Call to action */}
-            <Link href="/new" className="w-full sm:w-48">
+            <Link href="/sign-up" className="w-full sm:w-48">
               <button className="btn-primary btn w-full ">Get Started</button>
             </Link>
             <Link href="/#features" scroll={false} className="w-full sm:w-48">
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
         </div>
 
         {/* Call to action */}
-        <Link href="/new" className="w-full sm:w-48">
+        <Link href="/sign-up" className="w-full sm:w-48">
           <button className="btn-primary btn w-full">Get Started</button>
         </Link>
       </div>

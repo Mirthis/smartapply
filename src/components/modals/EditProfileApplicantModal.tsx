@@ -11,7 +11,7 @@ const EditProfileApplicantModal = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  applicant: ApplicantData | undefined;
+  applicant?: ApplicantData | undefined;
 }) => {
   const utils = api.useContext();
 
@@ -19,6 +19,7 @@ const EditProfileApplicantModal = ({
     api.applicant.createOrUpdate.useMutation({
       onSuccess: () => {
         void utils.applicant.getForLoggedUser.invalidate();
+        void utils.user.getOnboardingState.invalidate();
         onClose();
       },
     });
@@ -34,7 +35,11 @@ const EditProfileApplicantModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Applicant Details">
+    <Modal
+      isOpen={isOpen}
+      onClose={() => onClose()}
+      title="Edit Applicant Details"
+    >
       <ApplicantForm applicant={applicant} onSubmit={onSubmit} />
     </Modal>
   );

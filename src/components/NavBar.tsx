@@ -23,15 +23,11 @@ const publicLinks: NavBarLinkData[] = [
     label: "Home",
     url: "/",
   },
-  {
-    label: "New Application",
-    url: "/new",
-  },
 ];
 
 const protectedLinks: NavBarLinkData[] = [
   {
-    label: "Saved Application",
+    label: "Dashboard",
     url: "/dashboard",
   },
 ];

@@ -1,7 +1,11 @@
-import { redirect } from "next/navigation";
+import { useRouter } from "next/router";
 
 const RedirectToApp = () => {
-  redirect("/dashboard");
+  const router = useRouter();
+
+  void router.replace("/dashboard");
+
+  return null;
 };
 
 export default RedirectToApp;

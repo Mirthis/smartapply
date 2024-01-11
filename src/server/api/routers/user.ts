@@ -12,13 +12,13 @@ export const usersRouter = createTRPCRouter({
         userId: ctx.auth.userId,
       },
     });
-    // return {
-    //   hasApplicant: !!applicant,
-    //   hasApplication: !!application,
-    // };
     return {
-      hasApplicant: true,
-      hasApplication: true,
+      hasApplicant: !!applicant,
+      hasApplication: !!application,
     };
+    // return {
+    //   hasApplicant: true,
+    //   hasApplication: true,
+    // };
   }),
 });

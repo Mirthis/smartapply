@@ -1,5 +1,3 @@
-import { use } from "react";
-
 import { createTRPCRouter } from "~/server/api/trpc";
 
 import { applicantRouter } from "./routers/applicant";
