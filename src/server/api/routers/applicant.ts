@@ -1,8 +1,6 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { applicantSchema } from "~/types/schemas";
-import { type ApplicantData } from "~/types/types";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -11,15 +9,13 @@ export const applicantRouter = createTRPCRouter({
     .input(
       z.object({
         applicant: applicantSchema,
-        saveInProfile: z.boolean().nullish(),
         setAsMain: z.boolean().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       // if appliocant.id is null, create new applicant in db, otherwise update existing applicant
       // return applicant
-      const saveInProfile = input?.saveInProfile ?? false;
-      const isMain = input?.setAsMain && saveInProfile ? true : false;
+      const isMain = input?.setAsMain ?? true;
       const applicant = input.applicant;
       const userId = ctx.auth.userId;
       const queryData = {
@@ -32,78 +28,44 @@ export const applicantRouter = createTRPCRouter({
         skills: applicant.skills,
       };
 
-      let returnApplicant: ApplicantData;
       // Check that id exists and userId is the same as the userId in the applicant
       if (applicant.id) {
-        const extApplicant = await ctx.prisma.applicant.findUnique({
+        await ctx.prisma.applicant.findUniqueOrThrow({
           where: {
-            id: applicant.id,
-          },
-        });
-
-        if (!extApplicant || extApplicant.userId !== userId) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Applicant not found",
-          });
-        }
-
-        const hasApplications = await ctx.prisma.application.count({
-          where: {
-            applicantId: applicant.id,
-          },
-        });
-
-        // can't update profile has linked to applicaionts create a copy and remove old one
-        // from profile
-        if (hasApplications) {
-          await ctx.prisma.applicant.update({
-            where: {
+            id_userId: {
               id: applicant.id,
-            },
-            data: {
-              isInProfile: false,
-              isMain: false,
-            },
-          });
-          returnApplicant = await ctx.prisma.applicant.create({
-            data: {
-              ...queryData,
-              isInProfile: saveInProfile,
-              isMain: extApplicant.isMain,
-            },
-          });
-        } else {
-          returnApplicant = await ctx.prisma.applicant.update({
-            where: {
-              id: applicant.id,
-            },
-            data: queryData,
-          });
-        }
-
-        // if id is null, create new applicant
-      } else {
-        // remove isMain from other applicant for this user
-        if (isMain) {
-          await ctx.prisma.applicant.updateMany({
-            where: {
               userId: userId,
             },
-            data: {
-              isMain: false,
-            },
-          });
-        }
-
-        returnApplicant = await ctx.prisma.applicant.create({
-          data: {
-            ...queryData,
-            isInProfile: saveInProfile,
-            isMain: isMain,
           },
         });
       }
+
+      if (isMain) {
+        await ctx.prisma.applicant.updateMany({
+          where: {
+            userId: userId,
+          },
+          data: {
+            isMain: false,
+          },
+        });
+      }
+
+      const returnApplicant = await ctx.prisma.applicant.upsert({
+        where: {
+          id: applicant.id ?? "N/A",
+        },
+        update: {
+          ...queryData,
+          isInProfile: true,
+          isMain: isMain,
+        },
+        create: {
+          ...queryData,
+          isInProfile: true,
+          isMain: isMain,
+        },
+      });
 
       return returnApplicant;
     }),
@@ -181,15 +143,12 @@ export const applicantRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // return applicant with id
       const userId = ctx.auth.userId;
-      const applicant = await ctx.prisma.applicant.update({
+      const applicant = await ctx.prisma.applicant.delete({
         where: {
           id_userId: {
             id: input.id,
             userId: userId,
           },
-        },
-        data: {
-          isInProfile: false,
         },
       });
       return applicant;

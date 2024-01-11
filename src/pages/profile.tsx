@@ -134,9 +134,10 @@ const ProfilePage: NextPage = () => {
       )}
       {otherApplicants && otherApplicants.length > 0 && (
         <>
+          <div className="divider" />
           <Title title="Other Applicants" type="subsection" />
           <div className="flex flex-col">
-            {otherApplicants.map((applicant) => (
+            {otherApplicants.map((applicant, i) => (
               <>
                 <div
                   key={applicant.id}
@@ -175,7 +176,9 @@ const ProfilePage: NextPage = () => {
                     </button>
                   </div>
                 </div>
-                <div className="divider" />
+                {i !== otherApplicants.length - 1 && (
+                  <div className="divider" />
+                )}
               </>
             ))}
           </div>

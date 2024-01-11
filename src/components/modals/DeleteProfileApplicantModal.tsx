@@ -39,13 +39,15 @@ const DeleteProfileApplicantbModal = ({
       title="Remove applicant from profile"
     >
       <p className="mb-4">
-        Do you want to remove this applicant from your profile? Application data
-        will where the applicant appears will not be deleted.
+        <span className="font-semibold">
+          Do you want to remove this applicant from your profile?
+        </span>
+        <br />
+        Application data will where the applicant appears will not be deleted.
       </p>
 
-      <p>
-        <span className="font-semibold">{applicant.jobTitle}</span> -{" "}
-        {applicant.firstName} - {applicant.lastName}
+      <p className="font-semibold text-error">
+        {applicant.firstName} {applicant.lastName} - {applicant.jobTitle}-
       </p>
       <div className="mt-8 flex gap-x-4">
         <button

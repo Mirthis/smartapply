@@ -29,7 +29,6 @@ const EditProfileApplicantModal = ({
 
     void upsertApplicant({
       applicant: data,
-      saveInProfile: true,
       setAsMain,
     });
   };
