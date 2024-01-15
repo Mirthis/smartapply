@@ -41,4 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-/public/sitemap.xml
+/public/sitemap.xml#
+
+/analyze
