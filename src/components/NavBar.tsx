@@ -90,16 +90,16 @@ const Navbar = () => {
     >
       {/* Desktop version */}
       <div className="mx-auto flex h-full max-w-7xl items-center  justify-between px-2 2xl:px-4">
-        <div className="flex w-full flex-row items-center justify-between">
+        <div className="flex relative w-full flex-row items-center justify-between">
           {/* Burger icon, show on small displays */}
           <div onClick={showNavBar} className=" md:hidden">
             <Bars3Icon className="h-6 w-6" />
           </div>
 
-          <div className="flex relative items-center justify-start w-full">
+          <div className="flex items-center justify-start">
             <Link
               href={`${isSignedIn ? "/dashboard" : "/"}`}
-              className="absolute left-[50%] -translate-x-[50%] md:static md:translate-x-0 md:left-[0%]"
+              className="hidden md:block"
             >
               <Logo />
             </Link>
@@ -118,6 +118,13 @@ const Navbar = () => {
               ))}
             </ul>
           </div>
+
+          <Link
+            href={`${isSignedIn ? "/dashboard" : "/"}`}
+            className="absolute left-[50%] -translate-x-[50%] md:hidden"
+          >
+            <Logo />
+          </Link>
 
           <div className="flex-0 text-right">
             <UserWidget />

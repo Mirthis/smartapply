@@ -94,7 +94,7 @@ export default function UserWidget() {
       <SignedOut>
         <div className="space-x-2">
           <Link
-            className="btn-link btn-primary btn no-underline"
+            className="hidden md:inline btn-link btn-primary btn no-underline"
             href="/sign-in"
           >
             Log In
