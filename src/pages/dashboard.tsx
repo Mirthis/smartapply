@@ -1,9 +1,4 @@
 import {
-  ChatBubbleLeftRightIcon,
-  ClipboardDocumentCheckIcon,
-  DocumentTextIcon,
-} from "@heroicons/react/24/outline";
-import {
   PencilIcon,
   PlusIcon,
   TrashIcon,
@@ -13,9 +8,9 @@ import {
 import { useState } from "react";
 
 import { type NextPage } from "next";
-import Link from "next/link";
 
 import { Layout, Title } from "~/components";
+import ServiceLinks from "~/components/ServiceLinks";
 import { DeleteApplicationModal } from "~/components/modals";
 import EditApplicationModal from "~/components/modals/EditApplicationModal";
 import Spinner from "~/components/utils/Spinner";
@@ -52,8 +47,8 @@ const ApplicationsPage: NextPage = () => {
 
   return (
     <Layout
-      title="Saved Applications"
-      description="Visit and manage saved applications for your account"
+      title="Dashboard"
+      description="Access all your saved applications and their related content."
     >
       {selectedApplication && (
         <DeleteApplicationModal
@@ -67,10 +62,10 @@ const ApplicationsPage: NextPage = () => {
         onClose={() => setIsEditApplicationOpen(false)}
         application={selectedApplication}
       />
-      <div className="flex items-center gap-x-4">
-        <Title title="Saved Applications" />
+      <div className="flex items-center justify-between md:justify-start gap-x-4">
+        <Title title="Dashboard" />
         <button
-          className="btn-ghost btn flex gap-x-2 text-accent underline"
+          className="font-bold mb-4 uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
           onClick={handleNew}
         >
           <PlusIcon className="h-6 w-6 " />
@@ -94,9 +89,9 @@ const ApplicationsPage: NextPage = () => {
                 >
                   <div className="card-body flex flex-col gap-y-2">
                     <h2 className="card-title">
-                      {application.job.title}{" "}
-                      {application.job.companyName
-                        ? ` @ ${application.job.companyName}`
+                      {application.title}{" "}
+                      {application.companyName
+                        ? ` @ ${application.companyName}`
                         : ""}
                     </h2>
                     <div className="flex items-center gap-x-2">
@@ -110,7 +105,8 @@ const ApplicationsPage: NextPage = () => {
 
                     <div>
                       <div className="divider" />
-                      <div className="grid w-full grid-cols-3">
+                      <ServiceLinks applicationId={application.id} />
+                      {/* <div className="grid w-full grid-cols-3">
                         <Link
                           className="hover:bg-base-200 py-2"
                           href={`/coverletter/${application.id}`}
@@ -138,13 +134,13 @@ const ApplicationsPage: NextPage = () => {
                             <p>Test</p>
                           </div>
                         </Link>
-                      </div>
+                      </div> */}
                       <div className="divider" />
                     </div>
                     <div className="flex gap-y-2">
                       <div className="card-actions justify-center text-sm flex-1 ">
                         <button
-                          className="font-bold uppercase text-secondary flex gap-x-2 items-center hover:underline"
+                          className="font-bold uppercase text-secondary flex gap-x-2 items-center hover:underline underline-offset-2"
                           onClick={() => handleEdit(application)}
                         >
                           <PencilIcon className="h-6 w-6" />
@@ -153,7 +149,7 @@ const ApplicationsPage: NextPage = () => {
                       </div>
                       <div className="card-actions justify-center text-sm flex-1 ">
                         <button
-                          className="font-bold flex gap-x-2 items-center uppercase text-error hover:underline"
+                          className="font-bold flex gap-x-2 items-center uppercase text-error hover:underline underline-offset-2"
                           onClick={() => handleDelete(application)}
                         >
                           <TrashIcon className="h-6 w-6" />

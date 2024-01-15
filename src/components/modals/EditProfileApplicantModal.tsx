@@ -1,5 +1,5 @@
 import { api } from "~/lib/api";
-import { type ApplicantData } from "~/types/types";
+import { type ApplicantData, type ApplicantFormData } from "~/types/types";
 
 import ApplicantForm from "../forms/ApplicantForm";
 import Modal from "./Modal";
@@ -24,8 +24,8 @@ const EditProfileApplicantModal = ({
       },
     });
 
-  const onSubmit = (data: ApplicantData) => {
-    const setAsMain = !data.id;
+  const onSubmit = (data: ApplicantFormData) => {
+    const setAsMain = !applicant || applicant.isMain;
 
     void upsertApplicant({
       applicant: data,

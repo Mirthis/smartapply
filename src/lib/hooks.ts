@@ -1,10 +1,12 @@
+import { type Application } from "@prisma/client";
 import { type ChatCompletionResponseMessage } from "openai";
 
 import { useCallback, useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import {
-  type ApplicantData,
+  type ApplicantFormData,
+  type ApplicationData,
   type InterviewHookRequest,
   type JobData,
   type RefineMode,
@@ -141,15 +143,14 @@ export const useStreamingApi = <T>(
 export const useGenerateCoverLetter = (options?: {
   onSuccess: (data: string) => void;
 }) => {
-  const fn = (args: { job: JobData; applicant: ApplicantData }) =>
+  const fn = (args: { application: Application }) =>
     fetch("/api/newCoverLetter", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        job: args.job,
-        applicant: args.applicant,
+        application: args.application,
       }),
     });
 
@@ -175,8 +176,7 @@ export const useInterview = (options?: {
 };
 
 type RefineCoverLetterArgs = {
-  job: JobData;
-  applicant: ApplicantData;
+  application: ApplicationData;
   srcCoverLetter: string;
   refineMode: RefineMode;
   refineText: string;
@@ -204,7 +204,7 @@ export const useValidateTestResponse = (options?: {
 }) => {
   const fn = (args: {
     job: JobData;
-    applicant: ApplicantData;
+    applicant: ApplicantFormData;
     question: string;
     answer: string;
   }) =>

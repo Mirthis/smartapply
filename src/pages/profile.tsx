@@ -17,7 +17,7 @@ import {
 import Spinner from "~/components/utils/Spinner";
 
 import { api } from "~/lib/api";
-import { type ApplicantData } from "~/types/types";
+import { type ApplicantData, type ApplicantFormData } from "~/types/types";
 
 const ProfilePage: NextPage = () => {
   const utils = api.useContext();
@@ -56,7 +56,7 @@ const ProfilePage: NextPage = () => {
     setIsRemoveOpen(true);
   };
 
-  const handleSetAsMain = (selectedApplicant: ApplicantData) => {
+  const handleSetAsMain = (selectedApplicant: ApplicantFormData) => {
     // TODO: fix typing so that id is not optional
     if (selectedApplicant.id) {
       void setApplicantAsMain({ id: selectedApplicant.id });
@@ -82,7 +82,7 @@ const ProfilePage: NextPage = () => {
       <div className="flex items-center gap-x-4">
         <Title title="Saved Applicants" type="section" />
         <button
-          className="btn-ghost btn flex gap-x-2 text-accent underline"
+          className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2 "
           onClick={handleNewApplicant}
         >
           <PlusIcon className="h-6 w-6 " />
@@ -99,91 +99,97 @@ const ProfilePage: NextPage = () => {
       {!isLoading && applicants?.length === 0 && (
         <p>No applicant details saved.</p>
       )}
-      {mainApplicant && (
-        <>
-          <div className="flex items-center gap-x-4">
-            <Title title="Main Applicant" type="subsection" />
-            <button
-              className="btn-ghost btn-circle btn"
-              onClick={() => handleEditApplicant(mainApplicant)}
-            >
-              <PencilSquareIcon className="h-6 w-6 text-accent" />
-            </button>
+      <div className="flex flex-col lg:flex-row gap-4">
+        {mainApplicant && (
+          <div className="flex-1">
+            <div className="flex items-center gap-x-4">
+              <Title title="Main Applicant" type="subsection" />
+              <button
+                className="btn-ghost btn-circle btn"
+                onClick={() => handleEditApplicant(mainApplicant)}
+              >
+                <PencilSquareIcon className="h-6 w-6 text-accent" />
+              </button>
+            </div>
+            <div>
+              <p className="text-lg font-semibold">{mainApplicant.jobTitle}</p>
+              <p className="text-lg">
+                {mainApplicant.firstName} {mainApplicant.lastName}
+              </p>
+              <Title title="Resume" type="subsubsection" />
+              <p className="line-clamp-3">{mainApplicant.resume}</p>
+              {mainApplicant.skills && (
+                <>
+                  <Title title="Skills" type="subsubsection" />
+                  <p className="line-clamp-3">{mainApplicant.skills}</p>
+                </>
+              )}
+              {mainApplicant.experience && (
+                <>
+                  <Title title="Experience" type="subsubsection" />
+                  <p className="line-clamp-3">{mainApplicant.experience}</p>
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            <p className="text-lg font-semibold">{mainApplicant.jobTitle}</p>
-            <p className="text-lg">
-              {mainApplicant.firstName} {mainApplicant.lastName}
-            </p>
-            <Title title="Resume" type="subsubsection" />
-            <p>{mainApplicant.resume}</p>
-            {mainApplicant.skills && (
-              <>
-                <Title title="Skills" type="subsubsection" />
-                <p>{mainApplicant.skills}</p>
-              </>
-            )}
-            {mainApplicant.experience && (
-              <>
-                <Title title="Experience" type="subsubsection" />
-                <p>{mainApplicant.experience}</p>
-              </>
-            )}
-          </div>
-        </>
-      )}
-      {otherApplicants && otherApplicants.length > 0 && (
-        <>
-          <div className="divider" />
-          <Title title="Other Applicants" type="subsection" />
-          <div className="flex flex-col">
-            {otherApplicants.map((applicant, i) => (
-              <>
-                <div
-                  key={applicant.id}
-                  className="flex items-center justify-between"
-                >
-                  <p>
-                    <span className="font-semibold">{applicant.jobTitle}</span>
-                    <br />
-                    {applicant.firstName} {applicant.lastName}
-                  </p>
-                  <div className="flex">
-                    <button
-                      className="btn-ghost btn-circle btn"
-                      onClick={() => handleEditApplicant(applicant)}
-                    >
-                      <PencilSquareIcon className="h-6 w-6 text-accent" />
-                    </button>
+        )}
+        <div className="flex-1">
+          <Title title="Other Applicants" type="subsubsection" />
+          {otherApplicants && otherApplicants.length === 0 && (
+            <p>You have no other applicants saved.</p>
+          )}
+          {otherApplicants && otherApplicants.length > 0 && (
+            <div className="flex  flex-col">
+              {otherApplicants.map((applicant, i) => (
+                <>
+                  <div
+                    key={applicant.id}
+                    className="flex card card-body flex-row border border-secondary items-center justify-between"
+                  >
+                    <p>
+                      <span className="font-semibold">
+                        {applicant.jobTitle}
+                      </span>
+                      <br />
+                      {applicant.firstName} {applicant.lastName}
+                    </p>
+                    <div className="flex">
+                      <button
+                        className="btn-ghost btn-circle btn"
+                        onClick={() => handleEditApplicant(applicant)}
+                      >
+                        <PencilSquareIcon className="h-6 w-6 text-accent" />
+                      </button>
 
-                    <button
-                      className="btn-ghost btn-circle btn"
-                      onClick={() => handleSetAsMain(applicant)}
-                      disabled={settingAsMain}
-                    >
-                      {settingAsMain ? (
-                        <Spinner className="h-6 w-6 text-success" />
-                      ) : (
-                        <ArrowUpTrayIcon className="h-6 w-6 text-success" />
-                      )}
-                    </button>
+                      <button
+                        className="btn-ghost btn-circle btn"
+                        onClick={() => handleSetAsMain(applicant)}
+                        disabled={settingAsMain}
+                      >
+                        {settingAsMain ? (
+                          <Spinner className="h-6 w-6 text-success" />
+                        ) : (
+                          <ArrowUpTrayIcon className="h-6 w-6 text-success" />
+                        )}
+                      </button>
 
-                    <button
-                      className="btn-ghost btn-circle btn"
-                      onClick={() => handleRemoveApplicant(applicant)}
-                    >
-                      <TrashIcon className="h-6 w-6 text-error" />
-                    </button>
+                      <button
+                        className="btn-ghost btn-circle btn"
+                        onClick={() => handleRemoveApplicant(applicant)}
+                      >
+                        <TrashIcon className="h-6 w-6 text-error" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-                {i !== otherApplicants.length - 1 && (
-                  <div className="divider" />
-                )}
-              </>
-            ))}
-          </div>
-        </>
-      )}
+                  {i !== otherApplicants.length - 1 && (
+                    <div className="divider" />
+                  )}
+                </>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </Layout>
   );
 };

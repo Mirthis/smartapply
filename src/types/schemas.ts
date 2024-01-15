@@ -181,6 +181,12 @@ export const applicantSchema = z.object({
   ]),
 });
 
+export const applicationRequestSchema = appplicationSchema.merge(
+  z.object({
+    applicant: applicantSchema,
+  })
+);
+
 export const contactFormSchema = z.object({
   name: z.string().min(3).max(20),
   email: z.string().email(),
@@ -189,8 +195,7 @@ export const contactFormSchema = z.object({
 });
 
 export const interviewRequestSchema = z.object({
-  job: jobSchema,
-  applicant: applicantSchema,
+  application: applicationRequestSchema,
   interviewType: z.nativeEnum(InterviewType),
   messages: z.array(
     z.object({

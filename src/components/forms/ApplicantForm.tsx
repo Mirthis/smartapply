@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import Spinner from "../utils/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useEffect } from "react";
@@ -11,15 +10,17 @@ import {
   APPL_SKILLS_MAX_LENGTH,
   applicantSchema,
 } from "~/types/schemas";
-import { type ApplicantData } from "~/types/types";
+import { type ApplicantFormData } from "~/types/types";
+
+import Spinner from "../utils/Spinner";
 
 const ApplicantForm = ({
   applicant,
   onSubmit,
   forceNewOnEdit = false,
 }: {
-  applicant: ApplicantData | undefined;
-  onSubmit: (data: ApplicantData) => void;
+  applicant: ApplicantFormData | undefined;
+  onSubmit: (data: ApplicantFormData) => void;
   forceNewOnEdit?: boolean;
 }) => {
   const {
@@ -28,7 +29,7 @@ const ApplicantForm = ({
     reset,
     watch,
     formState: { errors, isValid, isSubmitting, isDirty },
-  } = useForm<ApplicantData>({
+  } = useForm<ApplicantFormData>({
     resolver: zodResolver(applicantSchema),
     mode: "onTouched",
     defaultValues: applicant,
@@ -38,7 +39,7 @@ const ApplicantForm = ({
     reset(applicant);
   }, [applicant, reset]);
 
-  const onSubmitInner = (data: ApplicantData) => {
+  const onSubmitInner = (data: ApplicantFormData) => {
     data.id = forceNewOnEdit && isDirty ? undefined : data.id;
     onSubmit(data);
   };

@@ -6,8 +6,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useAppStore } from "~/store/store";
-
 import Logo from "./Logo";
 import UserWidget from "./UserWidget";
 
@@ -32,21 +30,6 @@ const protectedLinks: NavBarLinkData[] = [
   },
 ];
 
-const actionLinks: NavBarLinkData[] = [
-  {
-    label: "Cover Letter",
-    url: "/coverletter",
-  },
-  {
-    label: "Interview",
-    url: "/interview",
-  },
-  {
-    label: "Test",
-    url: "/test",
-  },
-];
-
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [shadow, setShadow] = useState(false);
@@ -55,7 +38,6 @@ const Navbar = () => {
   const { isSignedIn } = useAuth();
 
   const router = useRouter();
-  const { application } = useAppStore();
 
   const setTransparentNavBar = (transparent: boolean) => {
     if (transparent) {
@@ -97,20 +79,13 @@ const Navbar = () => {
     if (isSignedIn) {
       links.push(...protectedLinks);
     }
-    if (application) {
-      const applicationLinks = actionLinks.map((l) => ({
-        ...l,
-        url: `${l.url}/${application.id}`,
-      }));
-      links.push(...applicationLinks);
-    }
     return links;
-  }, [isSignedIn, application]);
+  }, [isSignedIn]);
 
   return (
     <div
       className={`backdrop-blur-lg bg-white/75 ${
-        shadow ? "shadow-sm shadow-secondary" : ""
+        shadow ? "shadow-sm shadow-secondary" : "shadow-sm shadow-secondary"
       }  ${navBg} fixed z-30  h-16 w-full `}
     >
       {/* Desktop version */}
@@ -121,8 +96,11 @@ const Navbar = () => {
             <Bars3Icon className="h-6 w-6" />
           </div>
 
-          <div className="flex items-baseline justify-start">
-            <Link href={`${isSignedIn ? "/dashboard" : "/"}`}>
+          <div className="flex relative items-center justify-start w-full">
+            <Link
+              href={`${isSignedIn ? "/dashboard" : "/"}`}
+              className="absolute left-[50%] -translate-x-[50%] md:static md:translate-x-0 md:left-[0%]"
+            >
               <Logo />
             </Link>
 
@@ -157,12 +135,9 @@ const Navbar = () => {
           }`}
         >
           <div>
-            <div className="relative flex w-full items-center justify-between">
+            <div className=" flex w-full items-center justify-between">
               {/* Logo */}
-              <Link
-                className="absolute left-[50%] translate-x-[-50%]"
-                href={`${isSignedIn ? "/dashboard" : "/"}`}
-              >
+              <Link className="" href={`${isSignedIn ? "/dashboard" : "/"}`}>
                 <Logo />
               </Link>
               <button

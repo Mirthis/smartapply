@@ -1,5 +1,5 @@
 import { api } from "~/lib/api";
-import { type ApplicantData } from "~/types/types";
+import { type ApplicantFormData } from "~/types/types";
 
 import Spinner from "../utils/Spinner";
 import Modal from "./Modal";
@@ -11,7 +11,7 @@ const DeleteProfileApplicantbModal = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  applicant: ApplicantData;
+  applicant: ApplicantFormData;
 }) => {
   const utils = api.useContext();
 

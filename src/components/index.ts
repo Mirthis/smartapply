@@ -1,4 +1,4 @@
-export { default as ApplicationDetails } from "./ApplicationDetails";
+export { default as ApplicationSideBar } from "./ApplicationSidebar";
 export { default as BasicCard } from "./BasicCard";
 export { default as FeatureCard } from "./FeatureCard";
 export { default as Footer } from "./Footer";

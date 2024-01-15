@@ -1,17 +1,19 @@
-import { type ApplicantData, type JobData } from "~/types/types";
+import { type ApplicationRequestData } from "~/types/types";
 
-export const getJobDetailsPrompt = (
-  job: JobData,
-  applicant?: ApplicantData
-) => {
-  const company = job.companyName ?? "unspecified company";
+export const getJobDetailsPrompt = (application: ApplicationRequestData) => {
+  const applicant = application.applicant;
+  const company = application.companyName ?? "unspecified company";
 
   let prompt = `Job details are as follows: ${
-    job.companyName ? `Compnay name: ${company}` : ""
+    application.companyName ? `Compnay name: ${company}` : ""
   }.
-  ${job.companyDetails ? `Company details: ${job.companyDetails}` : ""}
-  Job title: ${job.title}.
-  Job description: ${job.description}
+  ${
+    application.companyDetails
+      ? `Company details: ${application.companyDetails}`
+      : ""
+  }
+  Job title: ${application.title}.
+  Job description: ${application.description}
   `;
   if (applicant) {
     const applicantName =

@@ -58,10 +58,10 @@ const EditApplicationModal = ({
   });
 
   useEffect(() => {
-    setValue("title", application?.job?.title ?? "");
-    setValue("description", application?.job?.description ?? "");
-    setValue("companyName", application?.job?.companyName ?? "");
-    setValue("companyDetails", application?.job?.companyDetails ?? "");
+    setValue("title", application?.title ?? "");
+    setValue("description", application?.description ?? "");
+    setValue("companyName", application?.companyName ?? "");
+    setValue("companyDetails", application?.companyDetails ?? "");
     setValue("applicantId", application?.applicant.id ?? "");
   }, [application, setValue]);
 
@@ -92,36 +92,38 @@ const EditApplicationModal = ({
   //   });
   // };
 
-  console.log({ isValid, isSubmitting, isDirty });
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Job Details">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-y-4">
-          <div className="">
-            {/* <label className="label">
+          {/* <label className="label">
               <span className="label-text font-semibold text-primary">
                 Select an applicant from your profile
               </span>
             </label> */}
-            <select
-              disabled={isLoadingApplicants}
-              className={cn("select-bordered select select-primary w-full", {
-                "animate-pulse": isLoadingApplicants,
-              })}
-              // value={applicantId ?? "N/A"}
-              // defaultValue={applicantId ?? "N/A"}
-              {...register("applicantId")}
-            >
-              <option value="">-- Select an applicant --</option>
-              {applicants?.map((applicant) => (
-                <option key={applicant.id} value={applicant.id}>
-                  {applicant.jobTitle} - {applicant.firstName}{" "}
-                  {applicant.lastName}
-                </option>
-              ))}
-            </select>
-          </div>
+          {applicants && applicants?.length === 0 && (
+            <p className="alert alert-warning">
+              You need to add an applicant to your profile before you can create
+              a job.
+            </p>
+          )}
+          <select
+            disabled={isLoadingApplicants}
+            className={cn("select-bordered select select-primary w-full", {
+              "animate-pulse": isLoadingApplicants,
+            })}
+            // value={applicantId ?? "N/A"}
+            // defaultValue={applicantId ?? "N/A"}
+            {...register("applicantId")}
+          >
+            <option value="">-- Select an applicant --</option>
+            {applicants?.map((applicant) => (
+              <option key={applicant.id} value={applicant.id}>
+                {applicant.jobTitle} - {applicant.firstName}{" "}
+                {applicant.lastName}
+              </option>
+            ))}
+          </select>
 
           <div className="w-full">
             <div className="relative">

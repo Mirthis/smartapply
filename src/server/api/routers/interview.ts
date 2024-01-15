@@ -9,8 +9,8 @@ import { env } from "~/env.mjs";
 import { openaiClient } from "~/lib/openai";
 import { getJobDetailsPrompt } from "~/lib/prompt";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { applicantSchema, jobSchema } from "~/types/schemas";
-import { type ApplicantData, InterviewType, type JobData } from "~/types/types";
+import { applicationRequestSchema } from "~/types/schemas";
+import { type ApplicationRequestData, InterviewType } from "~/types/types";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -48,8 +48,7 @@ const getInterviewLeadPrompt = () => {
 
 const getInterviewSystemMessage = (
   type: InterviewType,
-  job: JobData,
-  applicant: ApplicantData
+  application: ApplicationRequestData
 ) => {
   let specicifPromt: string[] = [];
   switch (type) {
@@ -65,7 +64,7 @@ const getInterviewSystemMessage = (
   }
 
   const content = `${specicifPromt[0] || ""}.
-  ${getJobDetailsPrompt(job, applicant)}.
+  ${getJobDetailsPrompt(application)}.
   ${specicifPromt[1] || ""}.
   ${getInterviewCommonPrompt()}
   `;
@@ -87,8 +86,7 @@ export const interviewRouter = createTRPCRouter({
   sendMessage: protectedProcedure
     .input(
       z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
+        application: applicationRequestSchema,
         interviewType: z.nativeEnum(InterviewType),
         interviewMessages: z.array(
           z.object({
@@ -110,11 +108,7 @@ export const interviewRouter = createTRPCRouter({
       }
 
       const messages = [
-        getInterviewSystemMessage(
-          input.interviewType,
-          input.job,
-          input.applicant
-        ),
+        getInterviewSystemMessage(input.interviewType, input.application),
         getFirstInterviewMessage(),
         ...input.interviewMessages,
       ];

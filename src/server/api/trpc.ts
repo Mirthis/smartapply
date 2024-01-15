@@ -17,8 +17,8 @@
 import {
   type SignedInAuthObject,
   type SignedOutAuthObject,
-} from "@clerk/nextjs/dist/api";
-import { getAuth } from "@clerk/nextjs/server";
+  getAuth,
+} from "@clerk/nextjs/server";
 
 /**
  * 2. INITIALIZATION

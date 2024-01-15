@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { addDelay } from "~/lib/utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const coverLettersRouter = createTRPCRouter({
@@ -52,8 +51,6 @@ export const coverLettersRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ applicationId: z.string() }))
     .query(async ({ ctx, input }) => {
-      await addDelay(5000);
-
       const coverLetters = await ctx.prisma.coverLetter.findMany({
         where: {
           userId: ctx.auth.userId,

@@ -1,4 +1,8 @@
+import "simplebar-react/dist/simplebar.min.css";
+
 import Head from "next/head";
+
+import { cn } from "~/lib/utils";
 
 import Footer from "./Footer";
 import NavBar from "./NavBar";
@@ -10,10 +14,12 @@ const Layout = ({
   children,
   title,
   description,
+  className,
 }: {
   children: React.ReactNode;
   title?: string;
   description?: string;
+  className?: string;
 }) => {
   const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
   const pageDesc = description ? description : defaultDesc;
@@ -38,7 +44,9 @@ const Layout = ({
       <main>
         <NavBar />
         <div className="mx-auto max-w-7xl">
-          <div className="min-h-screen px-4 pb-20 pt-20">{children}</div>
+          <div className={cn("min-h-screen px-4 pt-20 pb-20", className)}>
+            {children}
+          </div>
         </div>
       </main>
       <Footer />

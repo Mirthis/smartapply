@@ -6,12 +6,9 @@ import { useEffect, useState } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { ApplicationDetails, Layout, Title } from "~/components";
+import { ApplicationSideBar, Layout, Title } from "~/components";
 import { ResetCoverLettersModal } from "~/components/modals";
-import {
-  ApplicationDetailsSkeleton,
-  CoverLettersSkeleton,
-} from "~/components/skeletons";
+import { CoverLettersSkeleton } from "~/components/skeletons";
 import Spinner from "~/components/utils/Spinner";
 
 import { api } from "~/lib/api";
@@ -28,42 +25,35 @@ const CoverLetterPage: NextPage = () => {
   const [displayedLetter, setDisplayedLetter] = useState<CoverLetter>();
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
 
-  const {
-    application,
-    coverLetters,
-    setApplication,
-    addCoverLetter,
-    setCoverLetters,
-    clearCoverLetters,
-  } = useAppStore((state) => state);
+  const { coverLetters, addCoverLetter, setCoverLetters, clearCoverLetters } =
+    useAppStore((state) => state);
 
-  const queryId =
+  const applicationId =
     router.query.id && !Array.isArray(router.query.id)
       ? router.query.id
       : "N/A";
 
   // TODO: Add error handling
-  const { isFetching: isLoadingApplication } = api.application.get.useQuery(
-    {
-      id: queryId,
-    },
-    {
-      enabled: router.query.id !== application?.id,
-      onSuccess: (data) => {
-        setApplication(data);
+  const { data: application, isFetching: isLoadingApplication } =
+    api.application.get.useQuery(
+      {
+        id: applicationId ?? "N/A",
       },
-      onError: (error) => {
-        if (error.message === "No Application found") {
-          void router.replace("/");
-        }
-      },
-    }
-  );
+      {
+        enabled: !!applicationId,
+
+        onError: (error) => {
+          if (error.message === "No Application found") {
+            void router.replace("/");
+          }
+        },
+      }
+    );
 
   const { isFetching: isLoadingCoverLetters } =
     api.coverLetters.getAll.useQuery(
       {
-        applicationId: queryId,
+        applicationId: applicationId,
       },
       {
         enabled: router.query.id !== application?.id,
@@ -133,16 +123,14 @@ const CoverLetterPage: NextPage = () => {
 
   const generate = () => {
     if (application) {
-      const { job, applicant } = application;
-      void createCoverLetter({ job, applicant });
+      void createCoverLetter({ application });
     }
   };
 
   const refine = (refineMode: RefineMode) => {
     if (application && displayedLetter) {
       void refineCoverLetter({
-        job: application.job,
-        applicant: application.applicant,
+        application: application,
         srcCoverLetter: displayedLetter.text,
         refineMode,
         refineText,
@@ -210,189 +198,207 @@ const CoverLetterPage: NextPage = () => {
     <Layout
       title="Generate Cover Letter"
       description="Geenerate cover letters for a job application and job applicant."
+      className="pb-0"
     >
       <ResetCoverLettersModal
         isOpen={isOpenResetModal}
         onClose={() => setIsOpenResetModal(false)}
         onConfirm={reset}
       />
-      <Title title="Create Cover Letter" />
-      {isLoadingApplication || !application ? (
-        <ApplicationDetailsSkeleton />
-      ) : (
-        <ApplicationDetails application={application} />
-      )}
-      {isLoadingCoverLetters && <CoverLettersSkeleton />}
+      <div className="flex gap-x-2 min-h-screen">
+        <div className="hidden lg:block w-96 shrink-0">
+          {applicationId && (
+            <ApplicationSideBar applicationId={applicationId} />
+          )}
+        </div>
+        <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20">
+          <Title title="Create Cover Letter" type="section" />
 
-      {!isLoading && (
-        <>
-          {coverLetters.length === 0 && !createResponseText ? (
-            <div className="mt-4 text-center">
-              <button
-                className="btn-primary btn w-full disabled:btn-outline sm:w-96"
-                onClick={generate}
-                disabled={isGenerating}
-              >
-                {createLoading ? (
-                  <div className="flex items-center gap-x-2">
-                    <Spinner
-                      className="mb-2 h-10 w-10"
-                      text="Generating cover letter..."
-                    />
-                  </div>
-                ) : (
-                  <p>Generate Cover Letter</p>
-                )}
-              </button>
-            </div>
-          ) : (
+          {isLoadingCoverLetters && <CoverLettersSkeleton />}
+
+          {!isLoading && (
             <>
-              <div className="flex-start flex items-baseline gap-x-4">
-                <Title title="Your cover letter" type="section" />
-                {(coverLetters.length ?? 0) > 1 && (
-                  <>
-                    <div
-                      className={`{tabs tab-sm hidden ${
-                        coverLetters.length < MAX_COVER_LETTERS_TABS
-                          ? "lg:block"
-                          : ""
-                      }`}
-                    >
-                      Versions:
-                      {coverLetters.map((c, i) => (
-                        <a
-                          className={`${
-                            displayedLetter?.id === c.id ? "tab-active" : ""
-                          } tab-bordered tab`}
-                          key={c.id}
-                          onClick={() => handleLettersTabChange(c.id)}
-                        >
-                          v{coverLetters.length - i} - {c.label}
-                        </a>
-                      ))}
-                    </div>
-                    <select
-                      className={`select-bordered select select-sm block ${
-                        coverLetters.length <= MAX_COVER_LETTERS_TABS
-                          ? "lg:hidden"
-                          : ""
-                      }`}
-                      value={displayedLetter?.id}
-                      onChange={(e) => handleLettersTabChange(e.target.value)}
-                    >
-                      {coverLetters.map((c, i) => (
-                        <option key={c.id} value={c.id}>
-                          v{coverLetters.length - i} - {c.label}
-                        </option>
-                      ))}
-                    </select>
-                  </>
-                )}
-              </div>
-
-              {displayedText && (
-                <div>
-                  <div className="relative rounded-md bg-base-200 p-2">
-                    {/* {displayedText} */}
-                    <div>
-                      {formatApiMessage(displayedText).map((p, i) => (
-                        <p className="mb-2" key={`coverletter-paragraph-${i}`}>
-                          {p}
-                        </p>
-                      ))}
-                    </div>
-                    <button
-                      className="group absolute right-2 top-2"
-                      title="Copy to clipboard"
-                      onClick={() => {
-                        void navigator.clipboard.writeText(displayedText);
-                      }}
-                    >
-                      <div className="flex">
-                        <p className="opacity-0 transition-opacity duration-700 group-active:opacity-100 group-active:duration-0">
-                          Copied
-                        </p>
-                        <ClipboardIcon className="h-6 w-6" />
+              {coverLetters.length === 0 && !createResponseText ? (
+                <div className="mt-4 text-center">
+                  <button
+                    className="btn-primary btn w-full disabled:btn-outline sm:w-96"
+                    onClick={generate}
+                    disabled={isGenerating}
+                  >
+                    {createLoading ? (
+                      <div className="flex items-center gap-x-2">
+                        <Spinner
+                          className="mb-2 h-10 w-10"
+                          text="Generating cover letter..."
+                        />
                       </div>
-                    </button>
+                    ) : (
+                      <p>Generate Cover Letter</p>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex-start flex items-baseline gap-x-4">
+                    <Title title="Your cover letter" type="section" />
+                    {(coverLetters.length ?? 0) > 1 && (
+                      <>
+                        <div
+                          className={`{tabs tab-sm hidden ${
+                            coverLetters.length < MAX_COVER_LETTERS_TABS
+                              ? "lg:block"
+                              : ""
+                          }`}
+                        >
+                          Versions:
+                          {coverLetters.map((c, i) => (
+                            <a
+                              className={`${
+                                displayedLetter?.id === c.id ? "tab-active" : ""
+                              } tab-bordered tab`}
+                              key={c.id}
+                              onClick={() => handleLettersTabChange(c.id)}
+                            >
+                              v{coverLetters.length - i} - {c.label}
+                            </a>
+                          ))}
+                        </div>
+                        <select
+                          className={`select-bordered select select-sm block ${
+                            coverLetters.length <= MAX_COVER_LETTERS_TABS
+                              ? "lg:hidden"
+                              : ""
+                          }`}
+                          value={displayedLetter?.id}
+                          onChange={(e) =>
+                            handleLettersTabChange(e.target.value)
+                          }
+                        >
+                          {coverLetters.map((c, i) => (
+                            <option key={c.id} value={c.id}>
+                              v{coverLetters.length - i} - {c.label}
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
                   </div>
-                  <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 lg:flex-row">
-                    <div className="flex w-full items-center gap-x-2">
-                      <input
-                        type="text"
-                        className="input-bordered input w-full"
-                        placeholder="Specify wich change you need (i.e.: include more details from my profile)"
-                        minLength={5}
-                        maxLength={100}
-                        value={refineText}
-                        onKeyUp={handleKeyUp}
-                        onChange={(e) => setRefineText(e.target.value)}
-                      />
 
-                      <button
-                        className="btn-primary btn"
-                        onClick={() => refine(RefineMode.FreeInput)}
-                        disabled={
-                          isGenerating ||
-                          refineText.length < 5 ||
-                          !displayedLetter ||
-                          refineText.length > 100 ||
-                          isMaxLetters
-                        }
-                      >
-                        Refine
-                      </button>
+                  {displayedText && (
+                    <div>
+                      {/* <SimpleBar
+                        autoHide={false}
+                        
+                        className="max-h-[calc(100vh-23rem)] max-w-none lg:max-h-[calc(100vh-20rem)]"
+                      > */}
+                      <div className="max-h-[calc(100vh-23rem)] overflow-auto relative rounded-md bg-base-200 p-2">
+                        {/* {displayedText} */}
+                        <div>
+                          {formatApiMessage(displayedText).map((p, i) => (
+                            <p
+                              className="mb-2"
+                              key={`coverletter-paragraph-${i}`}
+                            >
+                              {p}
+                            </p>
+                          ))}
+                        </div>
+                        <button
+                          className="group absolute  right-2 top-2"
+                          title="Copy to clipboard"
+                          onClick={() => {
+                            void navigator.clipboard.writeText(displayedText);
+                          }}
+                        >
+                          <div className="flex">
+                            <p className="opacity-0 transition-opacity duration-700 group-active:opacity-100 group-active:duration-0">
+                              Copied
+                            </p>
+                            <ClipboardIcon className="h-6 w-6" />
+                          </div>
+                        </button>
+                      </div>
+                      {/* </SimpleBar> */}
+
+                      <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 sm:flex-row">
+                        <div className="flex w-full items-center gap-x-2">
+                          <input
+                            type="text"
+                            className="input-bordered input w-full"
+                            placeholder="Specify wich change you need (i.e.: include more details from my profile)"
+                            minLength={5}
+                            maxLength={100}
+                            value={refineText}
+                            onKeyUp={handleKeyUp}
+                            onChange={(e) => setRefineText(e.target.value)}
+                          />
+
+                          <button
+                            className="btn-primary btn "
+                            onClick={() => refine(RefineMode.FreeInput)}
+                            disabled={
+                              isGenerating ||
+                              refineText.length < 5 ||
+                              !displayedLetter ||
+                              refineText.length > 100 ||
+                              isMaxLetters
+                            }
+                          >
+                            Refine
+                          </button>
+                        </div>
+                        <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:max-w-fit">
+                          <button
+                            className="btn-secondary btn "
+                            onClick={() => refine(RefineMode.Shorten)}
+                            disabled={
+                              isGenerating || !displayedLetter || isMaxLetters
+                            }
+                          >
+                            Shorten
+                          </button>
+                          <button
+                            className="btn-secondary btn "
+                            onClick={() => refine(RefineMode.Extend)}
+                            disabled={
+                              isGenerating || !displayedLetter || isMaxLetters
+                            }
+                          >
+                            Extend
+                          </button>
+                          <button
+                            className="btn-secondary btn"
+                            onClick={handleReset}
+                            disabled={isGenerating || !displayedLetter}
+                          >
+                            Reset
+                          </button>
+                        </div>
+                        <Spinner
+                          className={`${
+                            isGenerating ? "visible" : "invisible"
+                          } h-16 w-16`}
+                        />
+                      </div>
                     </div>
-                    <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:w-fit">
-                      <button
-                        className="btn-secondary btn"
-                        onClick={() => refine(RefineMode.Shorten)}
-                        disabled={
-                          isGenerating || !displayedLetter || isMaxLetters
-                        }
-                      >
-                        Shorten
-                      </button>
-                      <button
-                        className="btn-secondary btn"
-                        onClick={() => refine(RefineMode.Extend)}
-                        disabled={
-                          isGenerating || !displayedLetter || isMaxLetters
-                        }
-                      >
-                        Extend
-                      </button>
-                      <button
-                        className="btn-secondary btn"
-                        onClick={handleReset}
-                        disabled={isGenerating || !displayedLetter}
-                      >
-                        Reset
-                      </button>
-                    </div>
-                    <Spinner
-                      className={`${
-                        isGenerating ? "visible" : "invisible"
-                      } h-16 w-16`}
-                    />
-                  </div>
+                  )}
+                </>
+              )}
+              {isError && (
+                <div className="mt-2 text-center font-bold text-error">
+                  Ooop, something went wrong. Try again.
+                </div>
+              )}
+              {isMaxLetters && (
+                <div className="mt-2 text-center font-bold text-error">
+                  You can only generate {MAX_COVER_LETTERS} cover letters for
+                  application
                 </div>
               )}
             </>
           )}
-          {isError && (
-            <div className="mt-2 text-center font-bold text-error">
-              Ooop, something went wrong. Try again.
-            </div>
-          )}
-          {isMaxLetters && (
-            <div className="mt-2 text-center font-bold text-error">
-              You can only generate {MAX_COVER_LETTERS} cover letters for
-              application
-            </div>
-          )}
-        </>
-      )}
+        </div>
+      </div>
     </Layout>
   );
 };

@@ -36,8 +36,8 @@ const DeleteApplictionbModal = ({
         Do you want to delete this application and all related content?
       </p>
       <p>
-        <span className="font-semibold">Job:</span> {application.job.title} @{" "}
-        {application.job.companyName}
+        <span className="font-semibold">Job:</span> {application.title} @{" "}
+        {application.companyName}
       </p>
       <p>
         <span className="font-semibold">Applicant:</span>{" "}

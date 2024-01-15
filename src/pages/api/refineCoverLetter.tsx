@@ -11,23 +11,21 @@ import { type NextRequest } from "next/server";
 import { env } from "~/env.mjs";
 import { getJobDetailsPrompt } from "~/lib/prompt";
 import { getFakeAiResponse } from "~/lib/utils";
-import { applicantSchema, jobSchema } from "~/types/schemas";
-import { type ApplicantData, type JobData } from "~/types/types";
+import { applicationRequestSchema } from "~/types/schemas";
+import { type ApplicationRequestData } from "~/types/types";
 
 const requestSchema = z.object({
-  job: jobSchema,
-  applicant: applicantSchema,
+  application: applicationRequestSchema,
   srcCoverLetter: z.string(),
   refineMode: z.enum(["shorten", "extend", "freeinput"]),
   refineText: z.string().optional(),
 });
 
 const getCoverLetterSystemMessage = (
-  job: JobData,
-  applicant: ApplicantData
+  application: ApplicationRequestData
 ): ChatCompletionRequestMessage => {
   const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details.
-  ${getJobDetailsPrompt(job, applicant)}
+  ${getJobDetailsPrompt(application)}
   The cover letter must be written in a professional tone.
   The cover letter must be be relevant for the specific job title and description.
   The cover letter must contains details about the applicant's skills and experience.
@@ -114,7 +112,7 @@ export default async function handler(request: NextRequest) {
   }
 
   const messages = [
-    getCoverLetterSystemMessage(input.job, input.applicant),
+    getCoverLetterSystemMessage(input.application),
     getCoverLetterUserMessage(),
     createAssistantMessage(input.srcCoverLetter),
   ];

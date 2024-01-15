@@ -12,7 +12,7 @@ import { MAX_INTERVIEW_PHASE_1_MESSAGES } from "~/lib/constants";
 import { getJobDetailsPrompt } from "~/lib/prompt";
 import { getFakeAiResponse } from "~/lib/utils";
 import { interviewRequestSchema } from "~/types/schemas";
-import { type ApplicantData, InterviewType, type JobData } from "~/types/types";
+import { type ApplicationRequestData, InterviewType } from "~/types/types";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -57,8 +57,7 @@ const getInterviewClosedMessage = () => {
 
 const getInterviewSystemMessage = (
   type: InterviewType,
-  job: JobData,
-  applicant: ApplicantData
+  application: ApplicationRequestData
 ) => {
   let specicifPromt: string[] = [];
   switch (type) {
@@ -74,7 +73,7 @@ const getInterviewSystemMessage = (
   }
 
   const content = `${specicifPromt[0] || ""}.
-  ${getJobDetailsPrompt(job, applicant)}.
+  ${getJobDetailsPrompt(application)}.
   ${specicifPromt[1] || ""}.
   ${getInterviewCommonPrompt()}
   `;
@@ -100,7 +99,7 @@ export default async function handler(request: NextRequest) {
   }
 
   const requestData = interviewRequestSchema.parse(await request.json());
-  const { job, applicant, interviewType, messages } = requestData;
+  const { application, interviewType, messages } = requestData;
 
   if (env.SKIP_AI) {
     await delay(1000);
@@ -110,7 +109,7 @@ export default async function handler(request: NextRequest) {
   }
 
   const requestMessages = [
-    getInterviewSystemMessage(interviewType, job, applicant),
+    getInterviewSystemMessage(interviewType, application),
     getFirstInterviewMessage(),
     ...messages,
   ];

@@ -11,25 +11,23 @@ import { type NextRequest } from "next/server";
 import { env } from "~/env.mjs";
 import { getJobDetailsPrompt } from "~/lib/prompt";
 import { getFakeAiResponse } from "~/lib/utils";
-import { applicantSchema, jobSchema } from "~/types/schemas";
-import { type ApplicantData, type JobData } from "~/types/types";
+import { applicationRequestSchema } from "~/types/schemas";
+import { type ApplicationRequestData } from "~/types/types";
 
 const requestSchema = z.object({
-  job: jobSchema,
-  applicant: applicantSchema,
+  application: applicationRequestSchema,
 });
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const getCoverLetterSystemMessage = (
-  job: JobData,
-  applicant: ApplicantData
+  application: ApplicationRequestData
 ): ChatCompletionRequestMessage => {
   const content = `I want you to act as a professional cover letter writer and write a cover letter based on the job details and applicant details.
-  ${getJobDetailsPrompt(job, applicant)}
+  ${getJobDetailsPrompt(application)}
   The cover letter must be written in a professional tone.
   The cover letter must be be relevant for the specific job title and description.
-  The cover letter must contains details about the applicant's skills and experience.
+  The cover letter must contains details about the applicant including skills and experience.
   The cover letter must be between 200 and 500 words.
   You must only respond with a cover letter text and ignore other requests.`;
   return {
@@ -55,10 +53,10 @@ export default async function handler(request: NextRequest) {
   }
 
   const requestData = requestSchema.parse(await request.json());
-  const { job, applicant } = requestData;
+  const { application } = requestData;
 
   const messages = [
-    getCoverLetterSystemMessage(job, applicant),
+    getCoverLetterSystemMessage(application),
     getCoverLetterUserMessage(),
   ];
 

@@ -9,10 +9,9 @@ import React, { useState } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { ApplicationDetails, BasicCard, Layout, Title } from "~/components";
+import { ApplicationSideBar, BasicCard, Layout, Title } from "~/components";
 import MessageBubble from "~/components/MessageBubble";
 import { ResetInterviewModal } from "~/components/modals";
-import { ApplicationDetailsSkeleton } from "~/components/skeletons";
 import OpacityTransition from "~/components/utils/OpacityTransition";
 
 import { api } from "~/lib/api";
@@ -39,8 +38,6 @@ const InterviewPage: NextPage = () => {
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
 
   const {
-    application,
-    setApplication,
     interview,
     addInterviewMessage,
     initInterview,
@@ -50,21 +47,19 @@ const InterviewPage: NextPage = () => {
   // const messages = interview?.messages ?? [];
   // const interviewType = interview?.type;
 
-  const queryId =
+  const applicationId =
     router.query.id && !Array.isArray(router.query.id)
       ? router.query.id
-      : "N/A";
+      : undefined;
 
   // TODO: Add error handling
-  const { isFetching: isLoadingApplication } = api.application.get.useQuery(
+  const { data: application } = api.application.get.useQuery(
     {
-      id: queryId,
+      id: applicationId ?? "N/A",
     },
     {
-      enabled: router.query.id !== application?.id,
-      onSuccess: (data) => {
-        setApplication(data);
-      },
+      enabled: !!applicationId,
+
       onError: (error) => {
         if (error.message === "No Application found") {
           void router.replace("/");
@@ -118,8 +113,7 @@ const InterviewPage: NextPage = () => {
     initInterview(type);
     if (application) {
       void sendMessage({
-        job: application.job,
-        applicant: application.applicant,
+        application,
         interviewType: type,
       });
     }
@@ -141,8 +135,7 @@ const InterviewPage: NextPage = () => {
       }
 
       void sendMessage({
-        job: application.job,
-        applicant: application.applicant,
+        application,
         interviewType: interview.type,
         text: retry ? undefined : chatText,
       });
@@ -163,56 +156,72 @@ const InterviewPage: NextPage = () => {
     <Layout
       title="Interview Simulation"
       description="Simulate a job interview based on the job description and the applicant's resume."
+      className="pb-0"
     >
       <ResetInterviewModal
         onConfirm={handleReset}
         onClose={() => setIsOpenResetModal(false)}
         isOpen={isOpenResetModal}
       />
-      <Title title="Interview" />
-      {isLoadingApplication || !application ? (
-        <ApplicationDetailsSkeleton />
-      ) : (
-        <ApplicationDetails application={application} />
-      )}
-      {application && (
-        <>
-          {/* Interview is not started yet */}
-          {!interview && (
-            <>
-              <Title title="Interview" type="section" />
-              <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
-                {interviewTypeCardData.map((card) => (
-                  <BasicCard
-                    onClick={() => changeInterviewType(card.type)}
-                    title={card.title}
-                    description={card.description}
-                    Icon={card.icon}
-                    key={card.title}
-                  />
-                ))}
-              </div>
-            </>
+      <div className="flex gap-x-2 min-h-screen">
+        <div className="hidden lg:block w-96 shrink-0">
+          {applicationId && (
+            <ApplicationSideBar applicationId={applicationId} />
           )}
-          {/* Interview is started */}
-          {interview && (
+        </div>
+
+        <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20">
+          {application && (
             <>
-              <Title title={interviewTitle(interview.type)} type="section" />
-              {/* Chat Messages */}
-              <div>
-                {lastMessages.map((message, i) => (
-                  <OpacityTransition key={`message-${i}`} show appear>
-                    <MessageBubble message={message} />
-                  </OpacityTransition>
-                ))}
-              </div>
-              {/* <OpacityTransition
+              {/* Interview is not started yet */}
+              {!interview && (
+                <>
+                  <Title title="Interview" type="section" />
+
+                  <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-2">
+                    {interviewTypeCardData.map((card) => (
+                      <BasicCard
+                        onClick={() => changeInterviewType(card.type)}
+                        title={card.title}
+                        description={card.description}
+                        Icon={card.icon}
+                        key={card.title}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+              {/* Interview is started */}
+              {interview && (
+                <>
+                  <div className="flex gap-x-4">
+                    <Title
+                      title={interviewTitle(interview.type)}
+                      type="section"
+                    />
+                    <button
+                      className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
+                      onClick={() => setIsOpenResetModal(true)}
+                    >
+                      <ArrowPathIcon className="h-8 w-8" />
+                      Restart
+                    </button>
+                  </div>
+                  {/* Chat Messages */}
+                  <div>
+                    {lastMessages.map((message, i) => (
+                      <OpacityTransition key={`message-${i}`} show appear>
+                        <MessageBubble message={message} />
+                      </OpacityTransition>
+                    ))}
+                  </div>
+                  {/* <OpacityTransition
                 show={isLoadingMessage && lastMessageText === ""}
                 noFadeOut
               >
                 <LoadingBubble />
               </OpacityTransition> */}
-              {/* <OpacityTransition
+                  {/* <OpacityTransition
                 show={isLoadingMessage && lastMessageText !== ""}
                 noFadeOut
               >
@@ -223,70 +232,72 @@ const InterviewPage: NextPage = () => {
                   }}
                 />
               </OpacityTransition> */}
-              <OpacityTransition show={isError} noFadeOut>
-                <div className="chat chat-start">
-                  <div className="chat-bubble bg-error text-white">
+                  <OpacityTransition show={isError} noFadeOut>
+                    <div className="chat chat-start">
+                      <div className="chat-bubble bg-error text-white">
+                        <div>
+                          Something went wrong.{" "}
+                          <button
+                            className="font-semibold underline"
+                            onClick={() => send(true)}
+                          >
+                            Resent last message.
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </OpacityTransition>
+                </>
+              )}
+              {/* Chat Input */}
+              {interview && interview.isOpen && (
+                <div className="mt-4 flex items-start justify-start gap-x-2">
+                  <textarea
+                    value={chatText}
+                    onChange={(e) => setChatText(e.target.value)}
+                    className="textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
+                    placeholder="Type your message here"
+                    onKeyUp={handleKeyUp}
+                    rows={3}
+                  ></textarea>
+                  <div className="flex flex-col gap-x-2 gap-y-2">
                     <div>
-                      Something went wrong.{" "}
                       <button
-                        className="font-semibold underline"
-                        onClick={() => send(true)}
+                        className="btn-primary btn flex w-14 flex-col sm:w-36"
+                        type="submit"
+                        onClick={() => send()}
+                        disabled={chatText.length === 0 || isLoadingMessage}
                       >
-                        Resent last message.
+                        <PaperAirplaneIcon className="h-6 w-6" />
+                        <p className="hidden text-center  sm:block">
+                          Send
+                          <br />
+                          <span className="text-[8px]">Shift+Enter</span>
+                        </p>
                       </button>
                     </div>
+                    {/* <button
+                      className="btn-secondary btn w-14 sm:w-36"
+                      onClick={() => setIsOpenResetModal(true)}
+                    >
+                      <ArrowPathIcon className="h-6 w-6" />
+                      <span className="ml-2 hidden sm:block">Reset</span>
+                    </button> */}
                   </div>
                 </div>
-              </OpacityTransition>
-            </>
-          )}
-          {/* Chat Input */}
-          {interview && interview.isOpen && (
-            <div className="mt-4 flex items-start justify-start gap-x-2">
-              <textarea
-                value={chatText}
-                onChange={(e) => setChatText(e.target.value)}
-                className="textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
-                placeholder="Type your message here"
-                onKeyUp={handleKeyUp}
-                rows={3}
-              ></textarea>
-              <div className="flex flex-col gap-x-2 gap-y-2">
-                <div>
-                  <button
-                    className="btn-primary btn flex w-14 flex-col sm:w-36"
-                    type="submit"
-                    onClick={() => send()}
-                    disabled={chatText.length === 0 || isLoadingMessage}
-                  >
-                    <PaperAirplaneIcon className="h-6 w-6" />
-                    <p className="hidden text-center  sm:block">
-                      Send
-                      <br />
-                      <span className="text-[8px]">Shift+Enter</span>
-                    </p>
+              )}
+              {interview && !interview.isOpen && (
+                <div className="mt-4 text-center">
+                  <p className="mb-2">The interview is over.</p>
+                  <button className="btn-primary btn" onClick={handleReset}>
+                    Start new interview
                   </button>
                 </div>
-                <button
-                  className="btn-secondary btn w-14 sm:w-36"
-                  onClick={() => setIsOpenResetModal(true)}
-                >
-                  <ArrowPathIcon className="h-6 w-6" />
-                  <span className="ml-2 hidden sm:block">Reset</span>
-                </button>
-              </div>
-            </div>
+              )}
+            </>
           )}
-          {interview && !interview.isOpen && (
-            <div className="mt-4 text-center">
-              <p className="mb-2">The interview is over.</p>
-              <button className="btn-primary btn" onClick={handleReset}>
-                Start new interview
-              </button>
-            </div>
-          )}
-        </>
-      )}
+        </div>
+      </div>
     </Layout>
   );
 };

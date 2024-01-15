@@ -1,4 +1,4 @@
-import { type Job } from "@prisma/client";
+import { type Application } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import {
   type ChatCompletionRequestMessage,
@@ -13,8 +13,8 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type TestQuestion } from "~/types/types";
 
-const getSystemMessage = (job: Job, skill: string) => {
-  const skills = skill === "*ALL*" ? job.skillsSummary : skill;
+const getSystemMessage = (application: Application, skill: string) => {
+  const skills = skill === "*ALL*" ? application.skillsSummary : skill;
 
   const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${skills}.
   You must not ask the same queston twice.
@@ -104,13 +104,10 @@ export const testRouter = createTRPCRouter({
 
       const application = await ctx.prisma.application.findUniqueOrThrow({
         where: { id: input.applicationId },
-        include: {
-          job: true,
-        },
       });
 
       const messages: ChatCompletionRequestMessage[] = [
-        getSystemMessage(application.job, input.skill),
+        getSystemMessage(application, input.skill),
       ];
       if (input.pastQuestions) {
         messages.push(getPastQuestionsPrompt(input.pastQuestions));

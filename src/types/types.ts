@@ -6,6 +6,7 @@ import { type AppRouter } from "~/server/api/root";
 
 import {
   type applicantSchema,
+  type applicationRequestSchema,
   type appplicationSchema,
   type contactFormSchema,
   type interviewRequestSchema,
@@ -13,7 +14,7 @@ import {
 } from "./schemas";
 
 export type JobData = z.infer<typeof jobSchema>;
-export type ApplicantData = z.infer<typeof applicantSchema>;
+export type ApplicantFormData = z.infer<typeof applicantSchema>;
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 export type InterviewRequest = z.infer<typeof interviewRequestSchema>;
 export type InterviewHookRequest = Omit<
@@ -81,3 +82,6 @@ export enum RefineMode {
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export type ApplicationData = RouterOutput["application"]["getAllForUser"][0];
+export type ApplicantData = RouterOutput["applicant"]["getForLoggedUser"][0];
+
+export type ApplicationRequestData = z.infer<typeof applicationRequestSchema>;
