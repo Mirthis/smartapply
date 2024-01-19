@@ -11,7 +11,7 @@ export default authMiddleware({
     "/beta",
     "/api/(.*)",
   ],
-  // debug: true
+  debug: true,
 });
 
 export const config = {
