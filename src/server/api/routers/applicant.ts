@@ -1,6 +1,8 @@
 import { z } from "zod";
 
+import { openaiClient } from "~/lib/openai";
 import { applicantSchema } from "~/types/schemas";
+import { type ParsedResume } from "~/types/types";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -152,5 +154,32 @@ export const applicantRouter = createTRPCRouter({
         },
       });
       return applicant;
+    }),
+  parseResume: protectedProcedure
+    .input(z.object({ resumeText: z.string() }))
+    .mutation(async ({ input }) => {
+      const response = await openaiClient.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            content: `I want you to extract the applicant details from the resume text provided.
+              Details needed are first name and last name, resume summmary, skills and professional experience (company name, job title, job description).
+              Result should be in JSON format: { firstName: string, lastName: string, jobTitle:string, summary: string, skills: string[], experience: { company: string, title: string, description: string }[] }`,
+            role: "system",
+          },
+          {
+            content: input.resumeText,
+            role: "user",
+          },
+        ],
+      });
+      const responseText = response.data.choices[0]?.message?.content;
+      if (!responseText) {
+        throw new Error("OpenAI API returned no response");
+      }
+      const parsedResume: ParsedResume = JSON.parse(
+        responseText
+      ) as ParsedResume;
+      return parsedResume;
     }),
 });

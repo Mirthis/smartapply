@@ -175,6 +175,27 @@ export const useInterview = (options?: {
   return useStreamingApi(fn, options);
 };
 
+type ExtractApplicantArgs = {
+  resumeText: string;
+};
+
+export const useExtractApplicant = (options?: {
+  onSuccess: (data: string, args: ExtractApplicantArgs) => void;
+}) => {
+  const fn = (args: ExtractApplicantArgs) =>
+    fetch("/api/extractApplicant", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...args,
+      }),
+    });
+
+  return useStreamingApi(fn, options);
+};
+
 type RefineCoverLetterArgs = {
   application: ApplicationData;
   srcCoverLetter: string;

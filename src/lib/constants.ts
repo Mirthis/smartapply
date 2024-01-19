@@ -13,6 +13,9 @@ export const MAX_COVER_LETTERS = 5;
 export const MAX_COVER_LETTERS_TABS = 5;
 export const MAX_INTERVIEW_PHASE_1_MESSAGES = 10;
 // export const MAX_INTERVIEW_PHASE_2_MESSAGES = 4;
+export const MAX_FILE_SIZE_KB = 200; // 200KB
+export const MAX_FILE_NUM_PAGES = 1;
+export const MAX_FILE_TEXT_LENGTH = 10_000;
 
 export const featureCardsData = [
   {

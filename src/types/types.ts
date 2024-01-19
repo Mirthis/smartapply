@@ -85,3 +85,43 @@ export type ApplicationData = RouterOutput["application"]["getAllForUser"][0];
 export type ApplicantData = RouterOutput["applicant"]["getForLoggedUser"][0];
 
 export type ApplicationRequestData = z.infer<typeof applicationRequestSchema>;
+
+export interface TextItem {
+  text: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fontName: string;
+  hasEOL: boolean;
+}
+
+type FeatureScore = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4;
+type ReturnMatchingTextOnly = boolean;
+export type FeatureSet =
+  | [(item: TextItem) => boolean, FeatureScore]
+  | [
+      (item: TextItem) => RegExpMatchArray | null,
+      FeatureScore,
+      ReturnMatchingTextOnly
+    ];
+
+export interface TextScore {
+  text: string;
+  score: number;
+  match: boolean;
+}
+export type TextScores = TextScore[];
+
+export interface ParsedResume {
+  firstName: string;
+  lastName: string;
+  jobTitle: string;
+  summary: string;
+  skills: string[];
+  experience: {
+    company: string;
+    title: string;
+    description: string;
+  }[];
+}

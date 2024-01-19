@@ -68,7 +68,7 @@ const ProfilePage: NextPage = () => {
       <EditProfileApplicantModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        applicant={modalApplicant}
+        initApplicant={modalApplicant}
       />
       {modalApplicant && (
         <DeleteProfileApplicantModal
