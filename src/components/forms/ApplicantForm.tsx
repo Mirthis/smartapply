@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+import { api } from "~/lib/api";
 import {
   APPL_EXP_MAX_LENGTH,
   APPL_RESUME_MAX_LENGTH,
@@ -16,24 +17,44 @@ import Spinner from "../utils/Spinner";
 
 const ApplicantForm = ({
   applicant,
-  onSubmit,
   forceNewOnEdit = false,
+  onSuccess,
 }: {
   applicant: ApplicantFormData | undefined;
-  onSubmit: (data: ApplicantFormData) => void;
   forceNewOnEdit?: boolean;
+  onSuccess?: () => void;
 }) => {
+  const utils = api.useContext();
+
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isValid, isSubmitting, isDirty },
+    formState: { errors, isValid, isDirty },
   } = useForm<ApplicantFormData>({
     resolver: zodResolver(applicantSchema),
     mode: "onTouched",
     defaultValues: applicant,
   });
+
+  const { mutateAsync: upsertApplicant, isLoading: isSubmitting } =
+    api.applicant.createOrUpdate.useMutation({
+      onSuccess: () => {
+        void utils.applicant.getForLoggedUser.invalidate();
+        void utils.user.getOnboardingState.invalidate();
+        onSuccess?.();
+      },
+    });
+
+  const onSubmit = (data: ApplicantFormData) => {
+    const setAsMain = !applicant || applicant.isMain;
+
+    void upsertApplicant({
+      applicant: data,
+      setAsMain,
+    });
+  };
 
   useEffect(() => {
     reset(applicant);
@@ -56,7 +77,7 @@ const ApplicantForm = ({
               <div className="relative w-1/2">
                 <input
                   type="text"
-                  className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                  className="peer input-bordered input-secondary input block w-full focus:outline-offset-0"
                   placeholder=" "
                   id={"firstName"}
                   {...register("firstName")}
@@ -73,7 +94,7 @@ const ApplicantForm = ({
                 <input
                   type="text"
                   id="lastName"
-                  className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                  className="peer input-bordered input-secondary input block w-full focus:outline-offset-0"
                   placeholder=" "
                   {...register("lastName")}
                   disabled={isSubmitting}
@@ -98,7 +119,7 @@ const ApplicantForm = ({
               <input
                 type="text"
                 id="title"
-                className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                className="peer input-bordered input-secondary input block w-full focus:outline-offset-0"
                 placeholder=" "
                 {...register("jobTitle")}
                 disabled={isSubmitting}
@@ -118,7 +139,7 @@ const ApplicantForm = ({
             <div className="relative">
               <textarea
                 id="resume"
-                className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                className="peer textarea-bordered textarea-secondary scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 textarea w-full  focus:outline-offset-0"
                 placeholder=" "
                 {...register("resume")}
                 disabled={isSubmitting}
@@ -144,7 +165,7 @@ const ApplicantForm = ({
             <div className="relative">
               <textarea
                 id="skills"
-                className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                className="peer textarea-bordered textarea-secondary scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 textarea w-full  focus:outline-offset-0"
                 placeholder=" "
                 {...register("skills")}
                 disabled={isSubmitting}
@@ -171,7 +192,7 @@ const ApplicantForm = ({
             <div className="relative">
               <textarea
                 id="experience"
-                className="peer textarea-bordered textarea-primary textarea w-full  focus:outline-offset-0"
+                className="peer textarea-bordered textarea-secondary textarea w-full  focus:outline-offset-0 scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300"
                 placeholder=" "
                 {...register("experience")}
                 disabled={isSubmitting}
@@ -196,7 +217,7 @@ const ApplicantForm = ({
           </div>
 
           <button
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || isSubmitting || !isDirty}
             type="submit"
             className="btn-primary btn"
           >

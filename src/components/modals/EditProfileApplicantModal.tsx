@@ -2,7 +2,6 @@ import { DocumentArrowUpIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 import { useEffect, useState } from "react";
 
-import { api } from "~/lib/api";
 import { cn } from "~/lib/utils";
 import {
   type ApplicantData,
@@ -25,8 +24,6 @@ const EditProfileApplicantModal = ({
   onClose: () => void;
   initApplicant?: ApplicantData | undefined;
 }) => {
-  const utils = api.useContext();
-
   const [mode, setMode] = useState<EditProfileMode>("upload");
   const [applicant, setApplicant] = useState<ApplicantFormData | undefined>(
     initApplicant
@@ -40,24 +37,6 @@ const EditProfileApplicantModal = ({
     setApplicant(initApplicant);
   }, [initApplicant]);
 
-  const { mutateAsync: upsertApplicant } =
-    api.applicant.createOrUpdate.useMutation({
-      onSuccess: () => {
-        void utils.applicant.getForLoggedUser.invalidate();
-        void utils.user.getOnboardingState.invalidate();
-        onClose();
-      },
-    });
-
-  const onSubmit = (data: ApplicantFormData) => {
-    const setAsMain = !initApplicant || initApplicant.isMain;
-
-    void upsertApplicant({
-      applicant: data,
-      setAsMain,
-    });
-  };
-
   const onParseSuccess = (parsedResume: ParsedResume) => {
     const newApplicant: ApplicantFormData = {
       firstName: parsedResume.firstName,
@@ -65,6 +44,7 @@ const EditProfileApplicantModal = ({
       jobTitle: parsedResume.jobTitle,
       resume: parsedResume.summary,
       skills: parsedResume.skills.join("\n"),
+      isMain: applicant?.isMain ?? true,
       experience: parsedResume.experience
         .map(
           ({ company, title, description }) =>
@@ -112,7 +92,7 @@ const EditProfileApplicantModal = ({
       </div>
       <div className="pt-2">
         {mode === "edit" && (
-          <ApplicantForm applicant={applicant} onSubmit={onSubmit} />
+          <ApplicantForm applicant={applicant} onSuccess={() => onClose()} />
         )}
         {mode === "upload" && (
           <div>

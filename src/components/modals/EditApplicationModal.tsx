@@ -130,7 +130,7 @@ const EditApplicationModal = ({
               <input
                 type="text"
                 id="title"
-                className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                className="peer input-bordered input-secondary input block w-full focus:outline-offset-0"
                 placeholder=" "
                 {...register("title")}
               />
@@ -149,7 +149,7 @@ const EditApplicationModal = ({
             <div className="relative">
               <textarea
                 id="description"
-                className="peer textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
+                className="peer textarea-bordered textarea-secondary scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 textarea w-full focus:outline-offset-0"
                 placeholder=" "
                 {...register("description")}
                 rows={5}
@@ -170,7 +170,7 @@ const EditApplicationModal = ({
               <input
                 id="companyName"
                 type="text"
-                className="peer input-bordered input-primary input block w-full focus:outline-offset-0"
+                className="peer input-bordered input-secondary input block w-full focus:outline-offset-0"
                 placeholder=" "
                 {...register("companyName")}
               />
@@ -189,7 +189,7 @@ const EditApplicationModal = ({
             <div className="relative">
               <textarea
                 id="companyDetails"
-                className="peer textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
+                className="peer textarea-bordered textarea-secondary scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 textarea w-full focus:outline-offset-0"
                 placeholder=" "
                 {...register("companyDetails")}
                 rows={5}

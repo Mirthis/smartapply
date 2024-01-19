@@ -291,7 +291,7 @@ const CoverLetterPage: NextPage = () => {
                         
                         className="max-h-[calc(100vh-23rem)] max-w-none lg:max-h-[calc(100vh-20rem)]"
                       > */}
-                      <div className="max-h-[calc(100vh-23rem)] overflow-auto relative rounded-md bg-base-200 p-2">
+                      <div className="max-h-[calc(100vh-23rem)] scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 overflow-auto relative rounded-md bg-base-200 p-2">
                         {/* {displayedText} */}
                         <div>
                           {formatApiMessage(displayedText).map((p, i) => (

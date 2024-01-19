@@ -179,6 +179,8 @@ export const applicantSchema = z.object({
     z.string().length(0),
     z.null(),
   ]),
+
+  isMain: z.boolean(),
 });
 
 export const applicationRequestSchema = appplicationSchema.merge(

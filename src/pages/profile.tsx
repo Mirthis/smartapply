@@ -133,8 +133,9 @@ const ProfilePage: NextPage = () => {
             </div>
           </div>
         )}
+        <div className="divider lg:hidden" />
         <div className="flex-1">
-          <Title title="Other Applicants" type="subsubsection" />
+          <Title title="Other Applicants" type="subsection" />
           {otherApplicants && otherApplicants.length === 0 && (
             <p>You have no other applicants saved.</p>
           )}
