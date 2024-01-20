@@ -125,3 +125,10 @@ export interface ParsedResume {
     description: string;
   }[];
 }
+
+export type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};

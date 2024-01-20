@@ -74,15 +74,36 @@ export const applicationRouter = createTRPCRouter({
         ],
       });
 
-      const skillsSummary = response.data.choices[0]?.message?.content;
-      if (!skillsSummary) {
+        const skillsSummary = response.data.choices[0]?.message?.content;
+        if (!skillsSummary) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Unable to generate skills summary",
+          });
+        }
+
+        // console.log("GPT3 Skill summary");
+        // console.log(skillsSummary);
+
+        const newJob = await ctx.prisma.job.create({
+          data: {
+            title: input.job.title,
+            description: input.job.description,
+            companyName: input.job.companyName,
+            companyDetails: input.job.companyDetails,
+            skillsSummary,
+            userId,
+          },
+        });
+        jobId = newJob.id;
+      } else {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Unable to generate skills summary",
+          message: "jobId or job must be provided",
         });
       }
-
-      // create or update application
+      // create application
+      const applicaitonId = input.applicationId ?? "N/A ";
       const application = await ctx.prisma.application.upsert({
         where: {
           id: applicationId ?? "N/A ",

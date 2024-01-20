@@ -19,6 +19,7 @@ const server = z.object({
   STRIPE_SECRET_KEY: z.string().min(1).optional(),
   STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
   STRIPE_TRIAL_PERIOD_DAYS: z.string().min(1).optional(),
+  WEBSITE_URL: z.string().min(1),
 });
 
 /**
@@ -31,11 +32,11 @@ const client = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1),
   NEXT_PUBLIC_INIT_STORE: z.string().min(1).optional(),
-  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1).optional(),
-  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1).optional(),
-  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1).optional(),
-  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().min(1).optional(),
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1),
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1),
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().min(1),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
 });
 
 /**
@@ -56,6 +57,7 @@ const processEnv = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   EMAIL_RECIPIENT: process.env.EMAIL_RECIPIENT,
   SKIP_AI: process.env.SKIP_AI,
+  WEBSITE_URL: process.env.WEBSITE_URL,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

@@ -30,7 +30,7 @@ const InterviewPage: NextPage = () => {
   const questions = test?.questions ?? [];
   const router = useRouter();
 
-  const [skill, setSkill] = useState<string>("*ALL*");
+  const [skill, setSkill] = useState<string>(TEST_ALL_SKILLS_KEY);
 
   const applicationId =
     router.query.id && !Array.isArray(router.query.id)
@@ -52,6 +52,9 @@ const InterviewPage: NextPage = () => {
       },
     }
   );
+
+  const { data: proStatus } = api.user.getProState.useQuery();
+  const hasPro = proStatus?.hasPro ?? false;
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
   // TODO: add captcha check

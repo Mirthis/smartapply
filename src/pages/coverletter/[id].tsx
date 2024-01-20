@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { ClipboardIcon } from "@heroicons/react/24/outline";
+import { LockClosedIcon } from "@heroicons/react/24/solid";
 
 import { useEffect, useState } from "react";
 
@@ -27,6 +28,9 @@ const CoverLetterPage: NextPage = () => {
 
   const { coverLetters, addCoverLetter, setCoverLetters, clearCoverLetters } =
     useAppStore((state) => state);
+
+  const { data: proStatus } = api.user.getProState.useQuery();
+  const hasPro = proStatus?.hasPro ?? false;
 
   const applicationId =
     router.query.id && !Array.isArray(router.query.id)

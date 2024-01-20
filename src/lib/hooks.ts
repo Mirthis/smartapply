@@ -1,7 +1,7 @@
 import { type Application } from "@prisma/client";
 import { type ChatCompletionResponseMessage } from "openai";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import {
@@ -11,6 +11,8 @@ import {
   type JobData,
   type RefineMode,
 } from "~/types/types";
+
+import { api } from "./api";
 
 export const useRecaptcha = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -253,6 +255,53 @@ export const useStore = <T, F>(
   }, [result]);
 
   return data;
+};
+
+export const useProFeatures = () => {
+  const { data: user, isLoading, isError } = api.user.get.useQuery();
+  const hasPro = !!user?.lifetimePro || (user?._count?.subscriptions ?? 0) > 0;
+  return {
+    hasPro,
+    isLoading,
+    isError,
+  };
+};
+
+export const useProStatus = () => {
+  const { data: user, isLoading, isError } = api.user.get.useQuery();
+  const hasPro = !!user?.lifetimePro || (user?._count?.subscriptions ?? 0) > 0;
+  return {
+    hasPro,
+    isLoading,
+    isError,
+  };
+};
+
+export const useInterval = (
+  callback: () => void,
+  delay: number,
+  stop: boolean
+) => {
+  const savedCallback = useRef<() => void>();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    const tick = () => {
+      if (savedCallback.current) {
+        savedCallback.current();
+      }
+    };
+
+    if (!stop) {
+      const id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay, stop]);
 };
 
 export default useStore;

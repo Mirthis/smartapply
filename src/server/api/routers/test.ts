@@ -6,15 +6,17 @@ import {
 } from "openai";
 import { z } from "zod";
 
+import { addDelay } from "~/utils/misc";
+import { openaiClient } from "~/utils/openai";
+
 import { env } from "~/env.mjs";
 import { openaiClient } from "~/lib/openai";
 import { addDelay } from "~/lib/utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type TestQuestion } from "~/types/types";
 
-const getSystemMessage = (application: Application, skill: string) => {
-  const skills = skill === "*ALL*" ? application.skillsSummary : skill;
+const getSystemMessage = (job: Job, skill: string) => {
+  const skills = skill === "*ALL*" ? job.skillsSummary : skill;
 
   const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${skills}.
   You must not ask the same queston twice.
@@ -41,19 +43,19 @@ const getSystemMessage = (application: Application, skill: string) => {
   };
 };
 
-const getExplanationPrompt = (
-  question: string,
-  answer: string
-): ChatCompletionRequestMessage => {
-  const content = `Your question was: ${question}
-  I think the correct answer is ${answer}.
-  Tell me if this is correct or not and provide a detailed explanation for the correct answer.`;
+// const getExplanationPrompt = (
+//   question: string,
+//   answer: string
+// ): ChatCompletionRequestMessage => {
+//   const content = `Your question was: ${question}
+//   I think the correct answer is ${answer}.
+//   Tell me if this is correct or not and provide a detailed explanation for the correct answer.`;
 
-  return {
-    role: ChatCompletionRequestMessageRoleEnum.User,
-    content,
-  };
-};
+//   return {
+//     role: ChatCompletionRequestMessageRoleEnum.User,
+//     content,
+//   };
+// };
 
 const getPastQuestionsPrompt = (pastQuestions: string) => {
   const content = `Here are the questions you asked so far:
@@ -82,8 +84,23 @@ export const testRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (input.skill !== TEST_ALL_SKILLS_KEY) {
+        const hasPro = await ctx.prisma.subscription.count({
+          where: {
+            userId: ctx.auth.userId,
+            status: "active",
+          },
+        });
+        if (!hasPro) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Not authorized",
+          });
+        }
+      }
+
       if (env.SKIP_AI) {
-        // await addDelay(1000);
+        await addDelay(1000);
         const responseText: TestQuestion = {
           id: 0,
           question: `Skill: ${input.skill} - What is React?`,
@@ -114,8 +131,6 @@ export const testRouter = createTRPCRouter({
       }
       messages.push(getQuestionPrompt());
 
-      // console.log({ messages });
-
       const response = await openaiClient.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages,
@@ -145,56 +160,57 @@ export const testRouter = createTRPCRouter({
       }
     }),
 
-  getAnswerExplanation: protectedProcedure
-    .input(
-      z.object({
-        job: jobSchema,
-        applicant: applicantSchema,
-        question: z.string(),
-        answer: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      if (env.SKIP_AI) {
-        // throw new TRPCError({
-        //   code: "INTERNAL_SERVER_ERROR",
-        //   message: "OpenAI API returned no response",
-        // });
-        await addDelay(1000);
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
-          content: "Correct answer.",
-        };
-        return message;
-      }
+  // NOTE: replaced by standard NextJS route to allow streaming
+  // getAnswerExplanation: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       job: jobSchema,
+  //       applicant: applicantSchema,
+  //       question: z.string(),
+  //       answer: z.string(),
+  //     })
+  //   )
+  //   .mutation(async ({ input }) => {
+  //     if (env.SKIP_AI) {
+  //       // throw new TRPCError({
+  //       //   code: "INTERNAL_SERVER_ERROR",
+  //       //   message: "OpenAI API returned no response",
+  //       // });
+  //       await addDelay(1000);
+  //       const message: ChatCompletionRequestMessage = {
+  //         role: ChatCompletionRequestMessageRoleEnum.Assistant,
+  //         content: "Correct answer.",
+  //       };
+  //       return message;
+  //     }
 
-      const messages = [getExplanationPrompt(input.question, input.answer)];
-      const response = await openaiClient.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages,
-      });
-      const finishReason = response.data.choices[0]?.finish_reason;
-      // TODO: handle this exception and other finish reasons
-      if (finishReason === "lenght") {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Cover letter generation failed due to excessive length",
-        });
-      }
+  //     const messages = [getExplanationPrompt(input.question, input.answer)];
+  //     const response = await openaiClient.createChatCompletion({
+  //       model: "gpt-3.5-turbo",
+  //       messages,
+  //     });
+  //     const finishReason = response.data.choices[0]?.finish_reason;
+  //     // TODO: handle this exception and other finish reasons
+  //     if (finishReason === "lenght") {
+  //       throw new TRPCError({
+  //         code: "INTERNAL_SERVER_ERROR",
+  //         message: "Cover letter generation failed due to excessive length",
+  //       });
+  //     }
 
-      const responseText = response.data.choices[0]?.message?.content;
-      if (responseText) {
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
-          content: responseText,
-        };
+  //     const responseText = response.data.choices[0]?.message?.content;
+  //     if (responseText) {
+  //       const message: ChatCompletionRequestMessage = {
+  //         role: ChatCompletionRequestMessageRoleEnum.Assistant,
+  //         content: responseText,
+  //       };
 
-        return message;
-      } else {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "OpenAI API returned no response",
-        });
-      }
-    }),
+  //       return message;
+  //     } else {
+  //       throw new TRPCError({
+  //         code: "INTERNAL_SERVER_ERROR",
+  //         message: "OpenAI API returned no response",
+  //       });
+  //     }
+  //   }),
 });

@@ -11,4 +11,9 @@
     <loc>https://www.smartapply.app/sign-up</loc>
     <lastmod>2023-12-01</lastmod>
   </url>
+  <url>
+    <loc>http://localhost:3000/subscription</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
 </urlset>
