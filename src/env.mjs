@@ -16,6 +16,9 @@ const server = z.object({
   SMTP_PASSWORD: z.string().min(1),
   EMAIL_RECIPIENT: z.string().min(1),
   SKIP_AI: z.string().min(1).optional(),
+  STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+  STRIPE_TRIAL_PERIOD_DAYS: z.string().min(1).optional(),
 });
 
 /**
@@ -30,6 +33,9 @@ const client = z.object({
   NEXT_PUBLIC_INIT_STORE: z.string().min(1).optional(),
   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1).optional(),
   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1).optional(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1).optional(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().min(1).optional(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
 });
 
 /**
@@ -59,6 +65,13 @@ const processEnv = {
     process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
     process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_TRIAL_PERIOD_DAYS: process.env.STRIPE_TRIAL_PERIOD_DAYS,
 };
 
 // Don't touch the part below

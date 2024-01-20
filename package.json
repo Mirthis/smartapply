@@ -42,6 +42,7 @@
     "react-google-recaptcha-v3": "^1.10.1",
     "react-hook-form": "^7.43.9",
     "simplebar-react": "^3.2.4",
+    "stripe": "^14.13.0",
     "superjson": "1.12.2",
     "tailwind-merge": "^2.2.0",
     "zod": "^3.21.4",
