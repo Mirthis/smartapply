@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { formatCurrency } from "~/utils/formatter";
-import getStripe from "~/utils/getStipe";
+import { api } from "~/lib/api";
+import { formatCurrency } from "~/lib/formatter";
+import getStripe from "~/lib/getStipe";
 
 import { Layout, Title } from "~/components";
 import { Spinner } from "~/components/utils";

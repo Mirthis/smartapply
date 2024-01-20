@@ -7,7 +7,7 @@ const config = {
   importOrder: [
     "^react(.*)$",
     "^next(.*)$",
-    "^~/utils/(.*)$",
+    "^~/lib/(.*)$",
     "^~/components(.*)$",
     "^[~/]",
     "^[./]",

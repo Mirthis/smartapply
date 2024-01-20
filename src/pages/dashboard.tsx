@@ -9,13 +9,14 @@ import { useState } from "react";
 
 import { type NextPage } from "next";
 
+import { api } from "~/lib/api";
+
 import { Layout, Title } from "~/components";
 import ServiceLinks from "~/components/ServiceLinks";
 import { DeleteApplicationModal } from "~/components/modals";
 import EditApplicationModal from "~/components/modals/EditApplicationModal";
 import Spinner from "~/components/utils/Spinner";
 
-import { api } from "~/lib/api";
 import { type ApplicationData } from "~/types/types";
 
 const ApplicationsPage: NextPage = () => {

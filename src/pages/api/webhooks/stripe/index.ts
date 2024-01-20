@@ -9,7 +9,7 @@ import { prisma } from "~/server/db";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   // https://github.com/stripe/stripe-node#configuration
-  apiVersion: "2022-11-15",
+  apiVersion: "2023-10-16",
 });
 
 const webhookSecret: string = env.STRIPE_WEBHOOK_SECRET;
@@ -193,18 +193,18 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     switch (event.type) {
       case "product.created":
       case "product.updated":
-        await upsertProductRecord(event.data.object as Stripe.Product);
+        await upsertProductRecord(event.data.object);
         break;
       case "price.created":
       case "price.updated":
-        await upsertPriceRecord(event.data.object as Stripe.Price);
+        await upsertPriceRecord(event.data.object);
         break;
 
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted":
         console.log("subscription event", event.type);
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object;
 
         await manageSubscriptionStatusChange(
           subscription.id,
@@ -213,7 +213,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         break;
       case "checkout.session.completed":
         console.log("checkout.session.completed");
-        const checkoutSession = event.data.object as Stripe.Checkout.Session;
+        const checkoutSession = event.data.object;
         if (checkoutSession.mode === "subscription") {
           console.log("subscription checkout");
           const subscriptionId = checkoutSession.subscription;

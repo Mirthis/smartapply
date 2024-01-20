@@ -5,13 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { ApplicationSideBar, Layout, Title } from "~/components";
-import Spinner from "~/components/utils/Spinner";
-
 import { api } from "~/lib/api";
 import { MAX_TEST_QUESTIONS } from "~/lib/constants";
 import { formatApiMessage } from "~/lib/formatter";
 import { useValidateTestResponse } from "~/lib/hooks";
+
+import { ApplicationSideBar, Layout, Title } from "~/components";
+import Spinner from "~/components/utils/Spinner";
+
 import { useAppStore } from "~/store/store";
 import { type TestQuestion } from "~/types/types";
 
@@ -30,7 +31,7 @@ const InterviewPage: NextPage = () => {
   const questions = test?.questions ?? [];
   const router = useRouter();
 
-  const [skill, setSkill] = useState<string>(TEST_ALL_SKILLS_KEY);
+  const [skill, setSkill] = useState<string>("*ALL*");
 
   const applicationId =
     router.query.id && !Array.isArray(router.query.id)

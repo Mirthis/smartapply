@@ -1,11 +1,11 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 
-import { api } from "~/utils/api";
-import { formatCurrency } from "~/utils/formatter";
-
 import { Layout, Title } from "~/components";
 import { Spinner } from "~/components/utils";
+
+import { api } from "~/lib/api";
+import { formatCurrency } from "~/lib/formatter";
 
 const ManageSubscriptionPage: NextPage = () => {
   const {

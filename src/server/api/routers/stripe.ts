@@ -3,12 +3,13 @@ import Stripe from "stripe";
 import { z } from "zod";
 
 import { env } from "~/env.mjs";
+import { absoluteUrl } from "~/lib/utils";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   // https://github.com/stripe/stripe-node#configuration
-  apiVersion: "2022-11-15",
+  apiVersion: "2023-10-16",
 });
 
 export const stripeRouter = createTRPCRouter({
@@ -61,8 +62,10 @@ export const stripeRouter = createTRPCRouter({
             },
           ],
 
-          success_url: `${env.WEBSITE_URL}/checkoutResult?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${env.WEBSITE_URL}/upgrade`,
+          success_url: absoluteUrl(
+            `/checkoutResult?session_id={CHECKOUT_SESSION_ID}`
+          ),
+          cancel_url: absoluteUrl(`/upgrade`),
           client_reference_id: ctx.auth.userId,
         };
         const checkoutSession: Stripe.Checkout.Session =
@@ -120,7 +123,7 @@ export const stripeRouter = createTRPCRouter({
 
     const { url } = await stripe.billingPortal.sessions.create({
       customer: stipeCustomer.stripeId,
-      return_url: `${env.WEBSITE_URL}/subscription`,
+      return_url: absoluteUrl(`/subscription`),
     });
     return url;
   }),

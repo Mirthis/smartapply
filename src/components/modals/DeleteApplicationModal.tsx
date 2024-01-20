@@ -1,4 +1,5 @@
 import { api } from "~/lib/api";
+
 import { type ApplicationData } from "~/types/types";
 
 import Spinner from "../utils/Spinner";

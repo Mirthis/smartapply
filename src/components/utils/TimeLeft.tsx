@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { TimeLeft } from "~/types/types";
 
-import { getTimeLeftObject } from "~/utils/formatter";
-import { useInterval } from "~/utils/hooks";
+import { getTimeLeftObject } from "~/lib/formatter";
+import { useInterval } from "~/lib/hooks";
 
 const TimeLeft = ({ endDate }: { endDate: Date }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(

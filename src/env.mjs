@@ -16,10 +16,9 @@ const server = z.object({
   SMTP_PASSWORD: z.string().min(1),
   EMAIL_RECIPIENT: z.string().min(1),
   SKIP_AI: z.string().min(1).optional(),
-  STRIPE_SECRET_KEY: z.string().min(1).optional(),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
-  STRIPE_TRIAL_PERIOD_DAYS: z.string().min(1).optional(),
-  WEBSITE_URL: z.string().min(1),
+  STRIPE_SECRET_KEY: z.string().min(1),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1),
+  STRIPE_TRIAL_PERIOD_DAYS: z.string().min(1),
 });
 
 /**
@@ -57,7 +56,6 @@ const processEnv = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   EMAIL_RECIPIENT: process.env.EMAIL_RECIPIENT,
   SKIP_AI: process.env.SKIP_AI,
-  WEBSITE_URL: process.env.WEBSITE_URL,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

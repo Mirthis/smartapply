@@ -4,11 +4,11 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-
 import { Layout } from "~/components";
 import Title from "~/components/Title";
 import Spinner from "~/components/utils/Spinner";
+
+import { api } from "~/lib/api";
 
 const CheckoutResultPage: NextPage = () => {
   const router = useRouter();

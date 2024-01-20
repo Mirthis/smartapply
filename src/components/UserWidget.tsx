@@ -7,12 +7,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
+import { api } from "~/lib/api";
 
 export default function UserWidget() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
+
+  const { data: proStatus } = api.user.getProState.useQuery();
 
   return (
     <>
@@ -122,7 +124,7 @@ export default function UserWidget() {
                   <Menu.Item>
                     {({ active }) => (
                       <button
-                      nClick={() => void signOut(() => router.push("/"))
+                        onClick={() => void signOut(() => router.push("/"))}
                         className={`${
                           active
                             ? "bg-primary text-primary-content"
