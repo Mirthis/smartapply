@@ -1,4 +1,4 @@
-import { DocumentArrowUpIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { FileUp, PencilLine } from "lucide-react";
 
 import { useEffect, useState } from "react";
 
@@ -76,7 +76,7 @@ const EditProfileApplicantModal = ({
           role="tab"
           className={cn("tab tab-bordered", { "tab-active": mode === "edit" })}
         >
-          <PencilIcon className="h-4 w-4" />
+          <PencilLine className="h-4 w-4" />
           Edit Details
         </a>
         <a
@@ -86,7 +86,7 @@ const EditProfileApplicantModal = ({
             "tab-active": mode === "upload",
           })}
         >
-          <DocumentArrowUpIcon className="h-4 w-4" />
+          <FileUp className="h-4 w-4" />
           Populate from file
         </a>
       </div>

@@ -1,4 +1,4 @@
-import { CloudIcon, DocumentIcon } from "@heroicons/react/24/outline";
+import { Cloud, FileText } from "lucide-react";
 
 import { useState } from "react";
 import Dropzone from "react-dropzone";
@@ -81,7 +81,7 @@ const FileUpload = ({
             <input {...getInputProps()} />
             <div className="flex flex-col items-center justify-center h-full w-full rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <CloudIcon className="h-6 w-6 text-zinc-500 mb-2" />
+                <Cloud className="h-6 w-6 text-zinc-500 mb-2" />
                 <p className="mb-2 text-sm  text-zinc-700">
                   <span className="font-semibold">Click to uploade</span> or
                   drag and drop
@@ -94,7 +94,7 @@ const FileUpload = ({
                 {acceptedFiles.length > 0 && acceptedFiles[0] && (
                   <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
                     <div className="px-3 py-2 h-full grid place-items-center">
-                      <DocumentIcon className="h-4 w-4 text-primary-focus" />
+                      <FileText className="h-4 w-4 text-primary-focus" />
                     </div>
                     <div className="px-3 py-2 h-full text-sm truncate">
                       {acceptedFiles[0].name}
@@ -105,7 +105,7 @@ const FileUpload = ({
                   <>
                     <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
                       <div className="px-3 py-2 h-full grid place-items-center">
-                        <DocumentIcon className="h-4 w-4 text-error" />
+                        <FileText className="h-4 w-4 text-error" />
                       </div>
                       <div className="px-3 py-2 h-full text-sm truncate">
                         {fileRejections[0].file.name}

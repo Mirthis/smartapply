@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/nextjs";
-import { UserCircleIcon, UserIcon } from "@heroicons/react/24/solid";
+import { CircleUserRound, UserCircle } from "lucide-react";
 import { type ChatCompletionResponseMessage } from "openai";
 
 import Image from "next/image";
@@ -35,16 +35,16 @@ const MessageBubble = ({
     <>
       {message.role === "user" && (
         <div className="flex  items-end gap-x-2">
-          {user?.profileImageUrl ? (
+          {user?.imageUrl ? (
             <Image
               className="mb-1 h-10 w-10 rounded-full"
-              src={user.profileImageUrl}
+              src={user.imageUrl}
               width={50}
               height={50}
               alt="User Image"
             />
           ) : (
-            <UserIcon className="h-10 w-10 rounded-full text-primary" />
+            <CircleUserRound className="h-10 w-10 rounded-full text-primary" />
           )}
           <div className="chat chat-start w-full">
             <div className="chat-bubble chat-bubble-primary">
@@ -55,7 +55,7 @@ const MessageBubble = ({
       )}
       {message.role === "assistant" && (
         <div className="flex items-end">
-          <UserCircleIcon className="h-12 w-12 text-secondary" />
+          <UserCircle className="h-12 w-12 text-secondary" />
           <div className="chat chat-start w-full">
             <div className="chat-bubble chat-bubble-secondary">
               <MessageBubbleText text={message.content} />

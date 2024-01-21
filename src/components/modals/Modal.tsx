@@ -1,8 +1,9 @@
-import Title from "../Title";
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { X } from "lucide-react";
 
 import { Fragment } from "react";
+
+import Title from "../Title";
 
 const Modal = ({
   isOpen,
@@ -61,7 +62,7 @@ const Modal = ({
                       className="btn-ghost btn-sm btn-circle btn text-center"
                       onClick={onClose}
                     >
-                      <XMarkIcon className="h-6 w-6 " />
+                      <X className="h-6 w-6 " />
                     </button>
                   </div>
                   {children}

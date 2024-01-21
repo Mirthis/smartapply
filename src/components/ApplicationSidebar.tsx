@@ -1,8 +1,4 @@
-import {
-  BriefcaseIcon,
-  PencilIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
+import { Briefcase, PencilLine, UserRound } from "lucide-react";
 
 import { useState } from "react";
 
@@ -33,7 +29,7 @@ const ApplicationSideBar = ({ applicationId }: { applicationId: string }) => {
         <div className="space-y-2">
           {/* Job Details */}
           <div className="flex gap-x-4 items-center text-xl">
-            <BriefcaseIcon className="w-8 h-8" />
+            <Briefcase className="w-8 h-8" />
             <div>
               <p>{application.title}</p>
               {application.companyName && <p>@{application.companyName}</p>}
@@ -41,7 +37,7 @@ const ApplicationSideBar = ({ applicationId }: { applicationId: string }) => {
           </div>
           {/* Applicant Details */}
           <div className="flex gap-x-4 items-center text-xl">
-            <UserIcon className="w-8 h-8" />
+            <UserRound className="w-8 h-8" />
             <div>
               <p>
                 {application.applicant.firstName}{" "}
@@ -57,7 +53,7 @@ const ApplicationSideBar = ({ applicationId }: { applicationId: string }) => {
               className="font-bold uppercase text-secondary flex gap-x-2 items-center hover:underline underline-offset-2"
               onClick={() => setIsEditApplicationOpen(true)}
             >
-              <PencilIcon className="h-8 w-8" />
+              <PencilLine className="h-8 w-8" />
               Edit
             </button>
           </div>

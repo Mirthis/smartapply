@@ -1,9 +1,4 @@
-import {
-  ArrowUpTrayIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowUpFromLine, Plus, SquarePen, Trash2 } from "lucide-react";
 
 import { useState } from "react";
 
@@ -93,7 +88,7 @@ const ProfilePage: NextPage = () => {
             // || (!hasPro && applicants && applicants.length > 0)
           }
         >
-          <PlusIcon className="h-6 w-6 " />
+          <Plus className="h-6 w-6 " />
           <p>Add new</p>
         </button>
         {/* {!hasPro && <ProMarker />} */}
@@ -117,7 +112,7 @@ const ProfilePage: NextPage = () => {
                 className="btn-ghost btn-circle btn"
                 onClick={() => handleEditApplicant(mainApplicant)}
               >
-                <PencilSquareIcon className="h-6 w-6 text-accent" />
+                <SquarePen className="h-6 w-6 text-accent" />
               </button>
             </div>
             <div>
@@ -168,7 +163,7 @@ const ProfilePage: NextPage = () => {
                         className="btn-ghost btn-circle btn"
                         onClick={() => handleEditApplicant(applicant)}
                       >
-                        <PencilSquareIcon className="h-6 w-6 text-accent" />
+                        <SquarePen className="h-6 w-6 text-accent" />
                       </button>
 
                       <button
@@ -179,7 +174,7 @@ const ProfilePage: NextPage = () => {
                         {settingAsMain ? (
                           <Spinner className="h-6 w-6 text-success" />
                         ) : (
-                          <ArrowUpTrayIcon className="h-6 w-6 text-success" />
+                          <ArrowUpFromLine className="h-6 w-6 text-success" />
                         )}
                       </button>
 
@@ -187,7 +182,7 @@ const ProfilePage: NextPage = () => {
                         className="btn-ghost btn-circle btn"
                         onClick={() => handleRemoveApplicant(applicant)}
                       >
-                        <TrashIcon className="h-6 w-6 text-error" />
+                        <Trash2 className="h-6 w-6 text-error" />
                       </button>
                     </div>
                   </div>

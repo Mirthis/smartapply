@@ -1,17 +1,13 @@
 import {
-  ChatBubbleLeftRightIcon,
-  ClipboardDocumentCheckIcon,
-  DocumentTextIcon,
-} from "@heroicons/react/24/outline";
+  BookOpenCheck,
+  FileText,
+  type LucideIcon,
+  MessagesSquare,
+} from "lucide-react";
 
 import React from "react";
 
 import Link from "next/link";
-
-type IconType =
-  | typeof DocumentTextIcon
-  | typeof ChatBubbleLeftRightIcon
-  | typeof ClipboardDocumentCheckIcon;
 
 const ServiceLink = ({
   href,
@@ -20,7 +16,7 @@ const ServiceLink = ({
 }: {
   href: string;
   text: string;
-  Icon: IconType;
+  Icon: LucideIcon;
 }) => {
   return (
     <Link
@@ -39,17 +35,17 @@ const ServiceLinks = ({ applicationId }: { applicationId: string }) => {
       <ServiceLink
         href={`/coverletter/${applicationId}`}
         text="Cover Letters"
-        Icon={DocumentTextIcon}
+        Icon={FileText}
       />
       <ServiceLink
         href={`/interview/${applicationId}`}
         text="Interview"
-        Icon={ChatBubbleLeftRightIcon}
+        Icon={MessagesSquare}
       />
       <ServiceLink
         href={`/test/${applicationId}`}
         text="Test"
-        Icon={ClipboardDocumentCheckIcon}
+        Icon={BookOpenCheck}
       />
     </div>
   );

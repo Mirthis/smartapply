@@ -1,4 +1,4 @@
-import { ArrowPathIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { RotateCcw, SendHorizontal } from "lucide-react";
 import {
   type ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
@@ -204,7 +204,7 @@ const InterviewPage: NextPage = () => {
                       className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
                       onClick={() => setIsOpenResetModal(true)}
                     >
-                      <ArrowPathIcon className="h-8 w-8" />
+                      <RotateCcw className="h-8 w-8" />
                       Restart
                     </button>
                   </div>
@@ -269,7 +269,7 @@ const InterviewPage: NextPage = () => {
                         onClick={() => send()}
                         disabled={chatText.length === 0 || isLoadingMessage}
                       >
-                        <PaperAirplaneIcon className="h-6 w-6" />
+                        <SendHorizontal className="h-6 w-6" />
                         <p className="hidden text-center  sm:block">
                           Send
                           <br />

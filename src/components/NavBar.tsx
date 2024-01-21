@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/nextjs";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
+import { Menu, X } from "lucide-react";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -93,7 +93,7 @@ const Navbar = () => {
         <div className="flex relative w-full flex-row items-center justify-between">
           {/* Burger icon, show on small displays */}
           <div onClick={showNavBar} className=" md:hidden">
-            <Bars3Icon className="h-6 w-6" />
+            <Menu className="h-6 w-6" />
           </div>
 
           <div className="flex items-center justify-start">
@@ -151,7 +151,7 @@ const Navbar = () => {
                 onClick={hideNavBar}
                 className="  btn-accent btn-circle btn"
               >
-                <XMarkIcon className="h-4 w-4 font-bold" />
+                <X className="h-4 w-4 font-bold" />
               </button>
             </div>
           </div>
