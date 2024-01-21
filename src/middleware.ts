@@ -10,6 +10,7 @@ export default authMiddleware({
     "/about",
     "/beta",
     "/api/(.*)",
+    "/api/webhooks(.*)",
   ],
 });
 

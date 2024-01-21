@@ -49,6 +49,7 @@
     "simplebar-react": "^3.2.4",
     "stripe": "^14.13.0",
     "superjson": "1.12.2",
+    "svix": "^1.15.0",
     "tailwind-merge": "^2.2.0",
     "zod": "^3.21.4",
     "zustand": "^4.3.7"

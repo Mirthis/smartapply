@@ -4,11 +4,11 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { api } from "~/lib/api";
+
 import { Layout } from "~/components";
 import Title from "~/components/Title";
 import Spinner from "~/components/utils/Spinner";
-
-import { api } from "~/lib/api";
 
 const CheckoutResultPage: NextPage = () => {
   const router = useRouter();
@@ -52,16 +52,24 @@ const CheckoutResultPage: NextPage = () => {
       {checkoutSession && (
         <div>
           {checkoutSession.payment_status === "paid" && (
-            <div className="space-y-2 text-2xl">
-              <p className="text-success">Thank you for upgrading to Pro.</p>
-              <p>You can now use all the features of SmartApply.</p>
-              <p>
-                You can manage your subscription from your{" "}
-                <Link href="/subscription" className="link-primary link">
-                  profile page
-                </Link>
-                .
+            <div className="space-y-4 text-xl lg: text-2xl">
+              <p className="text-primary">
+                🎉 Thank you for upgrading to Pro! 🎉
               </p>
+              <p>
+                You can now use all SmartApply features and land that dream job.
+              </p>
+              <div className="flex gap-x-2">
+                <Link className="btn btn-primary" href="/dashboard">
+                  Go to Dashboard
+                </Link>
+                <Link
+                  href="/subscription"
+                  className="btn btn-outline btn-primary"
+                >
+                  Manage subscription
+                </Link>
+              </div>
             </div>
           )}
           {checkoutSession.payment_status === "unpaid" && (

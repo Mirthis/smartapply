@@ -1,11 +1,11 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 
-import { Layout, Title } from "~/components";
-import { Spinner } from "~/components/utils";
-
 import { api } from "~/lib/api";
 import { formatCurrency } from "~/lib/formatter";
+
+import { Layout, Title } from "~/components";
+import { Spinner } from "~/components/utils";
 
 const ManageSubscriptionPage: NextPage = () => {
   const {
@@ -28,57 +28,52 @@ const ManageSubscriptionPage: NextPage = () => {
       {!isLoading && (
         <>
           {proStatus?.activeSubscription ? (
-            <div className="flex flex-col gap-y-2">
-              <div className="card-bordered border-primary rounded-md">
-                <div className="card-body">
-                  <p className="text-primary card-title">
-                    Your active subscription
-                  </p>
-                  {price && (
-                    <div>
-                      {price.product?.name && <p>{price.product.name}</p>}
-                      {price.description && <p>{price.description}</p>}
-                      {price.unitAmount && (
-                        <p>
-                          {formatCurrency(
-                            price.unitAmount / 100,
-                            price.currency
-                          )}
-                          /{price.interval}
-                        </p>
-                      )}
-                      {proStatus?.activeSubscription.cancelAt ? (
-                        <span>
-                          Cancel on{" "}
-                          {new Date(
-                            proStatus?.activeSubscription.cancelAt
-                          ).toLocaleString()}
-                        </span>
-                      ) : (
-                        <span>
-                          Renews on{" "}
-                          {new Date(
-                            proStatus?.activeSubscription.currentPeriodEnd
-                          ).toLocaleString(undefined, {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  <div className="card-actions">
-                    {creatingLink && (
-                      <Spinner text="Creating customer portal link..." />
+            <div className="card-bordered border-primary rounded-md max-w-lg">
+              <div className="card-body">
+                <p className="text-primary card-title">
+                  Your active subscription
+                </p>
+                {price && (
+                  <div>
+                    {price.product?.name && <p>{price.product.name}</p>}
+                    {price.description && <p>{price.description}</p>}
+                    {price.unitAmount && (
+                      <p>
+                        {formatCurrency(price.unitAmount / 100, price.currency)}
+                        /{price.interval}
+                      </p>
                     )}
-                    {portalLink && (
-                      <Link href={portalLink} className="btn btn-primary">
-                        Manage Subscription
-                      </Link>
+                    {proStatus?.activeSubscription.cancelAt ? (
+                      <span>
+                        Cancel on{" "}
+                        {new Date(
+                          proStatus?.activeSubscription.cancelAt
+                        ).toLocaleString()}
+                      </span>
+                    ) : (
+                      <span>
+                        Renews on{" "}
+                        {new Date(
+                          proStatus?.activeSubscription.currentPeriodEnd
+                        ).toLocaleString(undefined, {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
                     )}
                   </div>
+                )}
+                <div className="card-actions mt-2">
+                  {creatingLink && (
+                    <Spinner text="Creating customer portal link..." />
+                  )}
+                  {portalLink && (
+                    <Link href={portalLink} className="btn btn-primary">
+                      Manage Subscription
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

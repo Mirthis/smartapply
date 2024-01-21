@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { api } from "~/lib/api";
 import { formatCurrency } from "~/lib/formatter";
 import getStripe from "~/lib/getStipe";
+import { cn } from "~/lib/utils";
 
 import { Layout, Title } from "~/components";
 import { Spinner } from "~/components/utils";
@@ -20,6 +21,7 @@ const UpgradePage: NextPage = () => {
 
   const { data: proData, isLoading: isLoadingPro } =
     api.user.getProState.useQuery();
+
   const router = useRouter();
 
   const {
@@ -28,7 +30,7 @@ const UpgradePage: NextPage = () => {
     isError,
   } = api.product.getActive.useQuery(undefined, {
     onSuccess: (data) => {
-      setSelectedPrice(data.prices[0]?.id);
+      // setSelectedPrice(data.prices[0]?.id);
     },
   });
 
@@ -74,7 +76,6 @@ const UpgradePage: NextPage = () => {
               </div>
             </>
           )}
-          {isLoading && <Spinner text="Retrieving pricing informations..." />}
           {/* Create predefined error components  */}
           {isError && <p>Something went wrong. Please try again later.</p>}
           {product && (
@@ -85,52 +86,64 @@ const UpgradePage: NextPage = () => {
               />
 
               <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-3">
-                {product.prices.map((price) => {
-                  const selected = price.id === selectedPrice;
-                  return (
-                    <button
-                      key={price.id}
-                      onClick={() => setSelectedPrice(price.id)}
-                    >
-                      <div
-                        className={`card h-full w-full border-2 border-secondary  lg:w-96 ${
-                          selected
-                            ? "bg-secondary text-secondary-content"
-                            : "hover:bg-base-200"
-                        }`}
+                {product.prices
+                  .sort((a, b) => {
+                    if (a.unitAmount && b.unitAmount) {
+                      return a.unitAmount - b.unitAmount;
+                    }
+                    return 0;
+                  })
+                  .map((price) => {
+                    const selected = price.id === selectedPrice;
+                    return (
+                      <button
+                        key={price.id}
+                        disabled={price.id === selectedPrice}
+                        onClick={() => setSelectedPrice(price.id)}
                       >
-                        <div className="card-body items-center text-center">
-                          {price.description && (
-                            <p className="uppercase font-semibold">
-                              {price.description}
-                            </p>
+                        <div
+                          className={cn(
+                            "card h-full w-full border-2 border-secondary lg:w-96",
+                            {
+                              "border-4 border-primary": selected,
+                              "hover:bg-base-200": !selected,
+                            }
                           )}
-                          {price.unitAmount && (
-                            <p className="text-bold text-3xl">
-                              {formatCurrency(
-                                price.unitAmount / 100,
-                                price.currency
-                              )}
-                              {price.type === "recurring" && (
-                                <span> / {price.interval}</span>
-                              )}
-                            </p>
-                          )}
-                          {price.type === "recurring" && (
-                            <p className="text-sm">Cancel anytime</p>
-                          )}
-                          {selected ? (
-                            <p className="btn btn-secondary font-bold">
-                              Selected
-                            </p>
-                          ) : (
-                            <p className="btn btn-primary">Select Plan</p>
-                          )}
+                        >
+                          <div className="card-body items-center text-center">
+                            {price.description && (
+                              <p className="uppercase font-semibold">
+                                {price.description}
+                              </p>
+                            )}
+                            {price.unitAmount && (
+                              <p className="text-bold text-3xl">
+                                {formatCurrency(
+                                  price.unitAmount / 100,
+                                  price.currency
+                                )}
+                                {price.type === "recurring" && (
+                                  <span> / {price.interval}</span>
+                                )}
+                              </p>
+                            )}
+                            {price.type === "recurring" && (
+                              <p className="text-sm">Cancel anytime</p>
+                            )}
+                            {selected ? (
+                              <p className="btn btn-primary pointer-events-none  font-bold w-36">
+                                Selected
+                              </p>
+                            ) : (
+                              <p className="btn btn-secondary w-36">
+                                Select Plan
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                      </button>
+                    );
+                  })}
               </div>
               <div className="text-center mt-4">
                 <p>Paymennts and invoicing are managed via Stripe.</p>
@@ -138,6 +151,7 @@ const UpgradePage: NextPage = () => {
                 <button
                   className="mt-4 btn btn-primary"
                   onClick={handleUpgrade}
+                  disabled={!selectedPrice}
                 >
                   Upgrade
                 </button>

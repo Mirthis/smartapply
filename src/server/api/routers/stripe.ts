@@ -2,8 +2,9 @@ import { TRPCError } from "@trpc/server";
 import Stripe from "stripe";
 import { z } from "zod";
 
-import { env } from "~/env.mjs";
 import { absoluteUrl } from "~/lib/utils";
+
+import { env } from "~/env.mjs";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -22,6 +23,13 @@ export const stripeRouter = createTRPCRouter({
           id: ctx.auth.userId,
         },
       });
+
+      const price = await ctx.prisma.price.findUniqueOrThrow({
+        where: {
+          id: input.priceId,
+        },
+      });
+
       let stripeId = user?.stripeId;
       // create stripe customer if not present
       if (!stripeId) {
@@ -42,12 +50,6 @@ export const stripeRouter = createTRPCRouter({
           },
         });
       }
-
-      const price = await ctx.prisma.price.findUniqueOrThrow({
-        where: {
-          id: input.priceId,
-        },
-      });
 
       try {
         // Create Checkout Sessions from body params.

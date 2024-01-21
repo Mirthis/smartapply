@@ -191,9 +191,11 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     switch (event.type) {
+      // TODO: manage product deletion
       case "product.created":
       case "product.updated":
         await upsertProductRecord(event.data.object);
+        // TODO: manage price deletion
         break;
       case "price.created":
       case "price.updated":
