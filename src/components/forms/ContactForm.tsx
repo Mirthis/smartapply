@@ -1,5 +1,5 @@
-import { CheckIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Check } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 
@@ -41,7 +41,7 @@ const ContactForm = () => {
     <>
       {isSubmitSuccessful && (
         <div role="alert" className="alert alert-success justify-start">
-          <CheckIcon className="h-6 w-6 text-success-content" />
+          <Check className="h-6 w-6 text-success-content" />
           <span>
             Your message has been sent!
             <br />

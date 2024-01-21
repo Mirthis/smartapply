@@ -1,9 +1,4 @@
-import {
-  ArrowUpTrayIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowUpFromLine, Plus, SquarePen, Trash2 } from "lucide-react";
 
 import { useState } from "react";
 
@@ -85,7 +80,7 @@ const ProfilePage: NextPage = () => {
           className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2 "
           onClick={handleNewApplicant}
         >
-          <PlusIcon className="h-6 w-6 " />
+          <Plus className="h-6 w-6 " />
           <p>Add new</p>
         </button>
       </div>
@@ -108,7 +103,7 @@ const ProfilePage: NextPage = () => {
                 className="btn-ghost btn-circle btn"
                 onClick={() => handleEditApplicant(mainApplicant)}
               >
-                <PencilSquareIcon className="h-6 w-6 text-accent" />
+                <SquarePen className="h-6 w-6 text-accent" />
               </button>
             </div>
             <div>
@@ -159,7 +154,7 @@ const ProfilePage: NextPage = () => {
                         className="btn-ghost btn-circle btn"
                         onClick={() => handleEditApplicant(applicant)}
                       >
-                        <PencilSquareIcon className="h-6 w-6 text-accent" />
+                        <SquarePen className="h-6 w-6 text-accent" />
                       </button>
 
                       <button
@@ -170,7 +165,7 @@ const ProfilePage: NextPage = () => {
                         {settingAsMain ? (
                           <Spinner className="h-6 w-6 text-success" />
                         ) : (
-                          <ArrowUpTrayIcon className="h-6 w-6 text-success" />
+                          <ArrowUpFromLine className="h-6 w-6 text-success" />
                         )}
                       </button>
 
@@ -178,7 +173,7 @@ const ProfilePage: NextPage = () => {
                         className="btn-ghost btn-circle btn"
                         onClick={() => handleRemoveApplicant(applicant)}
                       >
-                        <TrashIcon className="h-6 w-6 text-error" />
+                        <Trash2 className="h-6 w-6 text-error" />
                       </button>
                     </div>
                   </div>

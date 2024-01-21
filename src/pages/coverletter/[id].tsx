@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { ClipboardIcon } from "@heroicons/react/24/outline";
+import { Clipboard } from "lucide-react";
 
 import { useEffect, useState } from "react";
 
@@ -314,7 +314,7 @@ const CoverLetterPage: NextPage = () => {
                             <p className="opacity-0 transition-opacity duration-700 group-active:opacity-100 group-active:duration-0">
                               Copied
                             </p>
-                            <ClipboardIcon className="h-6 w-6" />
+                            <Clipboard className="h-6 w-6" />
                           </div>
                         </button>
                       </div>

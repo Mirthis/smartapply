@@ -1,9 +1,4 @@
-import {
-  PencilIcon,
-  PlusIcon,
-  TrashIcon,
-  UserIcon,
-} from "@heroicons/react/24/solid";
+import { PencilLine, Plus, Trash2, UserCircle } from "lucide-react";
 
 import { useState } from "react";
 
@@ -68,7 +63,7 @@ const ApplicationsPage: NextPage = () => {
           className="font-bold mb-4 uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
           onClick={handleNew}
         >
-          <PlusIcon className="h-6 w-6 " />
+          <Plus className="h-6 w-6 " />
           <p>Create New</p>
         </button>
       </div>
@@ -95,7 +90,7 @@ const ApplicationsPage: NextPage = () => {
                         : ""}
                     </h2>
                     <div className="flex items-center gap-x-2">
-                      <UserIcon className="h-6 w-6" />
+                      <UserCircle className="h-6 w-6" />
                       <p>
                         {application.applicant.firstName}{" "}
                         {application.applicant.lastName} -{" "}
@@ -143,7 +138,7 @@ const ApplicationsPage: NextPage = () => {
                           className="font-bold uppercase text-secondary flex gap-x-2 items-center hover:underline underline-offset-2"
                           onClick={() => handleEdit(application)}
                         >
-                          <PencilIcon className="h-6 w-6" />
+                          <PencilLine className="h-6 w-6" />
                           Edit
                         </button>
                       </div>
@@ -152,7 +147,7 @@ const ApplicationsPage: NextPage = () => {
                           className="font-bold flex gap-x-2 items-center uppercase text-error hover:underline underline-offset-2"
                           onClick={() => handleDelete(application)}
                         >
-                          <TrashIcon className="h-6 w-6" />
+                          <Trash2 className="h-6 w-6" />
                           Delete
                         </button>
                       </div>

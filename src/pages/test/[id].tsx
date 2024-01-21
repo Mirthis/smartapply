@@ -1,4 +1,4 @@
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { RotateCcw } from "lucide-react";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -193,7 +193,7 @@ const InterviewPage: NextPage = () => {
                   className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
                   onClick={resetTest}
                 >
-                  <ArrowPathIcon className="h-8 w-8" />
+                  <RotateCcw className="h-8 w-8" />
                   Restart
                 </button>
               </div>

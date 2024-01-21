@@ -1,8 +1,4 @@
-import {
-  BriefcaseIcon,
-  CheckIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
+import { Briefcase, Check, UserCircle } from "lucide-react";
 
 import React, { useState } from "react";
 
@@ -65,7 +61,7 @@ const WelcomePage = () => {
               })}
             >
               <div className=" flex gap-x-2">
-                <UserIcon
+                <UserCircle
                   className={cn("p-4 h-36 w-36 text-primary shrink-0", {
                     "text-success": onboardingState.hasApplicant,
                   })}
@@ -86,7 +82,7 @@ const WelcomePage = () => {
                       onClick={() => setIsEditProfileOpen(true)}
                     >
                       {onboardingState.hasApplicant ? (
-                        <CheckIcon className="h-6 w-6 font-bold" />
+                        <Check className="h-6 w-6 font-bold" />
                       ) : (
                         "Update Profile"
                       )}
@@ -104,7 +100,7 @@ const WelcomePage = () => {
               })}
             >
               <div className=" flex gap-x-2">
-                <BriefcaseIcon
+                <Briefcase
                   className={cn("p-4 h-36 w-36 text-primary shrink-0", {
                     "text-success": onboardingState.hasApplication,
                   })}
@@ -127,7 +123,7 @@ const WelcomePage = () => {
                       onClick={() => setIsEditApplicationOpen(true)}
                     >
                       {onboardingState.hasApplication ? (
-                        <CheckIcon className="h-6 w-6 font-bold" />
+                        <Check className="h-6 w-6 font-bold" />
                       ) : (
                         "Create Application"
                       )}
@@ -146,7 +142,7 @@ const WelcomePage = () => {
               })}
             >
               <div className="flex gap-x-2">
-                <CheckIcon className="p-4 h-36 w-36 text-primary shrink-0" />
+                <Check className="p-4 h-36 w-36 text-primary shrink-0" />
                 {/* <div className="text-primary text-8xl">2</div> */}
                 <div className="card-body">
                   <div className="card-title">You are all set</div>
