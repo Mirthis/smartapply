@@ -26,9 +26,9 @@ const ManageSubscriptionPage: NextPage = () => {
       <Title type="page" title="Manage Your Pro Subscription" />
 
       {!isLoading && (
-        <>
+        <div className="max-w-lg">
           {proStatus?.activeSubscription ? (
-            <div className="card-bordered border-primary rounded-md max-w-lg">
+            <div className="card-bordered border-primary rounded-md">
               <div className="card-body">
                 <p className="text-primary card-title">
                   Your active subscription
@@ -78,7 +78,7 @@ const ManageSubscriptionPage: NextPage = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-y-2">
+            <div className="space-y-4">
               <p className="font-semibold">
                 You do not have any active subscription.
               </p>
@@ -87,7 +87,7 @@ const ManageSubscriptionPage: NextPage = () => {
               </Link>
             </div>
           )}
-        </>
+        </div>
       )}
       {isLoading && <Spinner text="Retrieving subscription data..." />}
       {isError && <p className="text-error">Something went wrong.</p>}

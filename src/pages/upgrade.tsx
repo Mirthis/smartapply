@@ -28,11 +28,7 @@ const UpgradePage: NextPage = () => {
     data: product,
     isLoading: isLoadingPricing,
     isError,
-  } = api.product.getActive.useQuery(undefined, {
-    onSuccess: (data) => {
-      // setSelectedPrice(data.prices[0]?.id);
-    },
-  });
+  } = api.product.getActive.useQuery(undefined, {});
 
   const [selectedPrice, setSelectedPrice] = useState<string>();
 
@@ -158,9 +154,9 @@ const UpgradePage: NextPage = () => {
               </div>
             </>
           )}
-          <Title title="All benefits of a Pro account" type="section" />
         </>
       )}
+      <Title title="All benefits of a Pro account" type="section" />
     </Layout>
   );
 };

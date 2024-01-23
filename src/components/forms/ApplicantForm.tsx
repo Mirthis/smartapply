@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "~/lib/api";
+
 import {
   APPL_EXP_MAX_LENGTH,
   APPL_RESUME_MAX_LENGTH,
@@ -217,7 +218,7 @@ const ApplicantForm = ({
           </div>
 
           <button
-            disabled={!isValid || isSubmitting || !isDirty}
+            disabled={!isValid || isSubmitting}
             type="submit"
             className="btn-primary btn"
           >

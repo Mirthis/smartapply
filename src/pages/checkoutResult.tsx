@@ -52,7 +52,7 @@ const CheckoutResultPage: NextPage = () => {
       {checkoutSession && (
         <div>
           {checkoutSession.payment_status === "paid" && (
-            <div className="space-y-4 text-xl lg: text-2xl">
+            <div className="space-y-4 text-xl lg:text-2xl">
               <p className="text-primary">
                 🎉 Thank you for upgrading to Pro! 🎉
               </p>
