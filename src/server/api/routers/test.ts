@@ -1,19 +1,25 @@
 import { type Application } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import {
-  type ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageRoleEnum,
-} from "openai";
+  type ChatCompletionAssistantMessageParam,
+  type ChatCompletionMessageParam,
+  type ChatCompletionSystemMessageParam,
+  type ChatCompletionUserMessageParam,
+} from "openai/resources";
 import { z } from "zod";
 
-import { env } from "~/env.mjs";
-import { openaiClient } from "~/lib/openai";
+import { openAI } from "~/lib/openai";
 import { addDelay } from "~/lib/utils";
+
+import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type TestQuestion } from "~/types/types";
 
-const getSystemMessage = (application: Application, skill: string) => {
+const getSystemMessage = (
+  application: Application,
+  skill: string
+): ChatCompletionSystemMessageParam => {
   const skills = skill === "*ALL*" ? application.skillsSummary : skill;
 
   const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${skills}.
@@ -36,7 +42,7 @@ const getSystemMessage = (application: Application, skill: string) => {
   `;
 
   return {
-    role: ChatCompletionRequestMessageRoleEnum.System,
+    role: "system",
     content,
   };
 };
@@ -44,30 +50,32 @@ const getSystemMessage = (application: Application, skill: string) => {
 const getExplanationPrompt = (
   question: string,
   answer: string
-): ChatCompletionRequestMessage => {
+): ChatCompletionUserMessageParam => {
   const content = `Your question was: ${question}
   I think the correct answer is ${answer}.
   Tell me if this is correct or not and provide a detailed explanation for the correct answer.`;
 
   return {
-    role: ChatCompletionRequestMessageRoleEnum.User,
+    role: "user",
     content,
   };
 };
 
-const getPastQuestionsPrompt = (pastQuestions: string) => {
+const getPastQuestionsPrompt = (
+  pastQuestions: string
+): ChatCompletionSystemMessageParam => {
   const content = `Here are the questions you asked so far:
   ${pastQuestions}
   `;
   return {
-    role: ChatCompletionRequestMessageRoleEnum.System,
+    role: "system",
     content,
   };
 };
 
-const getQuestionPrompt = (): ChatCompletionRequestMessage => {
+const getQuestionPrompt = (): ChatCompletionUserMessageParam => {
   return {
-    role: ChatCompletionRequestMessageRoleEnum.User,
+    role: "user",
     content: `Next question (JSON only)`,
   };
 };
@@ -95,8 +103,8 @@ export const testRouter = createTRPCRouter({
           ],
           correctAnswer: 2,
         };
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+        const message: ChatCompletionAssistantMessageParam = {
+          role: "assistant",
           content: JSON.stringify(responseText),
         };
         return message;
@@ -106,7 +114,7 @@ export const testRouter = createTRPCRouter({
         where: { id: input.applicationId },
       });
 
-      const messages: ChatCompletionRequestMessage[] = [
+      const messages: ChatCompletionMessageParam[] = [
         getSystemMessage(application, input.skill),
       ];
       if (input.pastQuestions) {
@@ -116,23 +124,23 @@ export const testRouter = createTRPCRouter({
 
       // console.log({ messages });
 
-      const response = await openaiClient.createChatCompletion({
+      const response = await openAI.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages,
       });
-      const finishReason = response.data.choices[0]?.finish_reason;
+      const finishReason = response.choices[0]?.finish_reason;
       // TODO: handle this exception and other finish reasons
-      if (finishReason === "lenght") {
+      if (finishReason === "length") {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Cover letter generation failed due to excessive length",
         });
       }
 
-      const responseText = response.data.choices[0]?.message?.content;
+      const responseText = response.choices[0]?.message?.content;
       if (responseText) {
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+        const message: ChatCompletionAssistantMessageParam = {
+          role: "assistant",
           content: responseText,
         };
 
@@ -161,31 +169,31 @@ export const testRouter = createTRPCRouter({
         //   message: "OpenAI API returned no response",
         // });
         await addDelay(1000);
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+        const message: ChatCompletionAssistantMessageParam = {
+          role: "assistant",
           content: "Correct answer.",
         };
         return message;
       }
 
       const messages = [getExplanationPrompt(input.question, input.answer)];
-      const response = await openaiClient.createChatCompletion({
+      const response = await openAI.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages,
       });
-      const finishReason = response.data.choices[0]?.finish_reason;
+      const finishReason = response.choices[0]?.finish_reason;
       // TODO: handle this exception and other finish reasons
-      if (finishReason === "lenght") {
+      if (finishReason === "length") {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Cover letter generation failed due to excessive length",
         });
       }
 
-      const responseText = response.data.choices[0]?.message?.content;
+      const responseText = response.choices[0]?.message?.content;
       if (responseText) {
-        const message: ChatCompletionRequestMessage = {
-          role: ChatCompletionRequestMessageRoleEnum.Assistant,
+        const message: ChatCompletionAssistantMessageParam = {
+          role: "assistant",
           content: responseText,
         };
 

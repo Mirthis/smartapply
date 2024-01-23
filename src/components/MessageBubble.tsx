@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/nextjs";
 import { CircleUserRound, UserCircle } from "lucide-react";
-import { type ChatCompletionResponseMessage } from "openai";
+import { type ChatCompletionMessageParam } from "openai/resources";
 
 import Image from "next/image";
 
@@ -27,7 +27,7 @@ const MessageBubbleText = ({ text }: { text: string }) => {
 const MessageBubble = ({
   message,
 }: {
-  message: ChatCompletionResponseMessage;
+  message: ChatCompletionMessageParam;
 }) => {
   const { user } = useUser();
 
@@ -48,7 +48,7 @@ const MessageBubble = ({
           )}
           <div className="chat chat-start w-full">
             <div className="chat-bubble chat-bubble-primary">
-              <MessageBubbleText text={message.content} />
+              <MessageBubbleText text={message.content as string} />
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ const MessageBubble = ({
           <UserCircle className="h-12 w-12 text-secondary" />
           <div className="chat chat-start w-full">
             <div className="chat-bubble chat-bubble-secondary">
-              <MessageBubbleText text={message.content} />
+              <MessageBubbleText text={message.content as string} />
             </div>
           </div>
         </div>

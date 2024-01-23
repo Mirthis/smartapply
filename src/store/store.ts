@@ -1,7 +1,4 @@
-import {
-  type ChatCompletionRequestMessage,
-  type ChatCompletionResponseMessage,
-} from "openai";
+import { type ChatCompletionMessageParam } from "openai/resources";
 import { create } from "zustand";
 
 import {
@@ -36,10 +33,10 @@ type AppStore = AppStoreInitialState & {
   initInterview: (type: InterviewType) => void;
   resetInterview: () => void;
   closeInterview: () => void;
-  addInterviewMessage: (message: ChatCompletionRequestMessage) => void;
+  addInterviewMessage: (message: ChatCompletionMessageParam) => void;
   initTest: (skill: string) => void;
   // setTestStatus: (status: "Not Started" | "In Progress" | "Completed") => void;
-  addTestMessage: (question: ChatCompletionResponseMessage) => void;
+  addTestMessage: (question: ChatCompletionMessageParam) => void;
   addTestQuestion: (question: string) => void;
   addTestAnswer: (questionId: number, answer: number) => void;
   addTestExplanation: (questionId: number, explanation: string) => void;
@@ -254,7 +251,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       },
     });
   },
-  addTestMessage: (message: ChatCompletionRequestMessage) => {
+  addTestMessage: (message: ChatCompletionMessageParam) => {
     const test = get().test;
     if (!test) return;
     const messages = test?.messages ?? [];

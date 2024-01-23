@@ -4,7 +4,6 @@ import { applicantRouter } from "./routers/applicant";
 import { applicationRouter } from "./routers/application";
 import { contactRouter } from "./routers/contact";
 import { coverLettersRouter } from "./routers/coverLetters";
-import { interviewRouter } from "./routers/interview";
 import { productRouter } from "./routers/product";
 import { stripeRouter } from "./routers/stripe";
 import { subscriptionRouter } from "./routers/subscription";
@@ -21,7 +20,6 @@ export const appRouter = createTRPCRouter({
   application: applicationRouter,
   contact: contactRouter,
   coverLetters: coverLettersRouter,
-  interview: interviewRouter,
   product: productRouter,
   stripe: stripeRouter,
   subscription: subscriptionRouter,

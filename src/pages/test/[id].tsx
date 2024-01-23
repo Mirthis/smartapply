@@ -62,7 +62,7 @@ const InterviewPage: NextPage = () => {
   const { mutate: newQuestion, isLoading: isLoadingQuestion } =
     api.test.getQuestion.useMutation({
       onSuccess: (data) => {
-        addTestQuestion(data.content);
+        addTestQuestion(data.content as string);
         addTestMessage(data);
       },
     });

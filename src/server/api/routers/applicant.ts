@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { openaiClient } from "~/lib/openai";
+import { openAI } from "~/lib/openai";
+
 import { applicantSchema } from "~/types/schemas";
 import { type ParsedResume } from "~/types/types";
 
@@ -158,7 +159,7 @@ export const applicantRouter = createTRPCRouter({
   parseResume: protectedProcedure
     .input(z.object({ resumeText: z.string() }))
     .mutation(async ({ input }) => {
-      const response = await openaiClient.createChatCompletion({
+      const response = await openAI.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           {
@@ -173,7 +174,7 @@ export const applicantRouter = createTRPCRouter({
           },
         ],
       });
-      const responseText = response.data.choices[0]?.message?.content;
+      const responseText = response.choices[0]?.message?.content;
       if (!responseText) {
         throw new Error("OpenAI API returned no response");
       }

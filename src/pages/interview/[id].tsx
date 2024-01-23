@@ -1,8 +1,5 @@
 import { RotateCcw, SendHorizontal } from "lucide-react";
-import {
-  type ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageRoleEnum,
-} from "openai";
+import { type ChatCompletionMessageParam } from "openai/resources";
 
 import React, { useState } from "react";
 
@@ -69,21 +66,6 @@ const InterviewPage: NextPage = () => {
     }
   );
 
-  // const {
-  //   mutate: sendMessage,
-  //   isLoading: isLoadingMessage,
-  //   isError,
-  // } = api.interview.sendMessage.useMutation({
-  //   onSuccess: (data) => {
-  //     if (data.content.endsWith("*END*")) {
-  //       setInterviewOpen(false);
-  //       data.content = data.content.replace("*END*", "");
-  //     }
-  //     addInterviewMessage(data);
-  //     setChatText("");
-  //   },
-  // });
-
   const handleReset = () => {
     resetInterview();
     resetInterviewHook();
@@ -103,7 +85,7 @@ const InterviewPage: NextPage = () => {
       }
       addInterviewMessage({
         content: data,
-        role: ChatCompletionRequestMessageRoleEnum.Assistant,
+        role: "assistant",
       });
       setChatText("");
     },
@@ -122,12 +104,12 @@ const InterviewPage: NextPage = () => {
 
   const send = (retry = false) => {
     if (interview && application) {
-      const newMessage = {
-        role: ChatCompletionRequestMessageRoleEnum.User,
+      const newMessage: ChatCompletionMessageParam = {
+        role: "user",
         content: chatText,
       };
 
-      const messages: ChatCompletionRequestMessage[] = [
+      const messages: ChatCompletionMessageParam[] = [
         ...(interview?.messages ?? []),
       ];
 

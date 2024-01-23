@@ -1,4 +1,3 @@
-import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { z } from "zod";
 
 import { InterviewType } from "./types";
@@ -201,7 +200,7 @@ export const interviewRequestSchema = z.object({
   interviewType: z.nativeEnum(InterviewType),
   messages: z.array(
     z.object({
-      role: z.nativeEnum(ChatCompletionRequestMessageRoleEnum),
+      role: z.enum(["user", "assistant", "system"]),
       content: z.string(),
     })
   ),

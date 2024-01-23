@@ -1,8 +1,8 @@
 import { TRPCError } from "@trpc/server";
-import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { z } from "zod";
 
-import { openaiClient } from "~/lib/openai";
+import { openAI } from "~/lib/openai";
+
 import { type PrismaClientType } from "~/server/db";
 import { jobSchema } from "~/types/schemas";
 
@@ -61,7 +61,7 @@ export const applicationRouter = createTRPCRouter({
       }
 
       // create our update job
-      const response = await openaiClient.createChatCompletion({
+      const response = await openAI.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           {
@@ -69,12 +69,12 @@ export const applicationRouter = createTRPCRouter({
   Job Title: ${input.job.title},
   Job Description: ${input.job.description}
   Only return the list no other text should be included.`,
-            role: ChatCompletionRequestMessageRoleEnum.User,
+            role: "user",
           },
         ],
       });
 
-      const skillsSummary = response.data.choices[0]?.message?.content;
+      const skillsSummary = response.choices[0]?.message?.content;
       if (!skillsSummary) {
         throw new TRPCError({
           code: "BAD_REQUEST",

@@ -1,5 +1,5 @@
 import { type inferRouterOutputs } from "@trpc/server";
-import { type ChatCompletionRequestMessage } from "openai";
+import { type ChatCompletionMessageParam } from "openai/resources";
 import { type z } from "zod";
 
 import { type AppRouter } from "~/server/api/root";
@@ -30,7 +30,7 @@ export enum InterviewType {
   lead = "Leadershiop",
 }
 
-export type InterviewMessage = ChatCompletionRequestMessage & {
+export type InterviewMessage = ChatCompletionMessageParam & {
   id: number;
 };
 
@@ -62,7 +62,7 @@ export type TestData = {
   questions: TestQuestion[];
   lastId: number;
   currentQuestion: TestQuestion | undefined;
-  messages: ChatCompletionRequestMessage[];
+  messages: ChatCompletionMessageParam[];
 };
 
 export enum FormStep {

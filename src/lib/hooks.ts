@@ -1,5 +1,5 @@
 import { type Application } from "@prisma/client";
-import { type ChatCompletionResponseMessage } from "openai";
+import { type ChatCompletionMessageParam } from "openai/resources";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -49,20 +49,20 @@ export const useRecaptcha = () => {
 
 type FetchStdArgs = {
   text?: string;
-  messages?: ChatCompletionResponseMessage[];
+  messages?: ChatCompletionMessageParam[];
 };
 
 export const useStreamingApi = <T>(
   fetchFn: (args: T & FetchStdArgs) => Promise<Response>,
   options?: {
     onSuccess: (data: string, args: T) => void;
-    initMessages?: ChatCompletionResponseMessage[];
+    initMessages?: ChatCompletionMessageParam[];
   }
 ) => {
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>(
+  const [messages, setMessages] = useState<ChatCompletionMessageParam[]>(
     options?.initMessages ?? []
   );
 
@@ -79,7 +79,7 @@ export const useStreamingApi = <T>(
       setMessages(requestMessages);
     }
 
-    const newMessage: ChatCompletionResponseMessage = {
+    const newMessage: ChatCompletionMessageParam = {
       content: "",
       role: "assistant",
     };
@@ -114,7 +114,7 @@ export const useStreamingApi = <T>(
         return prevMessages.slice(0, -1).concat(newMessage);
       });
     }
-    if (newMessage.content.endsWith("*END*")) {
+    if (newMessage.content && newMessage.content.endsWith("*END*")) {
       newMessage.content = newMessage.content.replace("*END*", "");
       setMessages((prevMessages) => {
         return prevMessages.slice(0, -1).concat(newMessage);
@@ -161,7 +161,7 @@ export const useGenerateCoverLetter = (options?: {
 
 export const useInterview = (options?: {
   onSuccess: (data: string) => void;
-  initMessages?: ChatCompletionResponseMessage[];
+  initMessages?: ChatCompletionMessageParam[];
 }) => {
   const fn = (args: InterviewHookRequest) =>
     fetch("/api/interview", {
