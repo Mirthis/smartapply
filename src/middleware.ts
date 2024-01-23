@@ -11,6 +11,8 @@ export default authMiddleware({
     "/beta",
     "/api/(.*)",
     "/api/webhooks(.*)",
+    "/profile/(.*)",
+    "/dashboard",
   ],
 });
 
