@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { api } from "~/lib/api";
 import { cn } from "~/lib/utils";
 
+import { useHasPro } from "~/hooks/useHasPro";
 import { appplicationSchema } from "~/types/schemas";
 import { type ApplicationData, type EditApplicationData } from "~/types/types";
 
@@ -24,6 +25,7 @@ const EditApplicationModal = ({
 }) => {
   const applicationId = application?.id;
   const utils = api.useContext();
+  const { hasPro } = useHasPro();
 
   const { data: applicants, isLoading: isLoadingApplicants } =
     api.applicant.getForLoggedUser.useQuery(undefined, {
@@ -63,8 +65,14 @@ const EditApplicationModal = ({
     setValue("description", application?.description ?? "");
     setValue("companyName", application?.companyName ?? "");
     setValue("companyDetails", application?.companyDetails ?? "");
-    setValue("applicantId", application?.applicant.id ?? "");
-  }, [application, setValue]);
+
+    setValue(
+      "applicantId",
+      application && (application.applicant.isMain || hasPro)
+        ? application.applicant.id
+        : ""
+    );
+  }, [application, setValue, hasPro]);
 
   const onSubmit = async (data: EditApplicationData) => {
     await upsertApplication({
@@ -119,7 +127,12 @@ const EditApplicationModal = ({
           >
             <option value="">-- Select an applicant --</option>
             {applicants?.map((applicant) => (
-              <option key={applicant.id} value={applicant.id}>
+              <option
+                key={applicant.id}
+                value={applicant.id}
+                // disabled={!applicant.isMain && !hasPro}
+                className={applicant.isMain || hasPro ? "" : "hidden"}
+              >
                 {applicant.jobTitle} - {applicant.firstName}{" "}
                 {applicant.lastName}
               </option>

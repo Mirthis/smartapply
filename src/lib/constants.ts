@@ -1,15 +1,6 @@
-import { Code, UsersRound } from "lucide-react";
+import { Code, NotebookTabs, UsersRound } from "lucide-react";
 
 import { InterviewType } from "~/types/types";
-
-export const MAX_TEST_QUESTIONS = 10;
-export const MAX_COVER_LETTERS = 5;
-export const MAX_COVER_LETTERS_TABS = 5;
-export const MAX_INTERVIEW_PHASE_1_MESSAGES = 10;
-// export const MAX_INTERVIEW_PHASE_2_MESSAGES = 4;
-export const MAX_FILE_SIZE_KB = 200; // 200KB
-export const MAX_FILE_NUM_PAGES = 1;
-export const MAX_FILE_TEXT_LENGTH = 10_000;
 
 export const featureCardsData = [
   {
@@ -33,6 +24,12 @@ export const featureCardsData = [
 ];
 
 export const interviewTypeCardData = [
+  {
+    title: "Standard Interview",
+    description: "Standard interview based on the job spec.",
+    icon: NotebookTabs,
+    type: InterviewType.generic,
+  },
   {
     title: "HR Interview",
     description:

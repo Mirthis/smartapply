@@ -12,8 +12,6 @@ import {
   type RefineMode,
 } from "~/types/types";
 
-import { api } from "./api";
-
 export const useRecaptcha = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [captchaToken, setCaptchToken] = useState<string | null>(null);
@@ -255,26 +253,6 @@ export const useStore = <T, F>(
   }, [result]);
 
   return data;
-};
-
-export const useProFeatures = () => {
-  const { data: user, isLoading, isError } = api.user.get.useQuery();
-  const hasPro = !!user?.lifetimePro || (user?._count?.subscriptions ?? 0) > 0;
-  return {
-    hasPro,
-    isLoading,
-    isError,
-  };
-};
-
-export const useProStatus = () => {
-  const { data: user, isLoading, isError } = api.user.get.useQuery();
-  const hasPro = !!user?.lifetimePro || (user?._count?.subscriptions ?? 0) > 0;
-  return {
-    hasPro,
-    isLoading,
-    isError,
-  };
 };
 
 export const useInterval = (

@@ -28,6 +28,7 @@ export enum InterviewType {
   tech = "Technology",
   hr = "HR",
   lead = "Leadershiop",
+  generic = "Generic",
 }
 
 export type InterviewMessage = ChatCompletionMessageParam & {

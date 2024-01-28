@@ -40,7 +40,6 @@ export const stripeRouter = createTRPCRouter({
           },
         });
         stripeId = stripeCustomer.id;
-        console.log("New Stripe customer created: ", stripeId);
         await ctx.prisma.user.update({
           where: {
             id: ctx.auth.userId,

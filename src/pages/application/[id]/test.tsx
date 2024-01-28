@@ -6,13 +6,15 @@ import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { api } from "~/lib/api";
-import { MAX_TEST_QUESTIONS } from "~/lib/constants";
+import { MAX_TEST_QUESTIONS } from "~/lib/config";
 import { formatApiMessage } from "~/lib/formatter";
 import { useValidateTestResponse } from "~/lib/hooks";
 
 import { ApplicationSideBar, Layout, Title } from "~/components";
+import { ProMarker } from "~/components/utils";
 import Spinner from "~/components/utils/Spinner";
 
+import { useHasPro } from "~/hooks/useHasPro";
 import { useAppStore } from "~/store/store";
 import { type TestQuestion } from "~/types/types";
 
@@ -54,8 +56,7 @@ const InterviewPage: NextPage = () => {
     }
   );
 
-  const { data: proStatus } = api.user.getProState.useQuery();
-  const hasPro = proStatus?.hasPro ?? false;
+  const { hasPro } = useHasPro();
 
   const [displayedQuestion, setDisplayedQuestion] = useState<TestQuestion>();
   // TODO: add captcha check
@@ -161,6 +162,7 @@ const InterviewPage: NextPage = () => {
                     className="select-bordered select w-full md:w-fit"
                     value={skill}
                     onChange={(e) => setSkill(e.target.value)}
+                    disabled={!hasPro}
                   >
                     <option value="*ALL*">All skills</option>
                     {jobSkills.map((skill, i) => (
@@ -169,6 +171,7 @@ const InterviewPage: NextPage = () => {
                       </option>
                     ))}
                   </select>
+                  {!hasPro && <ProMarker />}
                 </div>
               )}
               <div className="text-center">
@@ -185,7 +188,7 @@ const InterviewPage: NextPage = () => {
 
           {(testStatus === "In Progress" || testStatus === "Completed") && (
             <div className="flex flex-col gap-y-4">
-              <div className="flex gap-x-4">
+              <div className="flex gap-x-4 items-end">
                 <Title
                   title={`Test on "${
                     skill === "*ALL*" ? "All skills" : skill

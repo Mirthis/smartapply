@@ -41,8 +41,6 @@ export default async function handler(request: NextRequest) {
     return new Response(await getFakeAiResponse("test cover letter\n\n1"));
   }
 
-  console.log({ messages });
-
   const aiResponse = await openAI.chat.completions.create({
     model: "gpt-3.5-turbo",
     stream: true,

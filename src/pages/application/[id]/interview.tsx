@@ -15,6 +15,7 @@ import MessageBubble from "~/components/MessageBubble";
 import { ResetInterviewModal } from "~/components/modals";
 import OpacityTransition from "~/components/utils/OpacityTransition";
 
+import { useHasPro } from "~/hooks/useHasPro";
 import { useAppStore } from "~/store/store";
 import { InterviewType } from "~/types/types";
 
@@ -26,6 +27,8 @@ const interviewTitle = (type: InterviewType) => {
       return "Technical Interview";
     case InterviewType.lead:
       return "Lead Interview";
+    case InterviewType.generic:
+      return "Standard Interview";
   }
 };
 
@@ -34,6 +37,7 @@ const InterviewPage: NextPage = () => {
   const router = useRouter();
   const [chatText, setChatText] = useState("");
   const [isOpenResetModal, setIsOpenResetModal] = useState(false);
+  const { hasPro } = useHasPro();
 
   const {
     interview,
@@ -164,11 +168,18 @@ const InterviewPage: NextPage = () => {
                   <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-2">
                     {interviewTypeCardData.map((card) => (
                       <BasicCard
-                        onClick={() => changeInterviewType(card.type)}
+                        onClick={
+                          card.type !== InterviewType.generic && !hasPro
+                            ? () => router.push("/upgrade")
+                            : () => changeInterviewType(card.type)
+                        }
                         title={card.title}
                         description={card.description}
                         Icon={card.icon}
                         key={card.title}
+                        restrictToPro={
+                          card.type !== InterviewType.generic && !hasPro
+                        }
                       />
                     ))}
                   </div>

@@ -10,11 +10,15 @@ import { Layout, Title } from "~/components";
 import ServiceLinks from "~/components/ServiceLinks";
 import { DeleteApplicationModal } from "~/components/modals";
 import EditApplicationModal from "~/components/modals/EditApplicationModal";
+import { ProMarker } from "~/components/utils";
 import Spinner from "~/components/utils/Spinner";
 
+import { useHasPro } from "~/hooks/useHasPro";
 import { type ApplicationData } from "~/types/types";
 
 const ApplicationsPage: NextPage = () => {
+  const { hasPro } = useHasPro();
+
   const {
     data: applications,
     isLoading,
@@ -101,36 +105,12 @@ const ApplicationsPage: NextPage = () => {
 
                     <div>
                       <div className="divider" />
-                      <ServiceLinks applicationId={application.id} />
-                      {/* <div className="grid w-full grid-cols-3">
-                        <Link
-                          className="hover:bg-base-200 py-2"
-                          href={`/coverletter/${application.id}`}
-                        >
-                          <div className="flex flex-col items-center gap-y-2 text-primary-focus">
-                            <DocumentTextIcon className="h-10 w-10" />
-                            <p>Cover Letters</p>
-                          </div>
-                        </Link>
-                        <Link
-                          className="hover:bg-base-200 py-2"
-                          href={`/interview/${application.id}`}
-                        >
-                          <div className="flex flex-col items-center gap-y-2 text-primary-focus">
-                            <ChatBubbleLeftRightIcon className="h-10 w-10" />
-                            <p>Interview</p>
-                          </div>
-                        </Link>
-                        <Link
-                          className="hover:bg-base-200 py-2"
-                          href={`/test/${application.id}`}
-                        >
-                          <div className="flex flex-col items-center gap-y-2 text-primary-focus">
-                            <ClipboardDocumentCheckIcon className="h-10 w-10" />
-                            <p>Test</p>
-                          </div>
-                        </Link>
-                      </div> */}
+                      {application.applicant.isMain || hasPro ? (
+                        <ServiceLinks applicationId={application.id} />
+                      ) : (
+                        <ProMarker text="Change applicant or upgrade to pro to access all the features for this application." />
+                      )}
+
                       <div className="divider" />
                     </div>
                     <div className="flex gap-y-2">

@@ -1,23 +1,70 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Clipboard } from "lucide-react";
+import { Clipboard, LockKeyhole } from "lucide-react";
 
 import { useEffect, useState } from "react";
 
 import { type NextPage } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { api } from "~/lib/api";
-import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/lib/constants";
+import { MAX_COVER_LETTERS, MAX_COVER_LETTERS_TABS } from "~/lib/config";
 import { formatApiMessage } from "~/lib/formatter";
 import { useGenerateCoverLetter, useRefineCoverLetter } from "~/lib/hooks";
+import { cn } from "~/lib/utils";
 
 import { ApplicationSideBar, Layout, Title } from "~/components";
 import { ResetCoverLettersModal } from "~/components/modals";
 import { CoverLettersSkeleton } from "~/components/skeletons";
 import Spinner from "~/components/utils/Spinner";
 
+import { useHasPro } from "~/hooks/useHasPro";
 import { useAppStore } from "~/store/store";
 import { type CoverLetter, RefineMode } from "~/types/types";
+
+const CoverLetterActionButton = ({
+  hasPro,
+  onClick,
+  className,
+  disabled,
+  text,
+}: {
+  hasPro: boolean;
+  onClick: () => void;
+  className?: string;
+  disabled: boolean;
+  text: string;
+}) => {
+  const router = useRouter();
+
+  return (
+    <>
+      {hasPro ? (
+        <button
+          className={cn(
+            `btn-primary  btn flex gap-x-2 items-center`,
+            className
+          )}
+          onClick={onClick}
+          disabled={disabled}
+        >
+          Refine
+        </button>
+      ) : (
+        <button
+          className={cn(
+            ` tooltip btn-disabled pointer-events-auto btn flex gap-x-2 items-center`,
+            className
+          )}
+          data-tip="Pro Feature"
+          onClick={() => router.push("/upgrade")}
+        >
+          {text}
+        </button>
+      )}
+    </>
+  );
+};
 
 const CoverLetterPage: NextPage = () => {
   const router = useRouter();
@@ -29,8 +76,7 @@ const CoverLetterPage: NextPage = () => {
   const { coverLetters, addCoverLetter, setCoverLetters, clearCoverLetters } =
     useAppStore((state) => state);
 
-  const { data: proStatus } = api.user.getProState.useQuery();
-  const hasPro = proStatus?.hasPro ?? false;
+  const { hasPro } = useHasPro();
 
   const applicationId =
     router.query.id && !Array.isArray(router.query.id)
@@ -143,12 +189,6 @@ const CoverLetterPage: NextPage = () => {
   };
 
   useEffect(() => {
-    if (router.isReady && !router.query.id) {
-      void router.replace("/");
-    }
-  }, [router]);
-
-  useEffect(() => {
     if (displayedLetter) return;
     const currentCoverLetter = coverLetters[0];
 
@@ -180,12 +220,6 @@ const CoverLetterPage: NextPage = () => {
     }
   }, [createLoading, createResponseText, refineLoading, refineResponseText]);
 
-  // const getDisplayedText = () => {
-  //   if (createLoading && createResponseText !== "") return createResponseText;
-  //   if (refineLoading && refineResponseText !== "") return refineResponseText;
-  //   return displayedLetter?.text;
-  // };
-
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       refine(RefineMode.FreeInput);
@@ -215,7 +249,7 @@ const CoverLetterPage: NextPage = () => {
             <ApplicationSideBar applicationId={applicationId} />
           )}
         </div>
-        <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20">
+        <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20 space-y-2">
           <Title title="Create Cover Letter" type="section" />
 
           {isLoadingCoverLetters && <CoverLettersSkeleton />}
@@ -223,7 +257,7 @@ const CoverLetterPage: NextPage = () => {
           {!isLoading && (
             <>
               {coverLetters.length === 0 && !createResponseText ? (
-                <div className="mt-4 text-center">
+                <div className="text-center">
                   <button
                     className="btn-primary btn w-full disabled:btn-outline sm:w-96"
                     onClick={generate}
@@ -289,13 +323,8 @@ const CoverLetterPage: NextPage = () => {
                   </div>
 
                   {displayedText && (
-                    <div>
-                      {/* <SimpleBar
-                        autoHide={false}
-                        
-                        className="max-h-[calc(100vh-23rem)] max-w-none lg:max-h-[calc(100vh-20rem)]"
-                      > */}
-                      <div className="max-h-[calc(100vh-23rem)] scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 overflow-auto relative rounded-md bg-base-200 p-2">
+                    <div className="space-y-2">
+                      <div className="max-h-[calc(100vh-25rem)] scrollbar-thin scrollbar-thumb-secondary hover:scrollbar-thumb-secondary/50 scrollbar-track-base-300 overflow-auto relative rounded-md bg-base-200 p-2">
                         {/* {displayedText} */}
                         <div>
                           {formatApiMessage(displayedText).map((p, i) => (
@@ -324,77 +353,89 @@ const CoverLetterPage: NextPage = () => {
                       </div>
                       {/* </SimpleBar> */}
 
-                      <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 sm:flex-row">
-                        <div className="flex w-full items-center gap-x-2">
-                          <input
-                            type="text"
-                            className="input-bordered input w-full"
-                            placeholder="Specify wich change you need (i.e.: include more details from my profile)"
-                            minLength={5}
-                            maxLength={100}
-                            value={refineText}
-                            onKeyUp={handleKeyUp}
-                            onChange={(e) => setRefineText(e.target.value)}
-                          />
+                      {/* <div className="mt-4 flex flex-col items-center gap-x-4 gap-y-4 sm:flex-row"> */}
+                      {/* <div className="flex w-full items-center gap-x-2"> */}
+                      <div className="grid gap-2 w-full grid-cols-9 items-center gap-x-2">
+                        <input
+                          type="text"
+                          className="input-bordered input w-full col-span-6 md:col-span-5"
+                          placeholder="Specify wich change you need (i.e.: include more details from my profile)"
+                          minLength={5}
+                          maxLength={100}
+                          value={refineText}
+                          onKeyUp={handleKeyUp}
+                          onChange={(e) => setRefineText(e.target.value)}
+                          disabled={
+                            isGenerating ||
+                            refineText.length < 5 ||
+                            !displayedLetter ||
+                            refineText.length > 100 ||
+                            isMaxLetters ||
+                            !hasPro
+                          }
+                        />
 
-                          <button
-                            className="btn-primary btn "
-                            onClick={() => refine(RefineMode.FreeInput)}
-                            disabled={
-                              isGenerating ||
-                              refineText.length < 5 ||
-                              !displayedLetter ||
-                              refineText.length > 100 ||
-                              isMaxLetters
-                            }
-                          >
-                            Refine
-                          </button>
-                        </div>
-                        <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:max-w-fit">
-                          <button
-                            className="btn-secondary btn "
-                            onClick={() => refine(RefineMode.Shorten)}
-                            disabled={
-                              isGenerating || !displayedLetter || isMaxLetters
-                            }
-                          >
-                            Shorten
-                          </button>
-                          <button
-                            className="btn-secondary btn "
-                            onClick={() => refine(RefineMode.Extend)}
-                            disabled={
-                              isGenerating || !displayedLetter || isMaxLetters
-                            }
-                          >
-                            Extend
-                          </button>
-                          <button
-                            className="btn-secondary btn"
-                            onClick={handleReset}
-                            disabled={isGenerating || !displayedLetter}
-                          >
-                            Reset
-                          </button>
-                        </div>
-                        <Spinner
-                          className={`${
-                            isGenerating ? "visible" : "invisible"
-                          } h-16 w-16`}
+                        <CoverLetterActionButton
+                          hasPro={hasPro}
+                          onClick={() => refine(RefineMode.FreeInput)}
+                          disabled={
+                            isGenerating ||
+                            refineText.length < 5 ||
+                            !displayedLetter ||
+                            refineText.length > 100 ||
+                            isMaxLetters
+                          }
+                          className="col-span-3 md:col-span-1"
+                          text="Refine"
+                        />
+                        {/* </div> */}
+                        {/* <div className="grid w-full grid-cols-3 items-center gap-x-2 sm:max-w-fit"> */}
+                        <CoverLetterActionButton
+                          hasPro={hasPro}
+                          className="btn-secondary col-span-3 md:col-span-1"
+                          onClick={() => refine(RefineMode.Shorten)}
+                          disabled={
+                            isGenerating || !displayedLetter || isMaxLetters
+                          }
+                          text="Shorten"
+                        />
+
+                        <CoverLetterActionButton
+                          hasPro={hasPro}
+                          className="btn-secondary col-span-3 md:col-span-1"
+                          onClick={() => refine(RefineMode.Extend)}
+                          disabled={
+                            isGenerating || !displayedLetter || isMaxLetters
+                          }
+                          text="Extend"
+                        />
+
+                        <CoverLetterActionButton
+                          hasPro={hasPro}
+                          className="btn-secondary col-span-3 md:col-span-1"
+                          onClick={() => handleReset()}
+                          disabled={isGenerating || !displayedLetter}
+                          text="Reset"
                         />
                       </div>
+                    </div>
+                  )}
+                  {!hasPro && (
+                    <div className="flex gap-x-2 items-center text-accent font-semibold">
+                      <LockKeyhole className="h-4 w-4 text-accent font-semibold " />{" "}
+                      <Link href="/upgrade">Upgrade to Pro</Link> to refine your
+                      cover letter.
                     </div>
                   )}
                 </>
               )}
               {isError && (
-                <div className="mt-2 text-center font-bold text-error">
+                <div className=" text-center font-bold text-error">
                   Ooop, something went wrong. Try again.
                 </div>
               )}
               {isMaxLetters && (
-                <div className="mt-2 text-center font-bold text-error">
+                <div className=" text-center font-bold text-error">
                   You can only generate {MAX_COVER_LETTERS} cover letters for
                   application
                 </div>

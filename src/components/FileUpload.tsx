@@ -8,8 +8,9 @@ import {
   MAX_FILE_NUM_PAGES,
   MAX_FILE_SIZE_KB,
   MAX_FILE_TEXT_LENGTH,
-} from "~/lib/constants";
+} from "~/lib/config";
 import { readPdf } from "~/lib/read-pdf";
+
 import { type ParsedResume } from "~/types/types";
 
 function sizeValidator(file: File) {

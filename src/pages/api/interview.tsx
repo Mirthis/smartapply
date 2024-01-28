@@ -1,131 +1,145 @@
-// import { getAuth } from "@clerk/nextjs/server";
-// import {
-//   type ChatCompletionRequestMessage,
-//   ChatCompletionRequestMessageRoleEnum,
-// } from "openai";
-// import { OpenAI } from "openai-streams";
+import { getAuth } from "@clerk/nextjs/server";
+import { OpenAIStream, StreamingTextResponse } from "ai";
+import {
+  type ChatCompletionSystemMessageParam,
+  type ChatCompletionUserMessageParam,
+} from "openai/resources";
 
-// import { type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
 
-// import { env } from "~/env.mjs";
-// import { MAX_INTERVIEW_PHASE_1_MESSAGES } from "~/lib/constants";
-// import { getJobDetailsPrompt } from "~/lib/prompt";
-// import { getFakeAiResponse } from "~/lib/utils";
-// import { interviewRequestSchema } from "~/types/schemas";
-// import { type ApplicationRequestData, InterviewType } from "~/types/types";
+import { MAX_INTERVIEW_PHASE_1_MESSAGES } from "~/lib/config";
+import { openAI } from "~/lib/openai";
+import { getJobDetailsPrompt } from "~/lib/prompt";
+import { getFakeAiResponse } from "~/lib/utils";
 
-// const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import { env } from "~/env.mjs";
+import { interviewRequestSchema } from "~/types/schemas";
+import { type ApplicationRequestData, InterviewType } from "~/types/types";
 
-// const getInterviewCommonPrompt = () => {
-//   return `
-//   Your focus will be to determine if the applicant is a good fit for the job
-//   You should ask the applicant one interview question at a time.
-//   You should not ask the same question twice.
-//   If the applicant ask questions you should say that you will answer them at the end of the interview.
-//   `;
-// };
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-// const getInterviewHRPrompt = () => {
-//   return [
-//     "I want you to act as an experienced human resources professional and interview the applicant",
-//     "You will not got to much into the technical details of the job and focus instead on the soft skills required by role",
-//   ];
-// };
+const getInterviewCommonPrompt = () => {
+  return `
+  Your focus will be to determine if the applicant is a good fit for the job
+  You should ask the applicant one interview question at a time.
+  You should not ask the same question twice.
+  `;
+};
 
-// const getInterviewTechPrompt = () => {
-//   return [
-//     "I want you to act as a senior technology professional and interview the applicant",
-//     "You will focus on the technical aspect of the job and the hard skills required by role",
-//   ];
-// };
+const getInterviewHRPrompt = () => {
+  return [
+    "I want you to act as an experienced human resources professional and interview the applicant",
+    "You will not go into the technical details of the job and will focus instead on the soft skills required by the role",
+  ];
+};
 
-// const getInterviewLeadPrompt = () => {
-//   return [
-//     "I want you to act as a leadership team member and interview the applicant",
-//     "You will focus on the applicant leadership skills and how they will fit in the team",
-//   ];
-// };
+const getInterviewTechPrompt = () => {
+  return [
+    "I want you to act as a senior technology professional and interview the applicant",
+    "You will focus on the technical aspect of the job and the hard skills required by the role",
+  ];
+};
 
-// const getInterviewClosedMessage = () => {
-//   return {
-//     role: ChatCompletionRequestMessageRoleEnum.System,
-//     content: `Povide feedback on the last answer provided by the applicant.
-//       Then close the interview by providing feedback to the applicant on the overall interview.
-//       The message should end with the text '*END*'`,
-//   };
-// };
+const getInterviewLeadPrompt = () => {
+  return [
+    "I want you to act as a leadership team member and interview the applicant",
+    "You will focus on the applicant leadership skills and how they will fit in the team",
+  ];
+};
 
-// const getInterviewSystemMessage = (
-//   type: InterviewType,
-//   application: ApplicationRequestData
-// ) => {
-//   let specicifPromt: string[] = [];
-//   switch (type) {
-//     case InterviewType.hr:
-//       specicifPromt = getInterviewHRPrompt();
-//       break;
-//     case InterviewType.lead:
-//       specicifPromt = getInterviewLeadPrompt();
-//       break;
-//     case InterviewType.tech:
-//       specicifPromt = getInterviewTechPrompt();
-//       break;
-//   }
+const getInterviewStandardPrompt = () => {
+  return [
+    "I want you to act as a recrutment manager for the company and interview the applicant",
+    "You will assess the applicant's skills and how they meet the job requirements",
+  ];
+};
 
-//   const content = `${specicifPromt[0] || ""}.
-//   ${getJobDetailsPrompt(application)}.
-//   ${specicifPromt[1] || ""}.
-//   ${getInterviewCommonPrompt()}
-//   `;
+const getInterviewClosedMessage = (): ChatCompletionSystemMessageParam => {
+  return {
+    role: "system",
+    content: `Povide feedback on the last answer provided by the applicant.
+      Then close the interview by providing feedback to the applicant on the overall interview.
+      The message should end with the text '*END*'`,
+  };
+};
 
-//   return {
-//     role: ChatCompletionRequestMessageRoleEnum.System,
-//     content,
-//   };
-// };
+const getInterviewSystemMessage = (
+  type: InterviewType,
+  application: ApplicationRequestData
+): ChatCompletionSystemMessageParam => {
+  let specificPrompt: string[] = [];
+  switch (type) {
+    case InterviewType.hr:
+      specificPrompt = getInterviewHRPrompt();
+      break;
+    case InterviewType.lead:
+      specificPrompt = getInterviewLeadPrompt();
+      break;
+    case InterviewType.tech:
+      specificPrompt = getInterviewTechPrompt();
+      break;
+    case InterviewType.generic:
+      specificPrompt = getInterviewStandardPrompt();
+      break;
+  }
 
-// const getFirstInterviewMessage = (): ChatCompletionRequestMessage => {
-//   return {
-//     role: ChatCompletionRequestMessageRoleEnum.User,
-//     content: "Hello, I'm here for the interview",
-//   };
-// };
+  const content = `${specificPrompt[0] || ""}.
+  ${getJobDetailsPrompt(application)}.
+  ${specificPrompt[1] || ""}.
+  ${getInterviewCommonPrompt()}
+  `;
 
-// export default async function handler(request: NextRequest) {
-//   // const requestData = requestSchema.parse(await request.());
-//   const { userId } = getAuth(request);
-//   if (!userId) {
-//     return new Response("Unauthorized", { status: 401 });
-//   }
+  return {
+    role: "system",
+    content,
+  };
+};
 
-//   const requestData = interviewRequestSchema.parse(await request.json());
-//   const { application, interviewType, messages } = requestData;
+const getFirstInterviewMessage = (): ChatCompletionUserMessageParam => {
+  return {
+    role: "user",
+    content: "Hello, I'm here for the interview",
+  };
+};
 
-//   if (env.SKIP_AI) {
-//     await delay(1000);
-//     return new Response(
-//       await getFakeAiResponse("test interview message\n\nanother line*END*")
-//     );
-//   }
+export default async function handler(request: NextRequest) {
+  // const requestData = requestSchema.parse(await request.());
+  const { userId } = getAuth(request);
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
-//   const requestMessages = [
-//     getInterviewSystemMessage(interviewType, application),
-//     getFirstInterviewMessage(),
-//     ...messages,
-//   ];
+  const requestData = interviewRequestSchema.parse(await request.json());
+  const { application, interviewType, messages } = requestData;
 
-//   if (messages.length > MAX_INTERVIEW_PHASE_1_MESSAGES) {
-//     requestMessages.push(getInterviewClosedMessage());
-//   }
+  if (env.SKIP_AI) {
+    await delay(1000);
+    return new Response(
+      await getFakeAiResponse("test interview message\n\nanother line*END*")
+    );
+  }
 
-//   const stream = await OpenAI("chat", {
-//     model: "gpt-3.5-turbo",
-//     messages: requestMessages,
-//   });
+  const requestMessages = [
+    getInterviewSystemMessage(interviewType, application),
+    getFirstInterviewMessage(),
+    ...messages,
+  ];
 
-//   return new Response(stream);
-// }
+  if (messages.length > MAX_INTERVIEW_PHASE_1_MESSAGES) {
+    requestMessages.push(getInterviewClosedMessage());
+  }
 
-// export const config = {
-//   runtime: "edge",
-// };
+  const aiResponse = await openAI.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: requestMessages,
+    stream: true,
+  });
+
+  const stream = OpenAIStream(aiResponse);
+
+  return new StreamingTextResponse(stream);
+}
+
+export const config = {
+  runtime: "edge",
+};

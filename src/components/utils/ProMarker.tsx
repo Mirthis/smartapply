@@ -1,12 +1,16 @@
-import { Lock } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 
 import Link from "next/link";
 
-const ProMarker = () => {
+const ProMarker = ({ text }: { text?: string }) => {
   return (
-    <Link href="/upgrade" className="flex items-center link-accent">
-      <Lock className="w-4 h-4 mr-2" />
-      Pro
+    <Link
+      href="/upgrade"
+      className="flex gap-x-2 items-center link-accent font-semibold"
+    >
+      <LockKeyhole className="w-6 h-6 shrink-0" />
+
+      <p>{text ? text : "Pro Feature"}</p>
     </Link>
   );
 };

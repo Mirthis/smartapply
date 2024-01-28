@@ -33,17 +33,17 @@ const ServiceLinks = ({ applicationId }: { applicationId: string }) => {
   return (
     <div className="grid grid-cols-3 gap-4">
       <ServiceLink
-        href={`/coverletter/${applicationId}`}
+        href={`/application/${applicationId}/coverletters`}
         text="Cover Letters"
         Icon={FileText}
       />
       <ServiceLink
-        href={`/interview/${applicationId}`}
+        href={`/application/${applicationId}/interview`}
         text="Interview"
         Icon={MessagesSquare}
       />
       <ServiceLink
-        href={`/test/${applicationId}`}
+        href={`/application/${applicationId}/test`}
         text="Test"
         Icon={BookOpenCheck}
       />

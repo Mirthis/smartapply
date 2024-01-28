@@ -24,7 +24,7 @@ const getSystemMessage = (
 
   const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${skills}.
   You must not ask the same queston twice.
-  Questions should be medium to high complexity.
+  Questions should be hard difficulty and validate applicant knowledge of advanced topics.
   For technical skills, question can include code snippets.
   Each question should have 4 possible answers.
   You will only provide 1 question at at time in JSON format. For example:

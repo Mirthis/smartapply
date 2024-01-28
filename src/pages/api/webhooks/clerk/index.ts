@@ -1,17 +1,17 @@
 import type { WebhookEvent } from "@clerk/clerk-sdk-node";
 import { buffer } from "micro";
-import Stripe from "stripe";
+// import Stripe from "stripe";
 import { Webhook } from "svix";
 
 import { type NextApiRequest, type NextApiResponse } from "next";
 
-import { env } from "~/env.mjs";
+// import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-  // https://github.com/stripe/stripe-node#configuration
-  apiVersion: "2023-10-16",
-});
+// const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+//   // https://github.com/stripe/stripe-node#configuration
+//   apiVersion: "2023-10-16",
+// });
 
 export const config = {
   api: {
@@ -65,21 +65,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const userEmail = evt.data.email_addresses[0]?.email_address;
       const userId = evt.data.id;
       // create stripe user, needed for trial and future subscriptions
-      const stripeCustomer: Stripe.Customer = await stripe.customers.create({
-        email: userEmail,
-        metadata: {
-          clerkIUserId: userId,
-        },
-      });
-      const stripeId = stripeCustomer.id;
-      console.log("New Stripe customer created: ", stripeId);
+      // const stripeCustomer: Stripe.Customer = await stripe.customers.create({
+      //   email: userEmail,
+      //   metadata: {
+      //     clerkIUserId: userId,
+      //   },
+      // });
+      // const stripeId = stripeCustomer.id;
+      // console.log("New Stripe customer created: ", stripeId);
 
       // create user in app db
       const user = await prisma.user.create({
         data: {
           id: userId,
           email: userEmail,
-          stripeId,
+          // stripeId,
         },
       });
       console.log("New user created: ", user.id);

@@ -1,64 +1,69 @@
-// import { getAuth } from "@clerk/nextjs/server";
-// import {
-//   type ChatCompletionRequestMessage,
-//   ChatCompletionRequestMessageRoleEnum,
-// } from "openai";
-// import { OpenAI } from "openai-streams";
-// import { z } from "zod";
+import { getAuth } from "@clerk/nextjs/server";
+import { OpenAIStream, StreamingTextResponse } from "ai";
+import { type ChatCompletionMessageParam } from "openai/resources";
+import { z } from "zod";
 
-// import { type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
 
-// import { env } from "~/env.mjs";
-// import { addDelay } from "~/lib/utils";
-// import { applicantSchema, jobSchema } from "~/types/schemas";
+import { openAI } from "~/lib/openai";
+import { addDelay } from "~/lib/utils";
 
-// const requestSchema = z.object({
-//   job: jobSchema,
-//   applicant: applicantSchema,
-//   question: z.string(),
-//   answer: z.string(),
-// });
+import { env } from "~/env.mjs";
+import { applicantSchema, jobSchema } from "~/types/schemas";
 
-// const getExplanationPrompt = (
-//   question: string,
-//   answer: string
-// ): ChatCompletionRequestMessage => {
-//   const content = `Your question was: ${question}
-//   I think the correct answer is ${answer}.
-//   Tell me if this is correct or not and provide a detailed explanation for the correct answer.`;
+const requestSchema = z.object({
+  job: jobSchema,
+  applicant: applicantSchema,
+  question: z.string(),
+  answer: z.string(),
+});
 
-//   return {
-//     role: ChatCompletionRequestMessageRoleEnum.User,
-//     content,
-//   };
-// };
+const getExplanationPrompt = (
+  question: string,
+  answer: string
+): ChatCompletionMessageParam[] => {
+  return [
+    {
+      role: "assistant",
+      content: `Question:\n${question}`,
+    },
+    {
+      role: "user",
+      content: `I think the correct answer is ${answer}.
+      Tell me if this is correct or not and provide a detailed explanation for the correct answer.`,
+    },
+  ];
+};
 
-// // TODO: add better error handling based on api return
-// export default async function handler(request: NextRequest) {
-//   const { userId } = getAuth(request);
-//   if (!userId) {
-//     return new Response("Unauthorized", { status: 401 });
-//   }
+// TODO: add better error handling based on api return
+export default async function handler(request: NextRequest) {
+  const { userId } = getAuth(request);
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
-//   const input = requestSchema.parse(await request.json());
+  const input = requestSchema.parse(await request.json());
 
-//   if (env.SKIP_AI) {
-//     await addDelay(1000);
+  if (env.SKIP_AI) {
+    await addDelay(1000);
 
-//     return new Response("Correct answer.");
-//   }
+    return new Response("Correct answer.");
+  }
 
-//   const messages = [getExplanationPrompt(input.question, input.answer)];
+  const messages = getExplanationPrompt(input.question, input.answer);
 
-//   const stream = await OpenAI("chat", {
-//     model: "gpt-3.5-turbo",
-//     messages,
-//   });
-//   // const finishReason = response.data.choices[0]?.finish_reason;
+  const aiResponse = await openAI.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages,
+    stream: true,
+  });
+  // const finishReason = response.data.choices[0]?.finish_reason;
 
-//   return new Response(stream);
-// }
+  const stream = OpenAIStream(aiResponse);
 
-// export const config = {
-//   runtime: "edge",
-// };
+  return new StreamingTextResponse(stream);
+}
+
+export const config = {
+  runtime: "edge",
+};

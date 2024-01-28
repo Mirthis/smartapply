@@ -46,8 +46,9 @@ export const applicationRouter = createTRPCRouter({
         },
       });
 
+      let existingApplication;
       if (applicationId) {
-        await ctx.prisma.application.findUniqueOrThrow({
+        existingApplication = await ctx.prisma.application.findUniqueOrThrow({
           where: {
             id_userId: {
               id: applicationId,
@@ -56,31 +57,42 @@ export const applicationRouter = createTRPCRouter({
           },
           select: {
             id: true,
+            description: true,
+            skillsSummary: true,
           },
         });
+      }
+
+      let skillsSummary: string | undefined | null;
+      if (
+        existingApplication &&
+        existingApplication.description === job.description
+      ) {
+        skillsSummary = existingApplication.skillsSummary;
+      } else {
+        const response = await openAI.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              content: `Provide a comma separated list of the top 10 skills that should be used to test a candidate for the following job:
+    Job Title: ${input.job.title},
+    Job Description: ${input.job.description}
+    Only return the 10 items list no other text should be included.`,
+              role: "user",
+            },
+          ],
+        });
+
+        skillsSummary = response.choices[0]?.message?.content;
+        if (!skillsSummary) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Unable to generate skills summary",
+          });
+        }
       }
 
       // create our update job
-      const response = await openAI.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            content: `Provide a comma separated list of the top 10 skills that should be used to test a candidate for the following job:
-  Job Title: ${input.job.title},
-  Job Description: ${input.job.description}
-  Only return the list no other text should be included.`,
-            role: "user",
-          },
-        ],
-      });
-
-      const skillsSummary = response.choices[0]?.message?.content;
-      if (!skillsSummary) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Unable to generate skills summary",
-        });
-      }
 
       // create or update application
       const application = await ctx.prisma.application.upsert({

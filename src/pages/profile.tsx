@@ -4,19 +4,24 @@ import { useState } from "react";
 
 import { type NextPage } from "next";
 
+import { api } from "~/lib/api";
+import { MAX_APPLICANT_WO_PRO } from "~/lib/config";
+
 import { Layout, Title } from "~/components";
 import {
   DeleteProfileApplicantModal,
   EditProfileApplicantModal,
 } from "~/components/modals";
+import { ProMarker } from "~/components/utils";
 // import { ProMarker } from "~/components/utils";
 import Spinner from "~/components/utils/Spinner";
 
-import { api } from "~/lib/api";
+import { useHasPro } from "~/hooks/useHasPro";
 import { type ApplicantData, type ApplicantFormData } from "~/types/types";
 
 const ProfilePage: NextPage = () => {
   const utils = api.useContext();
+  const { hasPro } = useHasPro();
 
   const {
     isLoading,
@@ -80,17 +85,20 @@ const ProfilePage: NextPage = () => {
       <Title title="Profile" />
       <div className="flex items-center gap-x-4">
         <Title title="Saved Applicants" type="section" />
-        <button
-          className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2 "
-          onClick={handleNewApplicant}
-          disabled={
-            isLoading
-            // || (!hasPro && applicants && applicants.length > 0)
-          }
-        >
-          <Plus className="h-6 w-6 " />
-          <p>Add new</p>
-        </button>
+        {((applicants && applicants.length < MAX_APPLICANT_WO_PRO) ||
+          hasPro) && (
+          <button
+            className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2 "
+            onClick={handleNewApplicant}
+            disabled={
+              isLoading
+              // || (!hasPro && applicants && applicants.length > 0)
+            }
+          >
+            <Plus className="h-6 w-6 " />
+            <p>Add new</p>
+          </button>
+        )}
         {/* {!hasPro && <ProMarker />} */}
       </div>
       {isError && (
@@ -140,58 +148,66 @@ const ProfilePage: NextPage = () => {
         <div className="divider lg:hidden" />
         <div className="flex-1">
           <Title title="Other Applicants" type="subsection" />
-          {otherApplicants && otherApplicants.length === 0 && (
-            <p>You have no other applicants saved.</p>
-          )}
-          {otherApplicants && otherApplicants.length > 0 && (
-            <div className="flex  flex-col">
-              {otherApplicants.map((applicant, i) => (
-                <>
-                  <div
-                    key={applicant.id}
-                    className="flex card card-body flex-row border border-secondary items-center justify-between"
-                  >
-                    <p>
-                      <span className="font-semibold">
-                        {applicant.jobTitle}
-                      </span>
-                      <br />
-                      {applicant.firstName} {applicant.lastName}
-                    </p>
-                    <div className="flex">
-                      <button
-                        className="btn-ghost btn-circle btn"
-                        onClick={() => handleEditApplicant(applicant)}
-                      >
-                        <SquarePen className="h-6 w-6 text-accent" />
-                      </button>
-
-                      <button
-                        className="btn-ghost btn-circle btn"
-                        onClick={() => handleSetAsMain(applicant)}
-                        disabled={settingAsMain}
-                      >
-                        {settingAsMain ? (
-                          <Spinner className="h-6 w-6 text-success" />
-                        ) : (
-                          <ArrowUpFromLine className="h-6 w-6 text-success" />
-                        )}
-                      </button>
-
-                      <button
-                        className="btn-ghost btn-circle btn"
-                        onClick={() => handleRemoveApplicant(applicant)}
-                      >
-                        <Trash2 className="h-6 w-6 text-error" />
-                      </button>
-                    </div>
-                  </div>
-                  {i !== otherApplicants.length - 1 && (
-                    <div className="divider" />
-                  )}
-                </>
-              ))}
+          {!hasPro ? (
+            <div>
+              <ProMarker text="Upgrade to pro to save multiple applicants" />
             </div>
+          ) : (
+            <>
+              {otherApplicants && otherApplicants.length === 0 && (
+                <p>You have no other applicants saved.</p>
+              )}
+              {otherApplicants && otherApplicants.length > 0 && (
+                <div className="flex  flex-col">
+                  {otherApplicants.map((applicant, i) => (
+                    <>
+                      <div
+                        key={applicant.id}
+                        className="flex card card-body flex-row border border-secondary items-center justify-between"
+                      >
+                        <p>
+                          <span className="font-semibold">
+                            {applicant.jobTitle}
+                          </span>
+                          <br />
+                          {applicant.firstName} {applicant.lastName}
+                        </p>
+                        <div className="flex">
+                          <button
+                            className="btn-ghost btn-circle btn"
+                            onClick={() => handleEditApplicant(applicant)}
+                          >
+                            <SquarePen className="h-6 w-6 text-accent" />
+                          </button>
+
+                          <button
+                            className="btn-ghost btn-circle btn"
+                            onClick={() => handleSetAsMain(applicant)}
+                            disabled={settingAsMain}
+                          >
+                            {settingAsMain ? (
+                              <Spinner className="h-6 w-6 text-success" />
+                            ) : (
+                              <ArrowUpFromLine className="h-6 w-6 text-success" />
+                            )}
+                          </button>
+
+                          <button
+                            className="btn-ghost btn-circle btn"
+                            onClick={() => handleRemoveApplicant(applicant)}
+                          >
+                            <Trash2 className="h-6 w-6 text-error" />
+                          </button>
+                        </div>
+                      </div>
+                      {i !== otherApplicants.length - 1 && (
+                        <div className="divider" />
+                      )}
+                    </>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
