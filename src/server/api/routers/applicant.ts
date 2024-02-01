@@ -1,5 +1,7 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { MAX_APPLICANT, MAX_APPLICANT_WO_PRO } from "~/lib/config";
 import { openAI } from "~/lib/openai";
 
 import { applicantSchema } from "~/types/schemas";
@@ -41,6 +43,41 @@ export const applicantRouter = createTRPCRouter({
             },
           },
         });
+      } else {
+        const applicantCount = await ctx.prisma.applicant.count({
+          where: {
+            userId: userId,
+          },
+        });
+        const user = await ctx.prisma.user.findUniqueOrThrow({
+          where: {
+            id: ctx.auth.userId,
+          },
+          include: {
+            subscriptions: {
+              where: {
+                status: {
+                  in: ["active", "trialing"],
+                },
+              },
+            },
+          },
+        });
+
+        const activeSubscription = user.subscriptions.find(
+          (s) => s.status === "active"
+        );
+        const hasPro = user.lifetimePro || !!activeSubscription;
+
+        if (
+          applicantCount >= MAX_APPLICANT ||
+          (!hasPro && applicantCount >= MAX_APPLICANT_WO_PRO)
+        ) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "You have reached the maximum number of applicants",
+          });
+        }
       }
 
       if (isMain) {

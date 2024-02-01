@@ -53,7 +53,7 @@ const CoverLetterActionButton = ({
       ) : (
         <button
           className={cn(
-            ` tooltip btn-disabled pointer-events-auto btn flex gap-x-2 items-center`,
+            `btn-disabled pointer-events-auto btn flex gap-x-2 items-center`,
             className
           )}
           data-tip="Pro Feature"

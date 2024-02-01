@@ -7,3 +7,5 @@ export const MAX_FILE_NUM_PAGES = 2;
 export const MAX_FILE_TEXT_LENGTH = 10_000;
 export const IS_PRO_ENABLED = true;
 export const MAX_APPLICANT_WO_PRO = 1;
+export const MAX_APPLICANT = 10;
+export const MAX_APPLICATIONS = 1;

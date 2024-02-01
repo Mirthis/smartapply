@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { MAX_APPLICATIONS } from "~/lib/config";
 import { openAI } from "~/lib/openai";
 
 import { type PrismaClientType } from "~/server/db";
@@ -61,6 +62,19 @@ export const applicationRouter = createTRPCRouter({
             skillsSummary: true,
           },
         });
+      } else {
+        // check if user has reached max applications
+        const applications = await ctx.prisma.application.count({
+          where: {
+            userId,
+          },
+        });
+        if (applications >= MAX_APPLICATIONS) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "You have reached the maximum number of applications",
+          });
+        }
       }
 
       let skillsSummary: string | undefined | null;

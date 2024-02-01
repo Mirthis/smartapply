@@ -7,14 +7,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { api } from "~/lib/api";
+import { useHasPro } from "~/hooks/useHasPro";
 
 export default function UserWidget() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
 
-  const { data: proStatus } = api.user.getProState.useQuery();
+  const { proStatus } = useHasPro();
 
   return (
     <>

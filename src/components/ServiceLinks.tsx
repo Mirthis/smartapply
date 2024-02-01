@@ -23,7 +23,9 @@ const ServiceLink = ({
       className="flex flex-col items-center gap-y-2 text-primary-focus hover:underline underline-offset-2"
       href={href}
     >
-      <Icon className="h-12 w-12 border border-primary-focus p-2 rounded-full hover:text-base-100 hover:bg-primary-focus" />
+      <div className="border border-primary-focus rounded-full p-2 hover:bg-primary-focus">
+        <Icon className="h-8 w-8  hover:text-base-100 " />
+      </div>
       <p className="">{text}</p>
     </Link>
   );

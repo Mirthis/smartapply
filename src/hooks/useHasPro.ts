@@ -2,7 +2,7 @@ import { api } from "~/lib/api";
 import { IS_PRO_ENABLED } from "~/lib/config";
 
 export const useHasPro = () => {
-  // return { hasPro: false, isLoading: false, isError: false };
+  return { hasPro: false, isLoading: false, isError: false };
   if (!IS_PRO_ENABLED) {
     return {
       hasPro: true,
@@ -20,5 +20,11 @@ export const useHasPro = () => {
   });
 
   const hasPro = proStatus?.hasPro ?? false;
-  return { hasPro, isLoading, isError, isConfirmed: proStatus !== undefined };
+  return {
+    hasPro,
+    isLoading,
+    isError,
+    proStatus,
+    isConfirmed: proStatus !== undefined,
+  };
 };
