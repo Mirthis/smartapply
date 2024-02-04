@@ -25,7 +25,7 @@ const Home: NextPage = () => {
               <button className="btn-primary btn w-full ">Get Started</button>
             </Link>
             <Link href="/#features" scroll={false} className="w-full sm:w-48">
-              <button className="btn-secondary btn w-full ">Lear More</button>
+              <button className="btn-secondary btn w-full ">Learn More</button>
             </Link>
           </div>
         </div>

@@ -6,13 +6,13 @@ export const featureCardsData = [
   {
     title: "Make Your Application Stand out: Personalized Cover Letters",
     description:
-      "Say goodbye to writer&apos;s block and generic cover letters with our instant cover letter generation feature. Simply input your job application details and let our AI-powered tool create a personalized cover letter for you in seconds. But that&apos;s not all. You can also refine the letter by providing free text feedback to the AI to ensure that your cover letter is tailored to your specific qualifications and experiences. With this feature, you can save time and energy while still submitting a high-quality cover letter.",
+      "Say goodbye to writer's block and generic cover letters with our instant cover letter generation feature. Simply input your job application details and let our AI-powered tool create a personalized cover letter for you in seconds. But thats not all. You can also refine the letter by providing free text feedback to the AI to ensure that your cover letter is tailored to your specific qualifications and experiences. With this feature, you can save time and energy while still submitting a high-quality cover letter.",
     imgName: "feature-cover-letter.jpg",
   },
   {
     title: "Practice Makes Perfect: Interview Simulation",
     description:
-      "Prepare for your interview with confidence with our chatbot interview simulation feature. Our chatbot can simulate three types of interviews, including HR, technical, and leadership, allowing you to practice and refine your interview skills beforethe big day. The chatbot will ask you questions, and you canrespond in a natural and conversational way, just like you wouldduring an actual interview. This feature will help you feel more comfortable and prepared during your actual interview.",
+      "Prepare for your interview with confidence with our chatbot interview simulation feature. Our chatbot can simulate three types of interviews allowing you to practice and refine your interview skills before the big day. The chatbot will ask you questions, and you can respond in a natural and conversational way, just like you would during an actual interview. This feature will help you feel more comfortable and prepared during your actual interview.",
     imgName: "feature-interview.jpg",
   },
   {
@@ -33,14 +33,14 @@ export const interviewTypeCardData = [
   {
     title: "HR Interview",
     description:
-      "Simulate an HR interview focuing on soft skills and high-level assessment of the applicant.",
+      "Simulate an HR interview focusing on soft skills and high-level assessment of the applicant.",
     icon: UsersRound,
     type: InterviewType.hr,
   },
   {
     title: "Technical Interview",
     description:
-      "Simulate a technical interview focuing on the applicant&apos;s technical skills.",
+      "Simulate a technical interview focusing on the applicant's technical skills.",
     icon: Code,
     type: InterviewType.tech,
   },

@@ -14,6 +14,7 @@ import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { api } from "~/lib/api";
+import { MAX_APPLICANTS_WO_PRO } from "~/lib/config";
 import { formatCurrency } from "~/lib/formatter";
 import getStripe from "~/lib/getStipe";
 import { cn } from "~/lib/utils";
@@ -167,7 +168,7 @@ const UpgradePage: NextPage = () => {
                     Upgrade
                   </button>
                   <p className="text-sm text-gray-500">
-                    Paymennts and invoicing are managed via Stripe.
+                    Payments and invoicing are managed via Stripe.
                     <br />
                     You will be re-directed to Stripe for the checkout.
                   </p>
@@ -186,7 +187,7 @@ const UpgradePage: NextPage = () => {
                   Cover Letters
                 </p>
                 <ul className="">
-                  <ProFeature text="Extend or shortern the generated output to your needs." />
+                  <ProFeature text="Extend or shorten the generated output to your needs." />
                   <ProFeature text="Ask for changes using a text prompt." />
                   <ProFeature text="Browse the history of generated results." />
                 </ul>
@@ -221,6 +222,9 @@ const UpgradePage: NextPage = () => {
                 <p className="text-primary text-lg font-semibold">Profile</p>
                 <ul className="">
                   <ProFeature text="Save multiple applicant profiles, tailored to specific jobs" />
+                  <ProFeature
+                    text={`Save more than ${MAX_APPLICANTS_WO_PRO} application`}
+                  />
                 </ul>
               </div>
             </div>

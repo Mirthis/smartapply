@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { MAX_APPLICANT, MAX_APPLICANT_WO_PRO } from "~/lib/config";
+import { MAX_APPLICANTS, MAX_APPLICANTS_WO_PRO } from "~/lib/config";
 import { openAI } from "~/lib/openai";
 
 import { applicantSchema } from "~/types/schemas";
@@ -18,7 +18,7 @@ export const applicantRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // if appliocant.id is null, create new applicant in db, otherwise update existing applicant
+      // if applicant.id is null, create new applicant in db, otherwise update existing applicant
       // return applicant
       const isMain = input?.setAsMain ?? true;
       const applicant = input.applicant;
@@ -70,8 +70,8 @@ export const applicantRouter = createTRPCRouter({
         const hasPro = user.lifetimePro || !!activeSubscription;
 
         if (
-          applicantCount >= MAX_APPLICANT ||
-          (!hasPro && applicantCount >= MAX_APPLICANT_WO_PRO)
+          applicantCount >= MAX_APPLICANTS ||
+          (!hasPro && applicantCount >= MAX_APPLICANTS_WO_PRO)
         ) {
           throw new TRPCError({
             code: "BAD_REQUEST",
@@ -201,7 +201,7 @@ export const applicantRouter = createTRPCRouter({
         messages: [
           {
             content: `I want you to extract the applicant details from the resume text provided.
-              Details needed are first name and last name, resume summmary, skills and professional experience (company name, job title, job description).
+              Details needed are first name and last name, resume summary, skills and professional experience (company name, job title, job description).
               Result should be in JSON format: { firstName: string, lastName: string, jobTitle:string, summary: string, skills: string[], experience: { company: string, title: string, description: string }[] }`,
             role: "system",
           },

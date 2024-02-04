@@ -5,7 +5,7 @@ import { useState } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/lib/api";
-import { MAX_APPLICANT, MAX_APPLICANT_WO_PRO } from "~/lib/config";
+import { MAX_APPLICANTS, MAX_APPLICANTS_WO_PRO } from "~/lib/config";
 
 import { Layout, Title } from "~/components";
 import {
@@ -88,8 +88,8 @@ const ProfilePage: NextPage = () => {
       <div className="flex items-center gap-x-4">
         <Title title="Saved Applicants" type="section" />
         {applicants &&
-          applicants.length < MAX_APPLICANT &&
-          (applicants.length < MAX_APPLICANT_WO_PRO || hasPro) && (
+          applicants.length < MAX_APPLICANTS &&
+          (applicants.length < MAX_APPLICANTS_WO_PRO || hasPro) && (
             <button
               className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2 "
               onClick={handleNewApplicant}
@@ -104,9 +104,9 @@ const ProfilePage: NextPage = () => {
           )}
         {/* {!hasPro && <ProMarker />} */}
       </div>
-      {applicants && applicants.length >= MAX_APPLICANT && (
+      {applicants && applicants.length >= MAX_APPLICANTS && (
         <p className="-mt-2 mb-4 text-sm">
-          You created {applicants.length} of {MAX_APPLICANT} applicant.
+          You created {applicants.length} of {MAX_APPLICANTS} applicant.
         </p>
       )}
       {isError && (

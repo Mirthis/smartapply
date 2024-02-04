@@ -5,7 +5,7 @@ import { useState } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/lib/api";
-import { MAX_APPLICATIONS } from "~/lib/config";
+import { MAX_APPLICATIONS, MAX_APPLICATIONS_WO_PRO } from "~/lib/config";
 
 import { Layout, Title } from "~/components";
 import ServiceLinks from "~/components/ServiceLinks";
@@ -46,6 +46,11 @@ const ApplicationsPage: NextPage = () => {
     setIsEditApplicationOpen(true);
   };
 
+  const applicationsCount = applications?.length ?? Infinity;
+  const maxAllowedApplications = hasPro
+    ? MAX_APPLICATIONS
+    : MAX_APPLICATIONS_WO_PRO;
+
   return (
     <Layout
       title="Dashboard"
@@ -68,7 +73,7 @@ const ApplicationsPage: NextPage = () => {
         <button
           className="btn text-accent no-underline disabled:bg-transparent btn-link font-bold flex gap-x-2 items-center hover:underline underline-offset-2"
           onClick={handleNew}
-          disabled={(applications?.length ?? 0) >= MAX_APPLICATIONS}
+          disabled={applicationsCount >= maxAllowedApplications}
         >
           <Plus className="h-6 w-6 " />
           <p>Create New</p>
@@ -80,14 +85,14 @@ const ApplicationsPage: NextPage = () => {
       ) : (
         <>
           {isLoading && <Spinner text={"Loading Saved Applications"} />}
-          {!isLoading && applications?.length === 0 && (
+          {!isLoading && applicationsCount === 0 && (
             <p className="font-semibold">No saved applications</p>
           )}
-          {!isLoading && applications?.length !== 0 && (
+          {!isLoading && applicationsCount !== 0 && (
             <>
-              {applications?.length >= MAX_APPLICATIONS && (
+              {applicationsCount >= maxAllowedApplications && (
                 <p className="-mt-4 mb-4 text-sm">
-                  You created {applications?.length} of {MAX_APPLICATIONS}{" "}
+                  You created {applicationsCount} of {maxAllowedApplications}{" "}
                   applications.
                 </p>
               )}
