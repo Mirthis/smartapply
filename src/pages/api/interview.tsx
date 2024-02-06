@@ -49,16 +49,16 @@ const getInterviewLeadPrompt = () => {
 
 const getInterviewStandardPrompt = () => {
   return [
-    "I want you to act as a recrutment manager for the company and interview the applicant",
-    "You will assess the applicant's skills and how they meet the job requirements",
+    "I want you to act as the hiring manager for the company and interview the applicant",
+    "You will assess the applicant's skills and how they meet the job requirements with a superficial assessment of soft and hard skills",
   ];
 };
 
 const getInterviewClosedMessage = (): ChatCompletionSystemMessageParam => {
   return {
     role: "system",
-    content: `Povide feedback on the last answer provided by the applicant.
-      Then close the interview by providing feedback to the applicant on the overall interview.
+    content: `Provide feedback on the last answer provided by the applicant.
+      Then close the interview by providing feedback to the applicant on the overall interview and the applicant's suitability for the job.
       The message should end with the text '*END*'`,
   };
 };

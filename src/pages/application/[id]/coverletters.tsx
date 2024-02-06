@@ -48,7 +48,7 @@ const CoverLetterActionButton = ({
           onClick={onClick}
           disabled={disabled}
         >
-          Refine
+          {text}
         </button>
       ) : (
         <button
@@ -235,7 +235,7 @@ const CoverLetterPage: NextPage = () => {
   return (
     <Layout
       title="Generate Cover Letter"
-      description="Geenerate cover letters for a job application and job applicant."
+      description="Generate cover letters for a job application and job applicant."
       className="pb-0"
     >
       <ResetCoverLettersModal
@@ -330,7 +330,7 @@ const CoverLetterPage: NextPage = () => {
                           {formatApiMessage(displayedText).map((p, i) => (
                             <p
                               className="mb-2"
-                              key={`coverletter-paragraph-${i}`}
+                              key={`cover-letter-paragraph-${i}`}
                             >
                               {p}
                             </p>
@@ -359,7 +359,7 @@ const CoverLetterPage: NextPage = () => {
                         <input
                           type="text"
                           className="input-bordered input w-full col-span-6 md:col-span-5"
-                          placeholder="Specify wich change you need (i.e.: include more details from my profile)"
+                          placeholder='What change do you need (i.e.: include more details "xyz" from my profile)'
                           minLength={5}
                           maxLength={100}
                           value={refineText}
@@ -430,8 +430,8 @@ const CoverLetterPage: NextPage = () => {
                 </>
               )}
               {isError && (
-                <div className=" text-center font-bold text-error">
-                  Ooop, something went wrong. Try again.
+                <div className="alert alert-error text-error-content">
+                  Oops, something went wrong. Try again.
                 </div>
               )}
               {isMaxLetters && (

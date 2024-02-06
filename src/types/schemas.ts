@@ -56,7 +56,7 @@ export const jobSchema = z.object({
   ]),
 });
 
-export const appplicationSchema = z.object({
+export const applicationSchema = z.object({
   id: z.string().nullish(),
   title: z
     .string()
@@ -182,7 +182,7 @@ export const applicantSchema = z.object({
   isMain: z.boolean(),
 });
 
-export const applicationRequestSchema = appplicationSchema.merge(
+export const applicationRequestSchema = applicationSchema.merge(
   z.object({
     applicant: applicantSchema,
   })

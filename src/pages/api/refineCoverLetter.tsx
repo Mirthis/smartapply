@@ -9,7 +9,7 @@ import {
   getCoverLetterCreateMessage,
   getCoverLetterExistingMessage,
   getCoverLetterExtendMessage,
-  getCoverLetterRfineMessage,
+  getCoverLetterRefineMessage,
   getCoverLetterShortenMessage,
   getCoverLetterSystemMessage,
 } from "~/lib/prompt";
@@ -52,8 +52,8 @@ export default async function handler(request: NextRequest) {
   }
 
   const messages = [
-    getCoverLetterSystemMessage(input.application),
-    getCoverLetterCreateMessage(),
+    getCoverLetterSystemMessage(),
+    getCoverLetterCreateMessage(input.application),
     getCoverLetterExistingMessage(input.srcCoverLetter),
   ];
   switch (input.refineMode) {
@@ -64,7 +64,7 @@ export default async function handler(request: NextRequest) {
       messages.push(getCoverLetterExtendMessage());
       break;
     case "freeinput":
-      messages.push(getCoverLetterRfineMessage(input.refineText || ""));
+      messages.push(getCoverLetterRefineMessage(input.refineText || ""));
       break;
   }
 

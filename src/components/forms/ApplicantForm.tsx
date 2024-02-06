@@ -39,14 +39,17 @@ const ApplicantForm = ({
     defaultValues: applicant,
   });
 
-  const { mutateAsync: upsertApplicant, isLoading: isSubmitting } =
-    api.applicant.createOrUpdate.useMutation({
-      onSuccess: () => {
-        void utils.applicant.getForLoggedUser.invalidate();
-        void utils.user.getOnboardingState.invalidate();
-        onSuccess?.();
-      },
-    });
+  const {
+    mutateAsync: upsertApplicant,
+    isLoading: isSubmitting,
+    isError: isSubmitError,
+  } = api.applicant.createOrUpdate.useMutation({
+    onSuccess: () => {
+      void utils.applicant.getForLoggedUser.invalidate();
+      void utils.user.getOnboardingState.invalidate();
+      onSuccess?.();
+    },
+  });
 
   const onSubmit = (data: ApplicantFormData) => {
     const setAsMain = !applicant || applicant.isMain;
@@ -230,6 +233,12 @@ const ApplicantForm = ({
               <span>Save Applicant Data</span>
             )}
           </button>
+          {isSubmitError && (
+            <div className="alert alert-error text-error-content">
+              Oops! Something went wrong while saving your data. Please try
+              again.
+            </div>
+          )}
         </div>
       </form>
     </>

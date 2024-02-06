@@ -14,7 +14,7 @@ import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { api } from "~/lib/api";
-import { MAX_APPLICANTS_WO_PRO } from "~/lib/config";
+import { MAX_APPLICANTS, MAX_APPLICATIONS } from "~/lib/config";
 import { formatCurrency } from "~/lib/formatter";
 import getStripe from "~/lib/getStipe";
 import { cn } from "~/lib/utils";
@@ -141,9 +141,11 @@ const UpgradePage: NextPage = () => {
                                   )}
                                 </p>
                               )}
-                              {price.type === "recurring" && (
-                                <p className="text-sm">Cancel anytime</p>
-                              )}
+                              <p className="text-sm">
+                                {price.type === "recurring"
+                                  ? "Cancel anytime"
+                                  : "One-off payment"}
+                              </p>
                               {selected ? (
                                 <p className="btn btn-primary pointer-events-none  font-bold w-36">
                                   Selected
@@ -221,9 +223,11 @@ const UpgradePage: NextPage = () => {
               <div>
                 <p className="text-primary text-lg font-semibold">Profile</p>
                 <ul className="">
-                  <ProFeature text="Save multiple applicant profiles, tailored to specific jobs" />
                   <ProFeature
-                    text={`Save more than ${MAX_APPLICANTS_WO_PRO} application`}
+                    text={`Save up to ${MAX_APPLICANTS} applicant profiles, tailored to specific jobs`}
+                  />
+                  <ProFeature
+                    text={`Save up to ${MAX_APPLICATIONS} applications`}
                   />
                 </ul>
               </div>

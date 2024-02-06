@@ -35,6 +35,11 @@ const MessageBubble = ({
     <>
       {message.role === "user" && (
         <div className="flex  items-end gap-x-2">
+          <div className="chat chat-end w-full">
+            <div className="chat-bubble chat-bubble-primary">
+              <MessageBubbleText text={message.content as string} />
+            </div>
+          </div>
           {user?.imageUrl ? (
             <Image
               className="mb-1 h-10 w-10 rounded-full"
@@ -46,11 +51,6 @@ const MessageBubble = ({
           ) : (
             <CircleUserRound className="h-10 w-10 rounded-full text-primary" />
           )}
-          <div className="chat chat-start w-full">
-            <div className="chat-bubble chat-bubble-primary">
-              <MessageBubbleText text={message.content as string} />
-            </div>
-          </div>
         </div>
       )}
       {message.role === "assistant" && (

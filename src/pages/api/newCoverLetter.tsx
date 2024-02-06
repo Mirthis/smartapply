@@ -31,8 +31,8 @@ export default async function handler(request: NextRequest) {
   const { application } = requestData;
 
   const messages = [
-    getCoverLetterSystemMessage(application),
-    getCoverLetterCreateMessage(),
+    getCoverLetterSystemMessage(),
+    getCoverLetterCreateMessage(application),
   ];
 
   if (env.SKIP_AI) {

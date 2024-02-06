@@ -8,7 +8,7 @@ import { api } from "~/lib/api";
 import { cn } from "~/lib/utils";
 
 import { useHasPro } from "~/hooks/useHasPro";
-import { appplicationSchema } from "~/types/schemas";
+import { applicationSchema } from "~/types/schemas";
 import { type ApplicationData, type EditApplicationData } from "~/types/types";
 
 import Spinner from "../utils/Spinner";
@@ -56,7 +56,7 @@ const EditApplicationModal = ({
     setValue,
     formState: { errors, isValid, isDirty },
   } = useForm<EditApplicationData>({
-    resolver: zodResolver(appplicationSchema),
+    resolver: zodResolver(applicationSchema),
     mode: "onTouched",
   });
 
@@ -82,34 +82,10 @@ const EditApplicationModal = ({
     });
   };
 
-  // const submitCreate = async (data: JobData) => {
-  //   if (!applicant?.id) return;
-  //   await upsertApplication({
-  //     applicationId: undefined,
-  //     job: data,
-  //     applicantId: applicant.id,
-  //   });
-  // };
-
-  // const submitUpdate = async (data: JobData) => {
-  //   if (!applicationId || !applicant?.id) return;
-
-  //   await upsertApplication({
-  //     applicationId,
-  //     job: data,
-  //     applicantId: applicant.id,
-  //   });
-  // };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Job Details">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-y-4">
-          {/* <label className="label">
-              <span className="label-text font-semibold text-primary">
-                Select an applicant from your profile
-              </span>
-            </label> */}
           {applicants && applicants?.length === 0 && (
             <p className="alert alert-warning">
               You need to add an applicant to your profile before you can create
@@ -233,9 +209,10 @@ const EditApplicationModal = ({
             )}
           </button>
           {isSubmitError && (
-            <p className="text-error">
-              An error occurred. Please try again later.
-            </p>
+            <div className="alert alert-error text-error-content">
+              Oops! Something went wrong while saving your data. Please try
+              again.
+            </div>
           )}
         </div>
       </form>

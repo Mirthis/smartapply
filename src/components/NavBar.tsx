@@ -149,9 +149,9 @@ const Navbar = () => {
               </Link>
               <button
                 onClick={hideNavBar}
-                className="  btn-accent btn-circle btn"
+                className="  btn-primary btn-outline border-0 btn"
               >
-                <X className="h-4 w-4 font-bold" />
+                <X className="h-8 w-8 font-bold" />
               </button>
             </div>
           </div>

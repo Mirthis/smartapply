@@ -7,7 +7,7 @@ import { type AppRouter } from "~/server/api/root";
 import {
   type applicantSchema,
   type applicationRequestSchema,
-  type appplicationSchema,
+  type applicationSchema,
   type contactFormSchema,
   type interviewRequestSchema,
   type jobSchema,
@@ -22,7 +22,7 @@ export type InterviewHookRequest = Omit<
   "messages"
 >;
 
-export type EditApplicationData = z.infer<typeof appplicationSchema>;
+export type EditApplicationData = z.infer<typeof applicationSchema>;
 
 export enum InterviewType {
   tech = "Technology",

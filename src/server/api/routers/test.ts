@@ -16,14 +16,9 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { applicantSchema, jobSchema } from "~/types/schemas";
 import { type TestQuestion } from "~/types/types";
 
-const getSystemMessage = (
-  application: Application,
-  skill: string
-): ChatCompletionSystemMessageParam => {
-  const skills = skill === "*ALL*" ? application.skillsSummary : skill;
-
-  const content = `Create multiple choice questions to assess a job applicant knowledge of the following skills: ${skills}.
-  You must not ask the same queston twice.
+const getSystemMessage = (): ChatCompletionSystemMessageParam => {
+  const content = `Create multiple choice questions to assess a job applicant knowledge.
+  You must not ask the same question twice.
   Questions should be hard difficulty and validate applicant knowledge of advanced topics.
   For technical skills, question can include code snippets.
   Each question should have 4 possible answers.
@@ -64,7 +59,7 @@ const getExplanationPrompt = (
 const getPastQuestionsPrompt = (
   pastQuestions: string
 ): ChatCompletionSystemMessageParam => {
-  const content = `Here are the questions you asked so far:
+  const content = `Here are the questions you asked so far and you must not ask again:
   ${pastQuestions}
   `;
   return {
@@ -73,10 +68,14 @@ const getPastQuestionsPrompt = (
   };
 };
 
-const getQuestionPrompt = (): ChatCompletionUserMessageParam => {
+const getQuestionPrompt = (
+  application: Application,
+  skill: string
+): ChatCompletionUserMessageParam => {
+  const skills = skill === "*ALL*" ? application.skillsSummary : skill;
   return {
     role: "user",
-    content: `Next question (JSON only)`,
+    content: `Next question on one of the following  skills: ${skills}`,
   };
 };
 
@@ -114,15 +113,11 @@ export const testRouter = createTRPCRouter({
         where: { id: input.applicationId },
       });
 
-      const messages: ChatCompletionMessageParam[] = [
-        getSystemMessage(application, input.skill),
-      ];
+      const messages: ChatCompletionMessageParam[] = [getSystemMessage()];
       if (input.pastQuestions) {
         messages.push(getPastQuestionsPrompt(input.pastQuestions));
       }
-      messages.push(getQuestionPrompt());
-
-      // console.log({ messages });
+      messages.push(getQuestionPrompt(application, input.skill));
 
       const response = await openAI.chat.completions.create({
         model: "gpt-3.5-turbo",

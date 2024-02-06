@@ -312,7 +312,7 @@ const InterviewPage: NextPage = () => {
               )}
 
               {isAnswerError && (
-                <div className="mt-4 font-semibold text-error">
+                <div className="alert alert-error text-error-content mt-4">
                   There was an error while submitting your answer. Please try
                   again later.
                 </div>
