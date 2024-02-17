@@ -1,74 +1,46 @@
-import { RotateCcw, SendHorizontal } from "lucide-react";
 import { type ChatCompletionMessageParam } from "openai/resources";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { api } from "~/lib/api";
-import { interviewTypeCardData } from "~/lib/constants";
+import { INTERVIEWED_CLOSED_TOKEN } from "~/lib/constants";
 import { useInterview } from "~/lib/hooks";
+import { getIdFromUrlQuery } from "~/lib/utils";
 
-import { ApplicationSideBar, BasicCard, Layout, Title } from "~/components";
-import MessageBubble from "~/components/MessageBubble";
-import { ResetInterviewModal } from "~/components/modals";
-import OpacityTransition from "~/components/utils/OpacityTransition";
+import { ApplicationSideBar, Layout, Title } from "~/components";
+import InterViewTitle from "~/components/interview/InterViewTitle";
+import InterviewChatInput from "~/components/interview/InterviewChatInput";
+import InterviewMessageError from "~/components/interview/InterviewMessageError";
+import InterviewMessages from "~/components/interview/InterviewMessages";
+import InterviewResetButton from "~/components/interview/InterviewResetButton";
+import InterviewTypeSelector from "~/components/interview/InterviewTypeSelector";
 
+import { useApplication } from "~/hooks/useApplication";
 import { useHasPro } from "~/hooks/useHasPro";
-import { useAppStore } from "~/store/store";
-import { InterviewType } from "~/types/types";
-
-const interviewTitle = (type: InterviewType) => {
-  switch (type) {
-    case InterviewType.hr:
-      return "HR Interview";
-    case InterviewType.tech:
-      return "Technical Interview";
-    case InterviewType.lead:
-      return "Lead Interview";
-    case InterviewType.generic:
-      return "Standard Interview";
-  }
-};
+import { useInterviewStore } from "~/store/interviewStore";
+import { type InterviewType } from "~/types/types";
 
 const InterviewPage: NextPage = () => {
   // const [interviewType, setInterviewType] = useState<InterviewType>();
   const router = useRouter();
-  const [chatText, setChatText] = useState("");
-  const [isOpenResetModal, setIsOpenResetModal] = useState(false);
   const { hasPro } = useHasPro();
+  const [chatText, setChatText] = useState("");
 
   const {
-    interview,
+    messages: interviewMessages,
+    type: interviewType,
+    state: interviewState,
     addInterviewMessage,
     initInterview,
     resetInterview,
     closeInterview,
-  } = useAppStore((state) => state);
-  // const messages = interview?.messages ?? [];
-  // const interviewType = interview?.type;
+  } = useInterviewStore((state) => state);
 
-  const applicationId =
-    router.query.id && !Array.isArray(router.query.id)
-      ? router.query.id
-      : undefined;
+  const applicationId = getIdFromUrlQuery(router.query);
 
-  // TODO: Add error handling
-  const { data: application } = api.application.get.useQuery(
-    {
-      id: applicationId ?? "N/A",
-    },
-    {
-      enabled: !!applicationId,
-
-      onError: (error) => {
-        if (error.message === "No Application found") {
-          void router.replace("/");
-        }
-      },
-    }
-  );
+  const { application } = useApplication(applicationId);
 
   const handleReset = () => {
     resetInterview();
@@ -83,17 +55,18 @@ const InterviewPage: NextPage = () => {
     reset: resetInterviewHook,
   } = useInterview({
     onSuccess: (data) => {
-      if (data.endsWith("*END*")) {
+      let messageText = data;
+      if (data.endsWith(INTERVIEWED_CLOSED_TOKEN)) {
         closeInterview();
-        data = data.replace("*END*", "");
+        messageText = data.replace(INTERVIEWED_CLOSED_TOKEN, "");
       }
       addInterviewMessage({
-        content: data,
+        content: messageText,
         role: "assistant",
       });
       setChatText("");
     },
-    initMessages: interview?.messages,
+    initMessages: interviewMessages,
   });
 
   const changeInterviewType = (type: InterviewType) => {
@@ -107,15 +80,13 @@ const InterviewPage: NextPage = () => {
   };
 
   const send = (retry = false) => {
-    if (interview && application) {
+    if (application) {
       const newMessage: ChatCompletionMessageParam = {
         role: "user",
         content: chatText,
       };
 
-      const messages: ChatCompletionMessageParam[] = [
-        ...(interview?.messages ?? []),
-      ];
+      const messages: ChatCompletionMessageParam[] = [...interviewMessages];
 
       if (!retry) {
         messages.push(newMessage);
@@ -123,7 +94,7 @@ const InterviewPage: NextPage = () => {
 
       void sendMessage({
         application,
-        interviewType: interview.type,
+        interviewType,
         text: retry ? undefined : chatText,
       });
 
@@ -133,23 +104,12 @@ const InterviewPage: NextPage = () => {
     }
   };
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && e.shiftKey) {
-      send();
-    }
-  };
-
   return (
     <Layout
       title="Interview Simulation"
       description="Simulate a job interview based on the job description and the applicant's resume."
       className="pb-0"
     >
-      <ResetInterviewModal
-        onConfirm={handleReset}
-        onClose={() => setIsOpenResetModal(false)}
-        isOpen={isOpenResetModal}
-      />
       <div className="flex gap-x-2 min-h-screen">
         <div className="hidden lg:block w-96 shrink-0">
           {applicationId && (
@@ -158,138 +118,53 @@ const InterviewPage: NextPage = () => {
         </div>
 
         <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20">
-          {application && (
-            <>
-              {/* Interview is not started yet */}
-              {!interview && (
-                <>
-                  <Title title="Interview" type="section" />
-
-                  <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-4 md:grid-cols-2">
-                    {interviewTypeCardData.map((card) => (
-                      <BasicCard
-                        onClick={
-                          card.type !== InterviewType.generic && !hasPro
-                            ? () => router.push("/upgrade")
-                            : () => changeInterviewType(card.type)
-                        }
-                        title={card.title}
-                        description={card.description}
-                        Icon={card.icon}
-                        key={card.title}
-                        restrictToPro={
-                          card.type !== InterviewType.generic && !hasPro
-                        }
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-              {/* Interview is started */}
-              {interview && (
-                <>
-                  <div className="flex gap-x-4">
-                    <Title
-                      title={interviewTitle(interview.type)}
-                      type="section"
-                    />
-                    <button
-                      className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
-                      onClick={() => setIsOpenResetModal(true)}
-                    >
-                      <RotateCcw className="h-8 w-8" />
-                      Restart
-                    </button>
-                  </div>
-                  {/* Chat Messages */}
-                  <div>
-                    {lastMessages.map((message, i) => (
-                      <OpacityTransition key={`message-${i}`} show appear>
-                        <MessageBubble message={message} />
-                      </OpacityTransition>
-                    ))}
-                  </div>
-                  {/* <OpacityTransition
-                show={isLoadingMessage && lastMessageText === ""}
-                noFadeOut
-              >
-                <LoadingBubble />
-              </OpacityTransition> */}
-                  {/* <OpacityTransition
-                show={isLoadingMessage && lastMessageText !== ""}
-                noFadeOut
-              >
-                <MessageBubble
-                  message={{
-                    content: lastMessageText,
-                    role: "assistant",
-                  }}
+          <>
+            <Title title="Interview" type="section" />
+            {/* Interview is not started */}
+            {interviewState === "Not Started" && (
+              <InterviewTypeSelector
+                hasPro={hasPro}
+                onChangeInterviewType={changeInterviewType}
+              />
+            )}
+            {/* Interview is started or closed, show messages */}
+            {interviewState !== "Not Started" && (
+              <>
+                <div className="flex gap-x-4">
+                  <InterViewTitle interviewType={interviewType} />
+                  <InterviewResetButton
+                    handleReset={handleReset}
+                    variant="icon"
+                  />
+                </div>
+                {/* Chat Messages */}
+                <InterviewMessages messages={lastMessages} />
+                {/* Error bubble only shown if error is present */}
+                <InterviewMessageError
+                  isError={isError}
+                  onRetry={() => send(true)}
                 />
-              </OpacityTransition> */}
-                  <OpacityTransition show={isError} noFadeOut>
-                    <div className="chat chat-start">
-                      <div className="chat-bubble bg-error text-white">
-                        <div>
-                          Something went wrong.{" "}
-                          <button
-                            className="font-semibold underline"
-                            onClick={() => send(true)}
-                          >
-                            Resent last message.
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </OpacityTransition>
-                </>
-              )}
-              {/* Chat Input */}
-              {interview && interview.isOpen && (
-                <div className="mt-4 flex items-start justify-start gap-x-2">
-                  <textarea
-                    value={chatText}
-                    onChange={(e) => setChatText(e.target.value)}
-                    className="textarea-bordered textarea-primary textarea w-full focus:outline-offset-0"
-                    placeholder="Type your message here"
-                    onKeyUp={handleKeyUp}
-                    rows={3}
-                  ></textarea>
-                  <div className="flex flex-col gap-x-2 gap-y-2">
-                    <div>
-                      <button
-                        className="btn-primary btn flex w-14 flex-col sm:w-36"
-                        type="submit"
-                        onClick={() => send()}
-                        disabled={chatText.length === 0 || isLoadingMessage}
-                      >
-                        <SendHorizontal className="h-6 w-6" />
-                        <p className="hidden text-center  sm:block">
-                          Send
-                          <br />
-                          <span className="text-[8px]">Shift+Enter</span>
-                        </p>
-                      </button>
-                    </div>
-                    {/* <button
-                      className="btn-secondary btn w-14 sm:w-36"
-                      onClick={() => setIsOpenResetModal(true)}
-                    >
-                      <ArrowPathIcon className="h-6 w-6" />
-                      <span className="ml-2 hidden sm:block">Reset</span>
-                    </button> */}
-                  </div>
-                </div>
-              )}
-              {interview && !interview.isOpen && (
-                <div className="mt-4 text-center">
-                  <p className="mb-2">The interview is over.</p>
-                  <button className="btn-primary btn" onClick={handleReset}>
-                    Start new interview
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+              </>
+            )}
+            {/* Chat Input */}
+            {interviewState === "In Progress" && (
+              <InterviewChatInput
+                chatText={chatText}
+                setChatText={setChatText}
+                isSending={isLoadingMessage}
+                onSend={() => send()}
+              />
+            )}
+            {interviewState === "Completed" && (
+              <div className="mt-4 text-center">
+                <p className="mb-2">The interview is over.</p>
+                <InterviewResetButton
+                  handleReset={handleReset}
+                  variant="button"
+                />
+              </div>
+            )}
+          </>
         </div>
       </div>
     </Layout>

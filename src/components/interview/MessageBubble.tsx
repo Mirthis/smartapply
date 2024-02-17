@@ -6,7 +6,7 @@ import Image from "next/image";
 
 import { formatApiMessage } from "~/lib/formatter";
 
-import LoadingText from "./utils/LoadingText";
+import LoadingText from "../utils/LoadingText";
 
 const MessageBubbleText = ({ text }: { text: string }) => {
   if (text === "") {

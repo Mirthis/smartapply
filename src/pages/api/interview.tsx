@@ -8,6 +8,7 @@ import {
 import { type NextRequest } from "next/server";
 
 import { MAX_INTERVIEW_PHASE_1_MESSAGES } from "~/lib/config";
+import { INTERVIEWED_CLOSED_TOKEN } from "~/lib/constants";
 import { openAI } from "~/lib/openai";
 import { getJobDetailsPrompt } from "~/lib/prompt";
 import { getFakeAiResponse } from "~/lib/utils";
@@ -59,7 +60,7 @@ const getInterviewClosedMessage = (): ChatCompletionSystemMessageParam => {
     role: "system",
     content: `Provide feedback on the last answer provided by the applicant.
       Then close the interview by providing feedback to the applicant on the overall interview and the applicant's suitability for the job.
-      The message should end with the text '*END*'`,
+      The message should end with the string ${INTERVIEWED_CLOSED_TOKEN}`,
   };
 };
 

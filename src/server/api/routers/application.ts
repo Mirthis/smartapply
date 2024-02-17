@@ -174,7 +174,7 @@ export const applicationRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.auth.userId;
       const id = input.id;
-      const application = await ctx.prisma.application.findUniqueOrThrow({
+      const applications = await ctx.prisma.application.findUniqueOrThrow({
         where: {
           id,
         },
@@ -182,13 +182,13 @@ export const applicationRouter = createTRPCRouter({
           applicant: true,
         },
       });
-      if (application.userId !== userId) {
+      if (applications.userId !== userId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "You are not authorized to access this application",
         });
       }
-      return application;
+      return applications;
     }),
 
   getAllForUser: protectedProcedure.query(async ({ ctx }) => {

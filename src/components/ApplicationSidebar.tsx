@@ -4,6 +4,11 @@ import { useState } from "react";
 
 import { api } from "~/lib/api";
 
+import { useAppStore } from "~/store/appStore";
+import { useCoverLettersStore } from "~/store/coverLettersStore";
+import { useInterviewStore } from "~/store/interviewStore";
+import { useTestStore } from "~/store/testStore";
+
 import ServiceLinks from "./ServiceLinks";
 import Title from "./Title";
 import EditApplicationModal from "./modals/EditApplicationModal";
@@ -11,6 +16,21 @@ import { ApplicationDetailsSkeleton } from "./skeletons";
 
 const ApplicationSideBar = ({ applicationId }: { applicationId: string }) => {
   const [isEditApplicationOpen, setIsEditApplicationOpen] = useState(false);
+  const {
+    applicationId: storeApplicationId,
+    setApplicationID: setStoreApplicationID,
+  } = useAppStore((state) => state);
+  const resetCoverLetters = useCoverLettersStore((state) => state.reset);
+  const resetTest = useTestStore((state) => state.resetTest);
+  const resetInterview = useInterviewStore((state) => state.resetInterview);
+
+  if (applicationId !== storeApplicationId) {
+    resetCoverLetters();
+    resetTest();
+    resetInterview();
+    setStoreApplicationID(applicationId);
+  }
+
   const { data: application, isFetching: isLoading } =
     api.application.get.useQuery({ id: applicationId });
 

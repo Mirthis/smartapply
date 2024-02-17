@@ -4,7 +4,7 @@ export { default as FeatureCard } from "./FeatureCard";
 export { default as Footer } from "./Footer";
 export { default as Layout } from "./Layout";
 export { default as Logo } from "./Logo";
-export { default as MessageBubble } from "./MessageBubble";
+export { default as MessageBubble } from "./interview/MessageBubble";
 export { default as NavBar } from "./NavBar";
 export { default as Title } from "./Title";
 export { default as UserWidget } from "./UserWidget";

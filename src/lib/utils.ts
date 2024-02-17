@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import clsx, { type ClassValue } from "clsx";
+import { type ParsedUrlQuery } from "querystring";
 import { twMerge } from "tailwind-merge";
 
 import { env } from "~/env.mjs";
@@ -7,7 +8,7 @@ import { env } from "~/env.mjs";
 export const addDelay = (ms: number) =>
   new Promise((res) => setTimeout(res, ms));
 
-type CapctchaVerifyResponse = {
+type CaptchaVerifyResponse = {
   success: boolean;
   challenge_ts: string;
   hostname: string;
@@ -29,7 +30,7 @@ export const validateRecaptcha = async (token: string) => {
     }
   );
   const captchaResponseData =
-    (await captchaResponse.json()) as CapctchaVerifyResponse;
+    (await captchaResponse.json()) as CaptchaVerifyResponse;
 
   const isHuman = captchaResponseData?.success;
 
@@ -60,3 +61,7 @@ export function absoluteUrl(path: string) {
   }
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
+
+export const getIdFromUrlQuery = (query: ParsedUrlQuery) => {
+  return query.id && !Array.isArray(query.id) ? query.id : "N/A";
+};

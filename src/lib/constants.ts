@@ -45,3 +45,6 @@ export const interviewTypeCardData = [
     type: InterviewType.tech,
   },
 ];
+
+export const TEST_ALL_SKILLS = "*ALL*";
+export const INTERVIEWED_CLOSED_TOKEN = "INT_CLOSED";

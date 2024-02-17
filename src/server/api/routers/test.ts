@@ -8,6 +8,7 @@ import {
 } from "openai/resources";
 import { z } from "zod";
 
+import { TEST_ALL_SKILLS } from "~/lib/constants";
 import { openAI } from "~/lib/openai";
 import { addDelay } from "~/lib/utils";
 
@@ -72,7 +73,7 @@ const getQuestionPrompt = (
   application: Application,
   skill: string
 ): ChatCompletionUserMessageParam => {
-  const skills = skill === "*ALL*" ? application.skillsSummary : skill;
+  const skills = skill === TEST_ALL_SKILLS ? application.skillsSummary : skill;
   return {
     role: "user",
     content: `Next question on one of the following  skills: ${skills}`,

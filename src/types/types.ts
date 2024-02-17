@@ -27,7 +27,7 @@ export type EditApplicationData = z.infer<typeof applicationSchema>;
 export enum InterviewType {
   tech = "Technology",
   hr = "HR",
-  lead = "Leadershiop",
+  lead = "Leadership",
   generic = "Generic",
 }
 
@@ -44,7 +44,7 @@ export interface CoverLetter {
 export type InterviewData = {
   type: InterviewType;
   messages: InterviewMessage[];
-  isOpen: boolean;
+  state: "Not Started" | "In Progress" | "Completed";
   lastId: number;
 };
 
@@ -62,8 +62,9 @@ export type TestData = {
   status: "Not Started" | "In Progress" | "Completed";
   questions: TestQuestion[];
   lastId: number;
-  currentQuestion: TestQuestion | undefined;
+  lastQuestion: TestQuestion | undefined;
   messages: ChatCompletionMessageParam[];
+  displayedQuestion: TestQuestion | undefined;
 };
 
 export enum FormStep {

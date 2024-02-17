@@ -12,9 +12,11 @@ import {
   type RefineMode,
 } from "~/types/types";
 
+import { INTERVIEWED_CLOSED_TOKEN } from "./constants";
+
 export const useRecaptcha = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
-  const [captchaToken, setCaptchToken] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaError, setCaptchaError] = useState<string | null>(null);
 
   const handleReCaptchaVerify = useCallback(async () => {
@@ -25,7 +27,7 @@ export const useRecaptcha = () => {
     try {
       const token = await executeRecaptcha("yourAction");
       if (token) {
-        setCaptchToken(token);
+        setCaptchaToken(token);
       } else {
         setCaptchaError("Captcha failed");
       }
@@ -34,7 +36,6 @@ export const useRecaptcha = () => {
       console.error(err);
       setCaptchaError("Captcha failed");
     }
-    // setCaptchToken(token);
   }, [executeRecaptcha]);
 
   return {
@@ -112,8 +113,14 @@ export const useStreamingApi = <T>(
         return prevMessages.slice(0, -1).concat(newMessage);
       });
     }
-    if (newMessage.content && newMessage.content.endsWith("*END*")) {
-      newMessage.content = newMessage.content.replace("*END*", "");
+    if (
+      newMessage.content &&
+      newMessage.content.endsWith(INTERVIEWED_CLOSED_TOKEN)
+    ) {
+      newMessage.content = newMessage.content.replace(
+        INTERVIEWED_CLOSED_TOKEN,
+        ""
+      );
       setMessages((prevMessages) => {
         return prevMessages.slice(0, -1).concat(newMessage);
       });

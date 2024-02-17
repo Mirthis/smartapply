@@ -64,17 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     case "user.created": // this is typed
       const userEmail = evt.data.email_addresses[0]?.email_address;
       const userId = evt.data.id;
-      // create stripe user, needed for trial and future subscriptions
-      // const stripeCustomer: Stripe.Customer = await stripe.customers.create({
-      //   email: userEmail,
-      //   metadata: {
-      //     clerkIUserId: userId,
-      //   },
-      // });
-      // const stripeId = stripeCustomer.id;
-      // console.log("New Stripe customer created: ", stripeId);
 
-      // create user in app db
       const user = await prisma.user.create({
         data: {
           id: userId,
