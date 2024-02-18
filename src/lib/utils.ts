@@ -57,7 +57,7 @@ export function absoluteUrl(path: string) {
     return path;
   }
   if (env.SITE_DOMAIN) {
-    return `https://${env.SITE_DOMAIN}${path}`;
+    return `https://${env.SITE_DOMAIN}/${path}`;
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}${path}`;
