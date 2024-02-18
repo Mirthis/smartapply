@@ -5,6 +5,7 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
+  SKIP_AI: z.string().optional(),
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   OPENAI_API_KEY: z.string().min(1),
@@ -16,10 +17,8 @@ const server = z.object({
   SMTP_USERNAME: z.string().min(1),
   SMTP_PASSWORD: z.string().min(1),
   EMAIL_RECIPIENT: z.string().min(1),
-  SKIP_AI: z.string().min(1).optional(),
   STRIPE_SECRET_KEY: z.string().min(1),
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
-  STRIPE_TRIAL_PERIOD_DAYS: z.string().min(1),
 });
 
 /**
@@ -27,11 +26,9 @@ const server = z.object({
  * built with invalid env vars. To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 const client = z.object({
-  // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1),
-  NEXT_PUBLIC_INIT_STORE: z.string().min(1).optional(),
   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1),
   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1),
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1),
@@ -46,6 +43,7 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
+  SKIP_AI: process.env.SKIP_AI,
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
@@ -57,12 +55,10 @@ const processEnv = {
   SMTP_USERNAME: process.env.SMTP_USERNAME,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   EMAIL_RECIPIENT: process.env.EMAIL_RECIPIENT,
-  SKIP_AI: process.env.SKIP_AI,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
-  NEXT_PUBLIC_INIT_STORE: process.env.NEXT_PUBLIC_INIT_STORE,
   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
     process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
@@ -73,7 +69,6 @@ const processEnv = {
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-  STRIPE_TRIAL_PERIOD_DAYS: process.env.STRIPE_TRIAL_PERIOD_DAYS,
 };
 
 // Don't touch the part below
