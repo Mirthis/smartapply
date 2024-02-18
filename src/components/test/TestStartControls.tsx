@@ -23,9 +23,9 @@ const TestStartControls = ({
     <div className="flex flex-col gap-2">
       {jobSkills.length > 0 && (
         <div className="flex flex-col  gap-2 md:flex-row">
-          <label className="label">
+          <label className="label shrink-0">
             <span className="label-text font-semibold text-primary">
-              Select a skill to be tested on:
+              Test on:
             </span>
           </label>
           <select
