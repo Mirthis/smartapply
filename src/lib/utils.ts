@@ -53,15 +53,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function absoluteUrl(path: string) {
+  console.log({ env });
   if (typeof window !== "undefined") {
+    console.log("window.location.origin", window.location.origin);
     return path;
   }
   if (env.SITE_DOMAIN) {
-    return `https://${env.SITE_DOMAIN}/${path}`;
+    console.log("env.SITE_DOMAIN", env.SITE_DOMAIN);
+    return `https://${env.SITE_DOMAIN}${path}`;
   }
   if (process.env.VERCEL_URL) {
+    console.log("process.env.VERCEL_URL", process.env.VERCEL_URL);
     return `https://${process.env.VERCEL_URL}${path}`;
   }
+  console.log(`http://localhost:${process.env.PORT ?? 3000}${path}`);
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
 

@@ -6,7 +6,7 @@ import { z } from "zod";
  */
 const server = z.object({
   SKIP_AI: z.string().optional(),
-  SITE_DOMAIN: z.string().url().optional(),
+  SITE_DOMAIN: z.string().optional(),
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   OPENAI_API_KEY: z.string().min(1),
@@ -45,7 +45,7 @@ const client = z.object({
  */
 const processEnv = {
   SKIP_AI: process.env.SKIP_AI,
-  SITE_DOMAIN: process.env.SITE_URL,
+  SITE_DOMAIN: process.env.SITE_DOMAIN,
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
