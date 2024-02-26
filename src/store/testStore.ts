@@ -96,7 +96,6 @@ export const useTestStore = create<TestStore>((set, get) => ({
     });
   },
   addTestExplanation: (questionId, explanation) => {
-    "addTestExplanation", questionId, explanation;
     const newQuestions = get().questions.map((q) => {
       if (q.id === questionId) {
         return {
@@ -106,6 +105,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
       }
       return q;
     });
+    console.log("newQuestions", newQuestions);
     const currentQuestion = newQuestions?.find((q) => q.id === questionId);
     if (!newQuestions || !currentQuestion) return;
     set({
