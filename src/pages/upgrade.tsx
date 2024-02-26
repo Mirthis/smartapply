@@ -111,6 +111,7 @@ const UpgradePage: NextPage = () => {
                       const selected = price.id === selectedPrice;
                       return (
                         <button
+                          aria-label="Select Plan"
                           key={price.id}
                           disabled={price.id === selectedPrice}
                           onClick={() => setSelectedPrice(price.id)}
@@ -163,6 +164,7 @@ const UpgradePage: NextPage = () => {
                 </div>
                 <div className="text-center space-y-2">
                   <button
+                    aria-label="Upgrade"
                     className="btn btn-primary"
                     onClick={handleUpgrade}
                     disabled={!selectedPrice}

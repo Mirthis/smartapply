@@ -106,15 +106,17 @@ const Navbar = () => {
 
             <ul className={`hidden flex-1 flex-grow  md:flex ${linkColor}`}>
               {navBarLinks.map((l) => (
-                <Link
+                <li
                   key={`desktop-menu-${l.label}`}
-                  href={l.url}
-                  className="link-hover link underline-offset-8"
+                  className="${linkColor} ml-10 text-sm font-semibold uppercase"
                 >
-                  <li className="${linkColor} ml-10 text-sm font-semibold uppercase">
+                  <Link
+                    href={l.url}
+                    className="link-hover link underline-offset-8"
+                  >
                     {l.label}
-                  </li>
-                </Link>
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
@@ -148,6 +150,7 @@ const Navbar = () => {
                 <Logo />
               </Link>
               <button
+                aria-label="Close Menu"
                 onClick={hideNavBar}
                 className="  btn-primary btn-outline border-0 btn"
               >
@@ -158,14 +161,13 @@ const Navbar = () => {
           <div className="mt-4">
             <ul className="flex flex-col gap-y-4 uppercase">
               {navBarLinks.map((l) => (
-                <Link key={`mobile-menu-${l.label}`} href={l.url}>
-                  <li
-                    onClick={hideNavBar}
-                    className={`${linkColor} font-semibold`}
-                  >
-                    {l.label}
-                  </li>
-                </Link>
+                <li
+                  key={`mobile-menu-${l.label}`}
+                  onClick={hideNavBar}
+                  className={`${linkColor} font-semibold`}
+                >
+                  <Link href={l.url}>{l.label}</Link>
+                </li>
               ))}
             </ul>
           </div>

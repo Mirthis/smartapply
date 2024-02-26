@@ -71,6 +71,7 @@ const ApplicationsPage: NextPage = () => {
       <div className="flex items-center justify-between md:justify-start gap-x-4">
         <Title title="Dashboard" />
         <button
+          aria-label="Create New Application"
           className="btn text-accent no-underline disabled:bg-transparent btn-link font-bold flex gap-x-2 items-center hover:underline underline-offset-2"
           onClick={handleNew}
           disabled={applicationsCount >= maxAllowedApplications}
@@ -132,6 +133,7 @@ const ApplicationsPage: NextPage = () => {
                       <div className="flex gap-y-2">
                         <div className="card-actions justify-center text-sm flex-1 ">
                           <button
+                            aria-label="Edit Application"
                             className="font-bold uppercase text-secondary flex gap-x-2 items-center hover:underline underline-offset-2"
                             onClick={() => handleEdit(application)}
                           >
@@ -141,6 +143,7 @@ const ApplicationsPage: NextPage = () => {
                         </div>
                         <div className="card-actions justify-center text-sm flex-1 ">
                           <button
+                            aria-label="Delete Application"
                             className="font-bold flex gap-x-2 items-center uppercase text-error hover:underline underline-offset-2"
                             onClick={() => handleDelete(application)}
                           >

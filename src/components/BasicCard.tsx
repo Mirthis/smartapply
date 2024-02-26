@@ -22,7 +22,10 @@ const BasicCard = ({
   const router = useRouter();
 
   return (
-    <button onClick={onClick ? onClick : () => void router.push(url)}>
+    <button
+      aria-label={`select ${description}`}
+      onClick={onClick ? onClick : () => void router.push(url)}
+    >
       <div className="card h-full w-full bg-base-100  hover:bg-base-200 border border-primary">
         <div className="card-body items-center text-center">
           {Icon && <Icon className="h-16 w-16" />}

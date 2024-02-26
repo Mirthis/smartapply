@@ -55,6 +55,7 @@ const CoverLetterCreateButton = ({
     <div className="text-center space-y-2">
       {!createResponseText.length && (
         <button
+          aria-label="Generate Cover Letter"
           className="btn-primary btn w-full disabled:btn-outline sm:w-96"
           onClick={generate}
           disabled={createLoading}

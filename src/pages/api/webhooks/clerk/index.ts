@@ -72,7 +72,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           // stripeId,
         },
       });
-      console.log("New user created: ", user.id);
 
       // FIXME: add default price field to db and retrieve from there
       // const priceId = "price_1NVE8uJ8kIO1cCrZFmbcdiJC";

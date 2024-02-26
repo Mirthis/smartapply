@@ -221,6 +221,7 @@ const ApplicantForm = ({
           </div>
 
           <button
+            aria-label="Save Applicant Data"
             disabled={!isValid || isSubmitting}
             type="submit"
             className="btn-primary btn"

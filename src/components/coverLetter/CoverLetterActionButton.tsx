@@ -21,6 +21,7 @@ const CoverLetterActionButton = ({
     <>
       {hasPro ? (
         <button
+          aria-label={text}
           className={cn(
             `btn-secondary  btn flex gap-x-2 items-center`,
             className
@@ -32,6 +33,7 @@ const CoverLetterActionButton = ({
         </button>
       ) : (
         <button
+          aria-label={text}
           className={cn(
             `btn-disabled pointer-events-auto btn flex gap-x-2 items-center`,
             className

@@ -53,6 +53,7 @@ const Footer = () => {
               </Link>
             ))}
             <button
+              aria-label="Contact Us"
               className="hover:underline"
               onClick={() => setIsContactOpen(true)}
             >

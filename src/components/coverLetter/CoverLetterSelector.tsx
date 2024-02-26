@@ -39,6 +39,7 @@ const CoverLetterSelector = ({
         }`}
         value={displayedLetter?.id}
         onChange={(e) => onLetterChange(e.target.value)}
+        aria-label="Select a cover letter"
       >
         {coverLetters.map((c, i) => (
           <option key={c.id} value={c.id}>

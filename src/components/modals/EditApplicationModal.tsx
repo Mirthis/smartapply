@@ -97,6 +97,7 @@ const EditApplicationModal = ({
             className={cn("select-bordered select select-primary w-full", {
               "animate-pulse": isLoadingApplicants,
             })}
+            aria-label="Select an applicant"
             // value={applicantId ?? "N/A"}
             // defaultValue={applicantId ?? "N/A"}
             {...register("applicantId")}
@@ -196,6 +197,7 @@ const EditApplicationModal = ({
             )}
           </div>
           <button
+            aria-label="Save Application Data"
             disabled={!isValid || isSubmitting || !isDirty}
             type="submit"
             className="btn-primary btn"

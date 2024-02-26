@@ -21,12 +21,20 @@ const ResetInterviewModal = ({
         interview.
       </p>
       <div className="mt-8 flex gap-x-4">
-        <button className="btn-outline btn-info btn w-36" onClick={onClose}>
+        <button
+          aria-label="Cancel Reset Interview"
+          className="btn-outline btn-info btn w-36"
+          onClick={onClose}
+        >
           Cancel
         </button>
 
         <div className="mb-4" />
-        <button className="btn-error btn w-36" onClick={handleConfirm}>
+        <button
+          aria-label="Confirm Reset Interview"
+          className="btn-error btn w-36"
+          onClick={handleConfirm}
+        >
           Reset
         </button>
       </div>

@@ -14,6 +14,7 @@ const CoverLetterDisplay = ({ text }: { text: string }) => {
         ))}
       </div>
       <button
+        aria-label="Copy to clipboard"
         className="group absolute  right-2 top-2"
         title="Copy to clipboard"
         onClick={() => {

@@ -21,6 +21,7 @@ const TestQuestionSelector = () => {
         }
         return (
           <button
+            aria-label={`Select question ${i + 1}`}
             key={`select-q-${q.id}`}
             className={`${classes} btn w-10`}
             onClick={() => setDisplayedQuestion(q)}

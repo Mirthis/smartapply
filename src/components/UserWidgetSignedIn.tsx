@@ -59,6 +59,7 @@ const UserWidgetSignedIn = () => {
                 {({ active }) => (
                   <Link href="/profile">
                     <button
+                      aria-label="Profile"
                       className={`${
                         active
                           ? "bg-primary text-primary-content"
@@ -77,6 +78,7 @@ const UserWidgetSignedIn = () => {
                     {proStatus && !proStatus.hasPro ? (
                       <Link href="/upgrade">
                         <button
+                          aria-label="Upgrade to Pro"
                           className={`${
                             active
                               ? "bg-accent text-accent-content"
@@ -89,6 +91,7 @@ const UserWidgetSignedIn = () => {
                     ) : (
                       <Link href="/subscription">
                         <button
+                          aria-label="Manage Pro Subscription"
                           className={`${
                             active
                               ? "bg-primary text-primary-content"
@@ -106,6 +109,7 @@ const UserWidgetSignedIn = () => {
                 {({ active }) => (
                   <Link href="/accounts">
                     <button
+                      aria-label="Manage Account"
                       className={`${
                         active
                           ? "bg-primary text-primary-content"
@@ -122,6 +126,7 @@ const UserWidgetSignedIn = () => {
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    aria-label="Sign Out"
                     onClick={() => void signOut(() => router.push("/"))}
                     className={`${
                       active

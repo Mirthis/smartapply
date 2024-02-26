@@ -24,6 +24,7 @@ const ConfirmApplicationChangeModal = ({
       <div className="flex flex-col gap-y-4">
         <div>
           <button
+            aria-label="Update Application"
             className="btn-primary btn w-full"
             onClick={() => handleConfirm("update")}
           >
@@ -36,6 +37,7 @@ const ConfirmApplicationChangeModal = ({
         </div>
         <div>
           <button
+            aria-label="Create New Application"
             className="btn-secondary btn w-full"
             onClick={() => handleConfirm("create")}
           >
@@ -46,7 +48,11 @@ const ConfirmApplicationChangeModal = ({
             one from the &quot;Saved Application&quot; screen.
           </p> */}
         </div>
-        <button className="btn-outline  btn" onClick={onClose}>
+        <button
+          aria-label="Cancel"
+          className="btn-outline  btn"
+          onClick={onClose}
+        >
           Cancel
         </button>
       </div>

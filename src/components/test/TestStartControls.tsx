@@ -29,6 +29,7 @@ const TestStartControls = ({
             </span>
           </label>
           <select
+            aria-label="Select Skill"
             className="select-bordered select w-full md:w-fit"
             value={testSkill}
             onChange={(e) => setTestSkill(e.target.value)}
@@ -46,6 +47,7 @@ const TestStartControls = ({
       )}
       <div className="text-center">
         <button
+          aria-label="Start Test"
           disabled={isLoadingQuestion}
           className="btn-primary btn w-full sm:w-96"
           onClick={onStartTest}

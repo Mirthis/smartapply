@@ -22,7 +22,10 @@ const AboutPage: NextPage = () => {
             href="https://www.andreacardinale.me/"
             className="w-full sm:w-48"
           >
-            <button className="flex space-x-2  btn-primary btn w-full ">
+            <button
+              aria-label="Visit My Portfolio"
+              className="flex space-x-2  btn-primary btn w-full "
+            >
               <p>Visit My Portfolio</p>
             </button>
           </Link>

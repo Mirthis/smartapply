@@ -30,6 +30,7 @@ const InterviewChatInput = ({
       <div className="flex flex-col gap-x-2 gap-y-2">
         <div>
           <button
+            aria-label="Send"
             className="btn-primary btn flex w-14 flex-col sm:w-36"
             type="submit"
             onClick={() => onSend()}

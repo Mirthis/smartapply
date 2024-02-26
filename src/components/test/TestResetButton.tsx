@@ -9,6 +9,7 @@ const TestResetButton = ({ variant }: { variant: "icon" | "button" }) => {
     <>
       {variant === "icon" ? (
         <button
+          aria-label="Restart Test"
           className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
           onClick={resetTest}
         >
@@ -16,7 +17,11 @@ const TestResetButton = ({ variant }: { variant: "icon" | "button" }) => {
           Restart
         </button>
       ) : (
-        <button className="btn-primary btn w-full sm:w-96" onClick={resetTest}>
+        <button
+          aria-label="Restart Test"
+          className="btn-primary btn w-full sm:w-96"
+          onClick={resetTest}
+        >
           Start a new test
         </button>
       )}

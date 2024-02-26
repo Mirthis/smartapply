@@ -59,6 +59,7 @@ const Modal = ({
                       </Dialog.Title>
                     )}
                     <button
+                      aria-label={`Close Modal ${title ? title : ""}`}
                       className="btn-ghost btn-sm btn-circle btn text-center"
                       onClick={onClose}
                     >

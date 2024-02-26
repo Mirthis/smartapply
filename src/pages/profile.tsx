@@ -67,8 +67,6 @@ const ProfilePage: NextPage = () => {
   // const { data: dbUser } = api.user.get.useQuery();
   // const hasPro = (dbUser?._count?.subscriptions ?? 0) > 0;
 
-  console.log("hasPro", hasPro);
-
   return (
     <Layout title="Profile">
       <EditProfileApplicantModal
@@ -91,6 +89,7 @@ const ProfilePage: NextPage = () => {
           applicants.length < MAX_APPLICANTS &&
           (applicants.length < MAX_APPLICANTS_WO_PRO || hasPro) && (
             <button
+              aria-label="Add New Applicant"
               className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2 "
               onClick={handleNewApplicant}
               disabled={
@@ -126,6 +125,7 @@ const ProfilePage: NextPage = () => {
               <div className="flex items-center gap-x-4">
                 <Title title="Main Applicant" type="subsection" />
                 <button
+                  aria-label="Edit Main Applicant"
                   className="btn-ghost btn-circle btn"
                   onClick={() => handleEditApplicant(mainApplicant)}
                 >
@@ -184,6 +184,7 @@ const ProfilePage: NextPage = () => {
                             </p>
                             <div className="flex">
                               <button
+                                aria-label="Edit Applicant"
                                 className="btn-ghost btn-circle btn"
                                 onClick={() => handleEditApplicant(applicant)}
                               >
@@ -191,6 +192,7 @@ const ProfilePage: NextPage = () => {
                               </button>
 
                               <button
+                                aria-label="Set as Main Applicant"
                                 className="btn-ghost btn-circle btn"
                                 onClick={() => handleSetAsMain(applicant)}
                                 disabled={settingAsMain}
@@ -203,6 +205,7 @@ const ProfilePage: NextPage = () => {
                               </button>
 
                               <button
+                                aria-label="Remove Applicant"
                                 className="btn-ghost btn-circle btn"
                                 onClick={() => handleRemoveApplicant(applicant)}
                               >

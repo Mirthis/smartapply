@@ -3,10 +3,11 @@ import { Check } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 
-import Spinner from "~/components/utils/Spinner";
-
 import { api } from "~/lib/api";
 import { useRecaptcha } from "~/lib/hooks";
+
+import Spinner from "~/components/utils/Spinner";
+
 import { contactFormSchema } from "~/types/schemas";
 import { type ContactFormData } from "~/types/types";
 
@@ -148,6 +149,7 @@ const ContactForm = () => {
                 )}
               </div>
               <button
+                aria-label="Send Message"
                 className="btn-primary btn"
                 disabled={!isValid || isSubmitting}
               >

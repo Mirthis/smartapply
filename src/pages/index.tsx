@@ -1,9 +1,9 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 
-import { FeatureCard, Layout, Title } from "~/components";
-
 import { featureCardsData } from "~/lib/constants";
+
+import { FeatureCard, Layout, Title } from "~/components";
 
 const Home: NextPage = () => {
   return (
@@ -22,10 +22,20 @@ const Home: NextPage = () => {
           <div className="flex w-full flex-col items-center justify-center gap-x-4 gap-y-2 sm:flex-row">
             {/* Call to action */}
             <Link href="/sign-up" className="w-full sm:w-48">
-              <button className="btn-primary btn w-full ">Get Started</button>
+              <button
+                aria-label="Get Started"
+                className="btn-primary btn w-full "
+              >
+                Get Started
+              </button>
             </Link>
             <Link href="/#features" scroll={false} className="w-full sm:w-48">
-              <button className="btn-secondary btn w-full ">Learn More</button>
+              <button
+                aria-label="Learn More"
+                className="btn-secondary btn w-full "
+              >
+                Learn More
+              </button>
             </Link>
           </div>
         </div>
@@ -46,7 +56,9 @@ const Home: NextPage = () => {
 
         {/* Call to action */}
         <Link href="/sign-up" className="w-full sm:w-48">
-          <button className="btn-primary btn w-full">Get Started</button>
+          <button aria-label="Get Started" className="btn-primary btn w-full">
+            Get Started
+          </button>
         </Link>
       </div>
     </Layout>

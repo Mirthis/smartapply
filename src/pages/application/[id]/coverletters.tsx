@@ -40,7 +40,6 @@ const CoverLetterPage: NextPage = () => {
       {
         // enabled: router.query.id !== application?.id,
         onSuccess: (data) => {
-          console.log({ data });
           setCoverLetters(data);
           const currentCoverLetter = data[0];
 

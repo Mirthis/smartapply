@@ -70,6 +70,7 @@ const ApplicationSideBar = ({ applicationId }: { applicationId: string }) => {
           {/* Edit Application Link */}
           <div className="flex justify-end">
             <button
+              aria-label="Edit Application"
               className="font-bold uppercase text-secondary flex gap-x-2 items-center hover:underline underline-offset-2"
               onClick={() => setIsEditApplicationOpen(true)}
             >

@@ -77,7 +77,6 @@ const displayedExplanation = displayedQuestion?.explanation
 
 // console.log("displayedExplanation", displayedExplanation);
 // console.log("answerExplanation", answerExplanation);
-console.log("displayedQuestion", displayedQuestion);
 
   return (
     <>
@@ -98,6 +97,7 @@ console.log("displayedQuestion", displayedQuestion);
           }
           return (
             <button
+              aria-label={answer}
               key={`q-${question.id}-${index}`}
               disabled={question.providedAnswer !== undefined}
               className={`${classes} btn-outline btn-primary btn justify-start text-left normal-case`}
@@ -120,6 +120,7 @@ console.log("displayedQuestion", displayedQuestion);
           !isLoadingAnswer && (
             <div className="text-center">
               <button
+                aria-label="Get Next Question"
                 disabled={isLoadingQuestion}
                 className="btn-primary btn w-full sm:w-96"
                 onClick={() => getQuestion()}

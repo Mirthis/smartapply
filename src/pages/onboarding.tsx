@@ -4,13 +4,13 @@ import React, { useState } from "react";
 
 import Link from "next/link";
 
+import { api } from "~/lib/api";
+import { cn } from "~/lib/utils";
+
 import { Layout, Title } from "~/components";
 import { EditProfileApplicantModal } from "~/components/modals";
 import EditApplicationModal from "~/components/modals/EditApplicationModal";
 import { Spinner } from "~/components/utils";
-
-import { api } from "~/lib/api";
-import { cn } from "~/lib/utils";
 
 const WelcomePage = () => {
   const {
@@ -75,6 +75,7 @@ const WelcomePage = () => {
                   </div>
                   <div className="card-actions justify-end">
                     <button
+                      aria-label="Update Profile"
                       className={cn("btn btn-primary w-48", {
                         "btn-outline btn-success pointer-events-none":
                           onboardingState.hasApplicant,
@@ -116,6 +117,7 @@ const WelcomePage = () => {
                   </div>
                   <div className="card-actions justify-end">
                     <button
+                      aria-label="Create Application"
                       className={cn("btn btn-primary w-48", {
                         "btn-outline btn-success pointer-events-none":
                           onboardingState.hasApplication,

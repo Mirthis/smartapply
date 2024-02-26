@@ -22,6 +22,7 @@ const ResetInterviewButton = ({
       />
       {variant === "icon" ? (
         <button
+          aria-label="Restart Interview"
           className="font-bold uppercase text-accent flex gap-x-2 items-center hover:underline underline-offset-2"
           onClick={() => setIsOpenResetModal(true)}
         >
@@ -29,7 +30,11 @@ const ResetInterviewButton = ({
           Restart
         </button>
       ) : (
-        <button className="btn-primary btn" onClick={handleReset}>
+        <button
+          aria-label="Start New Interview"
+          className="btn-primary btn"
+          onClick={handleReset}
+        >
           Start new interview
         </button>
       )}

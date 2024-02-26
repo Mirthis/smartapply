@@ -47,6 +47,7 @@ const DeleteApplictionbModal = ({
       </p>
       <div className="mt-8 flex gap-x-4">
         <button
+          aria-label="Cancel"
           className="btn-outline btn-info btn w-36"
           disabled={isLoading}
           onClick={onClose}
@@ -54,6 +55,7 @@ const DeleteApplictionbModal = ({
           Cancel
         </button>
         <button
+          aria-label="Confirm"
           className="btn-error btn w-36"
           onClick={handleConfirm}
           disabled={isLoading}

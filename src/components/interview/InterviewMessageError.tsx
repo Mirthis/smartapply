@@ -13,7 +13,11 @@ const InterviewMessageError = ({
         <div className="chat-bubble bg-error text-white">
           <div>
             Something went wrong.{" "}
-            <button className="font-semibold underline" onClick={onRetry}>
+            <button
+              aria-label="Resent last message."
+              className="font-semibold underline"
+              onClick={onRetry}
+            >
               Resent last message.
             </button>
           </div>
