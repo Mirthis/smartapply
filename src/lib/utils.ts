@@ -66,5 +66,5 @@ export function absoluteUrl(path: string) {
 }
 
 export const getIdFromUrlQuery = (query: ParsedUrlQuery) => {
-  return query.id && !Array.isArray(query.id) ? query.id : "N/A";
+  return query.id && !Array.isArray(query.id) ? query.id : undefined;
 };

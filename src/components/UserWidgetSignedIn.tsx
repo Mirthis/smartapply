@@ -85,7 +85,7 @@ const UserWidgetSignedIn = () => {
                               : "text-accent"
                           } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                         >
-                          Upgrae to Pro
+                          Upgrade to Pro
                         </button>
                       </Link>
                     ) : (

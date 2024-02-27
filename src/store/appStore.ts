@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 type AppStoreInitialState = {
-  applicationId: string;
+  applicationId: string | undefined;
 };
 
 type AppStore = AppStoreInitialState & {
-  setApplicationID: (applicationId: string) => void;
+  setApplicationID: (applicationId: string | undefined) => void;
 };
 
 export const useAppStore = create<AppStore>((set) => ({

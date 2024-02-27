@@ -28,6 +28,7 @@ const CoverLetterPage: NextPage = () => {
   } = useCoverLettersStore((state) => state);
 
   const applicationId = getIdFromUrlQuery(router.query);
+  console.log({ applicationId });
 
   const { application, isFetching: isLoadingApplication } =
     useApplication(applicationId);
@@ -35,10 +36,10 @@ const CoverLetterPage: NextPage = () => {
   const { isFetching: isLoadingCoverLetters } =
     api.coverLetters.getAll.useQuery(
       {
-        applicationId,
+        applicationId: applicationId ?? "N/A",
       },
       {
-        // enabled: router.query.id !== application?.id,
+        enabled: !!applicationId,
         onSuccess: (data) => {
           setCoverLetters(data);
           const currentCoverLetter = data[0];
@@ -69,7 +70,7 @@ const CoverLetterPage: NextPage = () => {
     >
       <div className="flex gap-x-2 min-h-screen">
         <div className="hidden lg:block w-96 shrink-0">
-          <ApplicationSideBar applicationId={applicationId} />
+          {application && <ApplicationSideBar application={application} />}
         </div>
         <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20 space-y-2">
           <Title title="Create Cover Letter" type="section" />

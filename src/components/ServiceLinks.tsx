@@ -26,7 +26,7 @@ const ServiceLink = ({
       <div className="border hover:text-base-100 border-primary-focus rounded-full p-2 hover:bg-primary-focus">
         <Icon className="h-8 w-8   " />
       </div>
-      <p className="">{text}</p>
+      <p className="text-center">{text}</p>
     </Link>
   );
 };

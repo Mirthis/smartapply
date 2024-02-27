@@ -112,9 +112,7 @@ const InterviewPage: NextPage = () => {
     >
       <div className="flex gap-x-2 min-h-screen">
         <div className="hidden lg:block w-96 shrink-0">
-          {applicationId && (
-            <ApplicationSideBar applicationId={applicationId} />
-          )}
+          {application && <ApplicationSideBar application={application} />}
         </div>
 
         <div className="flex-1 border-0 lg:border-l pl-2 flex-shrink pb-20">

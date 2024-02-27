@@ -109,7 +109,7 @@ const WelcomePage = () => {
                 {/* <div className="text-primary text-8xl">2</div> */}
                 <div className="card-body ">
                   <div className="card-title">
-                    Creeate your first job position
+                    Create your first job position
                   </div>
                   <div>
                     Found a job you like? Create your first position using

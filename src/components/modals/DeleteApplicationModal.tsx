@@ -5,7 +5,7 @@ import { type ApplicationData } from "~/types/types";
 import Spinner from "../utils/Spinner";
 import Modal from "./Modal";
 
-const DeleteApplictionbModal = ({
+const DeleteApplicationModal = ({
   isOpen,
   onClose,
   application,
@@ -60,7 +60,7 @@ const DeleteApplictionbModal = ({
           onClick={handleConfirm}
           disabled={isLoading}
         >
-          {!isLoading ? <p>Confirm</p> : <Spinner text="Deleteting..." />}
+          {!isLoading ? <p>Confirm</p> : <Spinner text="Deleting..." />}
         </button>
       </div>
       {isError && (
@@ -72,4 +72,4 @@ const DeleteApplictionbModal = ({
   );
 };
 
-export default DeleteApplictionbModal;
+export default DeleteApplicationModal;

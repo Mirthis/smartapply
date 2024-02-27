@@ -31,11 +31,7 @@ const BasicCard = ({
           {Icon && <Icon className="h-16 w-16" />}
           <h2 className="card-title">{title}</h2>
           <p>{description}</p>
-          {restrictToPro && (
-            <p className="text-sm text-error">
-              <ProMarker />
-            </p>
-          )}
+          {restrictToPro && <ProMarker />}
         </div>
       </div>
     </button>

@@ -5,7 +5,7 @@ import { type ApplicantFormData } from "~/types/types";
 import Spinner from "../utils/Spinner";
 import Modal from "./Modal";
 
-const DeleteProfileApplicantbModal = ({
+const DeleteProfileApplicantModal = ({
   isOpen,
   onClose,
   applicant,
@@ -77,4 +77,4 @@ const DeleteProfileApplicantbModal = ({
   );
 };
 
-export default DeleteProfileApplicantbModal;
+export default DeleteProfileApplicantModal;
