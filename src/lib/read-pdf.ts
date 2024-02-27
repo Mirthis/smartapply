@@ -3,10 +3,12 @@
 import * as pdfjs from "pdfjs-dist";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+// import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import type { TextItem as PdfjsTextItem } from "pdfjs-dist/types/src/display/api";
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker as string;
+// pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker as string;
+pdfjs.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.js";
 
 interface ReadPdfReturn {
   text: string[];
